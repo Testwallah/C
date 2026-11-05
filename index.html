@@ -1,129 +1,680 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="hi" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ 100% Working Live Chat Room ⚡</title>
-    <!-- 💎 PubNub की बिल्कुल असली और लेटेस्ट वर्किंग CDN लाइब्रेरी -->
-    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.13.1.3.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚡ AiR 1 UP ⚡</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #0b141a; color: #e9edef; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; padding: 10px; }
-        .chat-container { background: #111b21; border-radius: 16px; width: 100%; max-width: 450px; height: 90vh; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.6); border: 1px solid #222e35; overflow: hidden; }
-        .chat-header { background: #202c33; padding: 15px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #2a3942; }
-        .chat-header h3 { margin: 0; color: #00a884; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .status-dot { width: 8px; height: 8px; background: #00e676; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #00e676; }
-        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #0b141a; }
-        .msg-wrapper { display: flex; flex-direction: column; max-width: 75%; }
-        .msg-wrapper.sent { align-self: flex-end; }
-        .msg-wrapper.received { align-self: flex-start; }
-        .sender-name { font-size: 11px; margin-bottom: 2px; color: #8696a0; font-weight: bold; padding-left: 5px; }
-        .msg { padding: 10px 14px; border-radius: 12px; font-size: 15px; word-wrap: break-word; line-height: 1.4; color: #fff; }
-        .sent .msg { background: #005c4b; border-top-right-radius: 0px; }
-        .received .msg { background: #202c33; border-top-left-radius: 0px; }
-        .setup-area { background: #202c33; padding: 10px 15px; display: flex; gap: 10px; border-bottom: 1px solid #2a3942; }
-        .setup-area input { flex: 1; padding: 8px 12px; border: 1px solid #2a3942; border-radius: 8px; background: #2a3942; color: #fff; font-size: 14px; outline: none; }
-        .input-area { display: flex; padding: 12px 15px; background: #202c33; gap: 10px; align-items: center; }
-        .input-area input { flex: 1; padding: 12px 18px; border: none; border-radius: 24px; background: #2a3942; color: #fff; font-size: 15px; outline: none; }
-        .input-area button { background: #00a884; border: none; color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        .input-area button:hover { background: #008f72; transform: scale(1.05); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        body { font-family: 'Fredoka', 'Poppins', sans-serif; background: #FFDE59; color: #111; margin: 0; padding: 0; overflow: hidden; }
+        
+        /* Authentic 3D Toon UI */
+        .toon-card { background: #ffffff; border: 4px solid #000000; box-shadow: 6px 6px 0px #000000; border-radius: 26px; }
+        .toon-btn { border: 3.5px solid #000000; box-shadow: 0px 5px 0px #000000; border-radius: 18px; font-weight: 700; transition: all 0.08s ease; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+        .toon-btn:active { transform: translateY(4px); box-shadow: 0px 1px 0px #000000; }
+        .toon-input { border: 3.5px solid #000000; box-shadow: inset 0px 3px 0px rgba(0,0,0,0.12); border-radius: 18px; font-weight: 700; outline: none; user-select: text; }
+        
+        /* Comic Halftone Background for Chat */
+        .comic-bg {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 2px, transparent 2px);
+            background-size: 18px 18px;
+        }
+
+        /* Animations */
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            80% { transform: scale(1.04); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .msg-pop { animation: popIn 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        @keyframes screenShake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-10px, 6px) rotate(-2deg); }
+            40% { transform: translate(10px, -6px) rotate(2deg); }
+            60% { transform: translate(-8px, -4px) rotate(-1deg); }
+            80% { transform: translate(8px, 4px) rotate(1deg); }
+        }
+        .shake-active { animation: screenShake 0.45s ease-in-out; }
+
+        @keyframes rainbowBg {
+            0% { background-color: #FFDE59; }
+            25% { background-color: #FF66C4; }
+            50% { background-color: #5CE1E6; }
+            75% { background-color: #7ED957; }
+            100% { background-color: #FFDE59; }
+        }
+        .disco-active { animation: rainbowBg 1.2s infinite; }
+
+        .no-scrollbar::-webkit-scrollbar { width: 0px; background: transparent; }
     </style>
 </head>
-<body>
+<body id="app-body" class="h-full w-full flex items-center justify-center p-2 sm:p-4">
 
-    <div class="chat-container">
-        <!-- हेडर -->
-        <div class="chat-header">
-            <h3><span class="status-dot"></span> Live Chat (100% Working) 😍🔥</h3>
-        </div>
+    <!-- STEP 1: ONE-TIME ROLL NO ENTRY SCREEN (No Clutter, Auto Name) -->
+    <div id="entry-modal" class="fixed inset-0 bg-[#FFDE59] z-50 flex items-center justify-center p-4">
+        <div class="toon-card w-full max-w-sm p-6 text-center bg-white relative overflow-hidden">
+            <div class="w-20 h-20 mx-auto mb-3 bg-[#5CE1E6] border-4 border-black rounded-full flex items-center justify-center text-4xl shadow-[4px_4px_0px_#000]">
+                🚀
+            </div>
+            <h1 class="text-4xl font-black tracking-tight text-black drop-shadow-[2px_2px_0px_#FFDE59]">
+                AiR 1 UP
+            </h1>
+            <p class="text-sm font-bold text-slate-500 mt-1 mb-6">अपना Roll No डालें और सीधे एंट्री करें! 👇</p>
 
-        <!-- नाम सेट करने की जगह -->
-        <div class="setup-area">
-            <input type="text" id="username-input" placeholder="अपना नाम लिखें (जैसे: राहुल) 😎">
-        </div>
-        
-        <!-- चैटिंग बॉक्स -->
-        <div id="chat-box"></div>
-        
-        <!-- मैसेज इनपुट एरिया -->
-        <div class="input-area">
-            <input type="text" id="message-input" placeholder="मैसेज टाइप करें... 🚀" onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">🚀</button>
+            <input type="text" id="entry-roll-input" onkeypress="if(event.key==='Enter') startApp()" class="toon-input w-full bg-slate-100 text-center text-2xl py-3.5 px-4 mb-4 text-black placeholder-slate-400" placeholder="Roll No..." autocomplete="off">
+
+            <button onclick="startApp()" class="toon-btn w-full bg-[#7ED957] hover:bg-[#6ec649] text-black text-xl py-3.5">
+                START 🚀
+            </button>
         </div>
     </div>
 
+    <!-- MAIN APP CONTAINER -->
+    <div id="main-container" class="toon-card w-full max-w-md h-[96vh] flex flex-col overflow-hidden relative bg-white">
+        
+        <!-- TOP TOON HEADER -->
+        <div class="bg-[#5CE1E6] border-b-4 border-black px-3.5 py-2.5 flex items-center justify-between shrink-0">
+            <div class="flex items-center gap-2.5">
+                <div id="my-avatar" class="w-11 h-11 bg-[#FFDE59] border-3 border-black rounded-2xl flex items-center justify-center text-2xl shadow-[3px_3px_0px_#000] border-[3px]">
+                    😎
+                </div>
+                <div>
+                    <div class="flex items-center gap-1.5">
+                        <h2 class="text-xl font-black text-black tracking-tight leading-none">AiR 1 UP</h2>
+                        <span class="w-3 h-3 bg-[#7ED957] border-2 border-black rounded-full inline-block animate-pulse"></span>
+                    </div>
+                    <div id="my-name-badge" class="text-xs font-extrabold text-black/80 bg-white/80 px-2 py-0.5 rounded-lg border-2 border-black inline-block mt-0.5">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Navigation Pills -->
+            <div class="flex items-center gap-1.5">
+                <button onclick="toggleGameModal()" class="toon-btn bg-[#FF914D] text-black px-3 py-2 text-xs sm:text-sm gap-1">
+                    🎮 <span class="hidden xs:inline">XO</span>
+                </button>
+                <button onclick="openWhisperBox()" class="toon-btn bg-[#CB6CE6] text-white px-2.5 py-2 text-xs sm:text-sm" title="Secret Code">
+                    ⚡
+                </button>
+                <button id="god-btn" onclick="toggleAdminPanel()" class="hidden toon-btn bg-[#FF5757] text-white px-2.5 py-2 text-xs sm:text-sm animate-bounce" title="Superpowers">
+                    👑
+                </button>
+            </div>
+        </div>
+
+        <!-- LIVE ADMIN BANNER (Hidden until triggered) -->
+        <div id="live-banner" class="hidden bg-[#FF5757] text-white border-b-4 border-black px-3 py-2 text-xs font-black flex items-center justify-between shrink-0">
+            <span id="live-banner-text" class="truncate">🔥 SUPER ANNOUNCEMENT!</span>
+            <button onclick="document.getElementById('live-banner').classList.add('hidden')" class="ml-2 bg-black/30 px-2 py-0.5 rounded-lg">✕</button>
+        </div>
+
+        <!-- LIVE MULTIPLAYER TIC-TAC-TOE DRAWER -->
+        <div id="game-drawer" class="hidden bg-[#FFF5CC] border-b-4 border-black p-3 shrink-0 transition-all">
+            <div class="flex items-center justify-between mb-2">
+                <span id="xo-status" class="text-xs font-black bg-white px-2.5 py-1 rounded-xl border-2 border-black">
+                    🎮 Live Tic-Tac-Toe: Turn ❌
+                </span>
+                <div class="flex gap-1.5">
+                    <button onclick="resetXO(true)" class="toon-btn bg-[#7ED957] text-black px-2.5 py-1 text-xs">🔄 Reset</button>
+                    <button onclick="toggleGameModal()" class="toon-btn bg-[#FF5757] text-white px-2.5 py-1 text-xs">✕</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-3 gap-2 max-w-[210px] mx-auto my-1">
+                <button onclick="playXO(0)" id="xo-0" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+                <button onclick="playXO(1)" id="xo-1" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+                <button onclick="playXO(2)" id="xo-2" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+                <button onclick="playXO(3)" id="xo-3" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+                <button onclick="playXO(4)" id="xo-4" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+                <button onclick="playXO(5)" id="xo-5" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+                <button onclick="playXO(6)" id="xo-6" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+                <button onclick="playXO(7)" id="xo-7" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+                <button onclick="playXO(8)" id="xo-8" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+            </div>
+        </div>
+
+        <!-- SUPERPOWERS DRAWER (ONLY VISIBLE IF KANISQ UNLOCKED) -->
+        <div id="admin-drawer" class="hidden bg-[#1e1b4b] text-white border-b-4 border-black p-3 shrink-0">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-black text-[#FFDE59] flex items-center gap-1">⚡ KANISQ GOD POWERS UNLOCKED ⚡</span>
+                <button onclick="toggleAdminPanel()" class="text-xs bg-white/20 px-2 py-0.5 rounded-lg font-bold">Close</button>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 mb-2">
+                <button onclick="sendPowerEvent('earthquake')" class="toon-btn bg-[#FF914D] text-black py-1.5 text-[11px] flex-col leading-tight">
+                    🌋<span>Shake</span>
+                </button>
+                <button onclick="sendPowerEvent('confetti')" class="toon-btn bg-[#7ED957] text-black py-1.5 text-[11px] flex-col leading-tight">
+                    🎉<span>Party</span>
+                </button>
+                <button onclick="sendPowerEvent('disco')" class="toon-btn bg-[#FF66C4] text-black py-1.5 text-[11px] flex-col leading-tight">
+                    🪩<span>Disco</span>
+                </button>
+                <button onclick="sendPowerEvent('clear')" class="toon-btn bg-[#FF5757] text-white py-1.5 text-[11px] flex-col leading-tight">
+                    🧹<span>Wipe</span>
+                </button>
+            </div>
+            <div class="flex gap-1.5">
+                <input type="text" id="admin-shout-input" class="toon-input flex-1 bg-white text-black px-3 py-1.5 text-xs" placeholder="सबकी स्क्रीन पर बैनर भेजें...">
+                <button onclick="sendAdminBanner()" class="toon-btn bg-[#FFDE59] text-black px-3 py-1.5 text-xs">📢</button>
+            </div>
+        </div>
+
+        <!-- CHAT AREA -->
+        <div id="chat-box" class="flex-1 p-3 overflow-y-auto comic-bg flex flex-col gap-2.5 no-scrollbar">
+            <!-- Messages appear here dynamically -->
+        </div>
+
+        <!-- ONE-TAP FUN BAR (Stickers, Sound, Doodle) -->
+        <div class="bg-[#FFF5CC] border-t-4 border-black px-2.5 py-1.5 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
+            <button onclick="toggleDoodleModal()" class="toon-btn bg-[#5CE1E6] text-black px-2.5 py-1 text-xs shrink-0">
+                🎨 Draw
+            </button>
+            <button onclick="sendFunSticker('🔥 Bawaal! 🔥', 'horn')" class="toon-btn bg-[#FF914D] text-black px-2.5 py-1 text-xs shrink-0">
+                📢 Horn
+            </button>
+            <button onclick="sendFunSticker('😂 Khatam Tata Bye Bye!', 'laugh')" class="toon-btn bg-[#FFDE59] text-black px-2.5 py-1 text-xs shrink-0">
+                😂 LOL
+            </button>
+            <button onclick="sendFunSticker('💎 100% Real VIP 💎', 'laser')" class="toon-btn bg-[#CB6CE6] text-white px-2.5 py-1 text-xs shrink-0">
+                ⚡ VIP
+            </button>
+            <button onclick="sendFunSticker('❤️ Full Bhai-Chara ❤️', 'pop')" class="toon-btn bg-[#FF66C4] text-black px-2.5 py-1 text-xs shrink-0">
+                ❤️ Love
+            </button>
+        </div>
+
+        <!-- CHAT INPUT BAR -->
+        <div class="bg-white border-t-4 border-black p-2.5 flex items-center gap-2 shrink-0">
+            <input type="text" id="message-input" onkeypress="if(event.key==='Enter') sendMessage()" class="toon-input flex-1 bg-slate-100 text-black px-4 py-2.5 text-sm placeholder-slate-400" placeholder="मैसेज लिखें... 🚀" autocomplete="off">
+            <button onclick="sendMessage()" class="toon-btn bg-[#7ED957] hover:bg-[#68c343] text-black w-12 h-11 text-xl shrink-0">
+                🚀
+            </button>
+        </div>
+
+    </div>
+
+    <!-- MINI DOODLE PAD MODAL -->
+    <div id="doodle-modal" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4">
+        <div class="toon-card bg-white w-full max-w-xs p-4 text-center">
+            <div class="flex justify-between items-center mb-2">
+                <span class="font-black text-sm">🎨 Live Toon Sketch</span>
+                <button onclick="toggleDoodleModal()" class="toon-btn bg-[#FF5757] text-white px-2.5 py-0.5 text-xs">✕</button>
+            </div>
+            <canvas id="doodle-canvas" width="260" height="220" class="border-4 border-black rounded-2xl bg-white mx-auto touch-none cursor-crosshair"></canvas>
+            <div class="flex justify-between items-center mt-3 gap-2">
+                <div class="flex gap-1.5">
+                    <button onclick="setPenColor('#000000')" class="w-7 h-7 rounded-full bg-black border-2 border-black"></button>
+                    <button onclick="setPenColor('#FF5757')" class="w-7 h-7 rounded-full bg-[#FF5757] border-2 border-black"></button>
+                    <button onclick="setPenColor('#38bdf8')" class="w-7 h-7 rounded-full bg-[#38bdf8] border-2 border-black"></button>
+                    <button onclick="setPenColor('#22c55e')" class="w-7 h-7 rounded-full bg-[#22c55e] border-2 border-black"></button>
+                </div>
+                <button onclick="clearDoodle()" class="toon-btn bg-slate-200 text-black px-2.5 py-1 text-xs">Clear</button>
+                <button onclick="sendDoodle()" class="toon-btn bg-[#7ED957] text-black px-3 py-1 text-xs">Send 🚀</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECRET CODE MODAL (Triggered via ⚡ button) -->
+    <div id="whisper-modal" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4">
+        <div class="toon-card bg-white w-full max-w-xs p-5 text-center">
+            <h3 class="font-black text-lg mb-2">⚡ Secret Code / Roll No</h3>
+            <input type="text" id="secret-code-input" onkeypress="if(event.key==='Enter') applySecretCode()" class="toon-input w-full bg-slate-100 text-center py-2.5 px-3 mb-3 text-base" placeholder="Code डालें...">
+            <div class="flex gap-2">
+                <button onclick="closeWhisperBox()" class="toon-btn flex-1 bg-slate-200 py-2 text-sm">Cancel</button>
+                <button onclick="applySecretCode()" class="toon-btn flex-1 bg-[#FFDE59] py-2 text-sm">Unlock ✨</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOON POPUP TOAST -->
+    <div id="toon-toast" class="fixed top-5 left-1/2 -translate-x-1/2 bg-[#FFDE59] text-black border-4 border-black shadow-[4px_4px_0px_#000] px-4 py-2 rounded-2xl font-black text-sm z-50 hidden items-center gap-2">
+        <span id="toon-toast-text">🚀 Ready!</span>
+    </div>
+
     <script>
-        // 💎 आपकी असली वर्किंग चाबियों का एकदम सही सेटअप
+        // 💎 PubNub Superfast Live Keys
         const my_pub_key = "pub-c-7620e370-d34b-4bd7-894b-1a8d5fc07c17";
         const my_sub_key = "sub-c-c5b2542a-5fc3-4fd4-95b2-0700612e55cd";
-        
-        // यूज़र के लिए यूनिक आईडी जनरेट करें (लेटेस्ट नियम के अनुसार अनिवार्य)
-        const myUUID = "user_" + Math.floor(Math.random() * 999999);
+        const CHANNEL = "air-1-up-super-toon-v5";
 
-        // 1. PubNub का एकदम सही इनिशियलाइज़ेशन
+        // User State (Saved automatically so it never asks repeatedly)
+        let myUUID = "u_" + Math.floor(Math.random() * 999999);
+        let myName = "Hero";
+        let myAvatar = "😎";
+        let isGodAdmin = false;
+
+        // Sound Synthesizer (Zero external MP3 needed)
+        let synthReady = false;
+        function playToonSound(type) {
+            try {
+                if (Tone.context.state !== 'running') Tone.start();
+                const synth = new Tone.Synth().toDestination();
+                const now = Tone.now();
+                if (type === 'pop') {
+                    synth.triggerAttackRelease("C5", "16n", now);
+                    synth.triggerAttackRelease("G5", "16n", now + 0.06);
+                } else if (type === 'horn') {
+                    synth.triggerAttackRelease("F4", "8n", now);
+                    synth.triggerAttackRelease("A4", "8n", now + 0.1);
+                    synth.triggerAttackRelease("C5", "4n", now + 0.2);
+                } else if (type === 'laser') {
+                    synth.triggerAttackRelease("C6", "16n", now);
+                    synth.triggerAttackRelease("E5", "16n", now + 0.05);
+                    synth.triggerAttackRelease("G4", "16n", now + 0.1);
+                } else if (type === 'laugh') {
+                    synth.triggerAttackRelease("E5", "16n", now);
+                    synth.triggerAttackRelease("G5", "16n", now + 0.08);
+                    synth.triggerAttackRelease("E5", "16n", now + 0.16);
+                    synth.triggerAttackRelease("C6", "8n", now + 0.24);
+                }
+            } catch (e) {}
+        }
+
+        // Resolve Identity Silently from Roll No or Code
+        function resolveIdentity(rawInput) {
+            const code = (rawInput || "").trim();
+            const lower = code.toLowerCase();
+
+            if (code === "99") {
+                myName = "Chiko 🥰";
+                myAvatar = "🐣";
+                showToast("🥰 Welcome Chiko!");
+            } else if (code === "104") {
+                myName = "Vikalp 🔥";
+                myAvatar = "⚡";
+                showToast("🔥 Welcome Vikalp!");
+            } else if (lower === "kanisq") {
+                myName = "Kanisq 👑";
+                myAvatar = "👑";
+                isGodAdmin = true;
+                document.getElementById('god-btn').classList.remove('hidden');
+                document.getElementById('admin-drawer').classList.remove('hidden');
+                showToast("👑 KANISQ SUPERPOWERS UNLOCKED!");
+                confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+            } else if (code !== "") {
+                // If user typed a roll number or name
+                if (/^\d+$/.test(code)) {
+                    myName = "Star #" + code;
+                    myAvatar = "🚀";
+                } else {
+                    myName = code;
+                    myAvatar = "😎";
+                }
+            } else {
+                myName = "Star #" + Math.floor(10 + Math.random() * 89);
+                myAvatar = "😎";
+            }
+
+            document.getElementById('my-name-badge').innerText = myName;
+            document.getElementById('my-avatar').innerText = myAvatar;
+
+            try {
+                sessionStorage.setItem('air1up_saved_code', code || myName);
+            } catch (e) {}
+        }
+
+        // Start App from One-Time Entry Modal
+        function startApp() {
+            const val = document.getElementById('entry-roll-input').value.trim();
+            resolveIdentity(val);
+            document.getElementById('entry-modal').classList.add('hidden');
+            playToonSound('pop');
+        }
+
+        // Check if already entered in this session so it never bothers again
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                const saved = sessionStorage.getItem('air1up_saved_code');
+                if (saved) {
+                    resolveIdentity(saved);
+                    document.getElementById('entry-modal').classList.add('hidden');
+                }
+            } catch (e) {}
+            initDoodlePad();
+        });
+
+        // Secret Whisper / Code Switcher
+        function openWhisperBox() {
+            document.getElementById('whisper-modal').classList.remove('hidden');
+            document.getElementById('whisper-modal').classList.add('flex');
+            document.getElementById('secret-code-input').focus();
+        }
+        function closeWhisperBox() {
+            document.getElementById('whisper-modal').classList.add('hidden');
+            document.getElementById('whisper-modal').classList.remove('flex');
+        }
+        function applySecretCode() {
+            const val = document.getElementById('secret-code-input').value.trim();
+            if (val) resolveIdentity(val);
+            document.getElementById('secret-code-input').value = '';
+            closeWhisperBox();
+        }
+
+        // Initialize PubNub
         const pubnub = new PubNub({
             publishKey: my_pub_key,
             subscribeKey: my_sub_key,
-            userId: myUUID // लेटेस्ट SDK के लिए आवश्यक पैरामीटर
+            userId: myUUID
         });
 
-        // 2. चैट रूम चैनल को सब्सक्राइब करना
-        pubnub.subscribe({ channels: ['mega-unlimited-chat-room'] });
+        pubnub.subscribe({ channels: [CHANNEL] });
 
-        // 3. लाइव मैसेजेस सुनने के लिए लिसनर (Listener)
         pubnub.addListener({
             message: function(event) {
-                const chatBox = document.getElementById('chat-box');
-                const isMe = event.message.uuid === myUUID;
-                
-                // स्क्रीन पर नया मैसेज रेंडर करना
-                const msgWrapper = document.createElement('div');
-                msgWrapper.classList.add('msg-wrapper', isMe ? 'sent' : 'received');
+                const msg = event.message;
+                if (!msg) return;
 
-                const nameLabel = document.createElement('span');
-                nameLabel.classList.add('sender-name');
-                nameLabel.innerText = isMe ? "आप" : event.message.sender;
-
-                const msgDiv = document.createElement('div');
-                msgDiv.classList.add('msg');
-                msgDiv.innerText = event.message.text;
-
-                msgWrapper.appendChild(nameLabel);
-                msgWrapper.appendChild(msgDiv);
-                chatBox.appendChild(msgWrapper);
-                
-                // ऑटो-स्क्रॉल
-                chatBox.scrollTop = chatBox.scrollHeight;
+                if (msg.type === 'chat' || msg.type === 'sticker' || msg.type === 'doodle') {
+                    renderChatMessage(msg);
+                    if (msg.sound) playToonSound(msg.sound);
+                    else if (msg.uuid !== myUUID) playToonSound('pop');
+                } else if (msg.type === 'xo') {
+                    syncXOBoard(msg);
+                } else if (msg.type === 'power') {
+                    executePowerEffect(msg);
+                } else if (msg.type === 'banner') {
+                    const bar = document.getElementById('live-banner');
+                    document.getElementById('live-banner-text').innerText = "👑 " + msg.text;
+                    bar.classList.remove('hidden');
+                    playToonSound('horn');
+                }
             }
         });
 
-        // 4. मैसेज को लाइव पब्लिश करने का फंक्शन
+        // Send Normal Message (Also checks silently if user typed 'Kanisq' in chat)
         function sendMessage() {
-            const nameInput = document.getElementById('username-input');
-            const msgInput = document.getElementById('message-input');
-            
-            const senderName = nameInput.value.trim() || "Secret Hero 👤";
-            const messageText = msgInput.value.trim();
+            const input = document.getElementById('message-input');
+            const text = input.value.trim();
+            if (!text) return;
 
-            if (!messageText) return;
+            // Silent superpower trigger if user types Kanisq directly in chat box
+            if (text.toLowerCase() === 'kanisq') {
+                resolveIdentity('Kanisq');
+                input.value = '';
+                return;
+            }
 
-            // पब्लिश कमांड
             pubnub.publish({
-                channel: 'mega-unlimited-chat-room',
+                channel: CHANNEL,
                 message: {
-                    sender: senderName,
-                    text: messageText,
-                    uuid: myUUID
+                    type: 'chat',
+                    uuid: myUUID,
+                    sender: myName,
+                    avatar: myAvatar,
+                    vip: isGodAdmin,
+                    text: text,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
             });
 
-            msgInput.value = '';
+            input.value = '';
         }
 
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                sendMessage();
+        // Send One-Tap Fun Sticker with Sound
+        function sendFunSticker(stickerText, soundEffect) {
+            pubnub.publish({
+                channel: CHANNEL,
+                message: {
+                    type: 'sticker',
+                    uuid: myUUID,
+                    sender: myName,
+                    avatar: myAvatar,
+                    vip: isGodAdmin,
+                    text: stickerText,
+                    sound: soundEffect,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            });
+        }
+
+        // Render Chat / Sticker / Doodle in Comic Bubble
+        function renderChatMessage(data) {
+            const chatBox = document.getElementById('chat-box');
+            const isMe = data.uuid === myUUID;
+
+            const wrapper = document.createElement('div');
+            wrapper.className = `msg-pop flex flex-col max-w-[82%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`;
+
+            const senderTag = document.createElement('div');
+            senderTag.className = 'text-[11px] font-black text-slate-700 px-1.5 mb-0.5 flex items-center gap-1';
+            senderTag.innerText = isMe ? `आप (${data.sender})` : `${data.avatar || '😎'} ${data.sender}`;
+
+            const bubble = document.createElement('div');
+            let bgClass = isMe ? 'bg-[#7ED957] text-black rounded-tr-none' : 'bg-white text-black rounded-tl-none';
+            if (data.vip) {
+                bgClass = 'bg-[#FFDE59] text-black border-[#000] ring-2 ring-[#FF5757]';
             }
+            if (data.type === 'sticker') {
+                bgClass = 'bg-[#FF66C4] text-black text-base font-black px-4 py-2';
+            }
+
+            bubble.className = `px-3.5 py-2 rounded-2xl border-[3px] border-black shadow-[3px_3px_0px_#000] text-sm font-bold break-words ${bgClass}`;
+
+            if (data.type === 'doodle' && data.image) {
+                const img = document.createElement('img');
+                img.src = data.image;
+                img.className = 'w-44 h-auto rounded-xl border-2 border-black bg-white';
+                bubble.appendChild(img);
+            } else {
+                bubble.innerText = data.text;
+            }
+
+            wrapper.appendChild(senderTag);
+            wrapper.appendChild(bubble);
+            chatBox.appendChild(wrapper);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // 👑 KANISQ SUPERPOWERS LOGIC
+        function toggleAdminPanel() {
+            const panel = document.getElementById('admin-drawer');
+            panel.classList.toggle('hidden');
+        }
+
+        function sendPowerEvent(action) {
+            pubnub.publish({
+                channel: CHANNEL,
+                message: {
+                    type: 'power',
+                    action: action,
+                    by: myName
+                }
+            });
+        }
+
+        function sendAdminBanner() {
+            const inp = document.getElementById('admin-shout-input');
+            const txt = inp.value.trim();
+            if (!txt) return;
+            pubnub.publish({
+                channel: CHANNEL,
+                message: {
+                    type: 'banner',
+                    text: txt
+                }
+            });
+            inp.value = '';
+        }
+
+        function executePowerEffect(msg) {
+            if (msg.action === 'earthquake') {
+                const cont = document.getElementById('main-container');
+                cont.classList.remove('shake-active');
+                void cont.offsetWidth;
+                cont.classList.add('shake-active');
+                playToonSound('laser');
+                showToast(`🌋 ${msg.by} shook the room!`);
+            } else if (msg.action === 'confetti') {
+                confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+                playToonSound('horn');
+                showToast(`🎉 Party Rain by ${msg.by}!`);
+            } else if (msg.action === 'disco') {
+                document.getElementById('app-body').classList.toggle('disco-active');
+                playToonSound('laugh');
+                showToast(`🪩 Disco Mode Toggled!`);
+            } else if (msg.action === 'clear') {
+                document.getElementById('chat-box').innerHTML = '';
+                showToast(`🧹 Chat Wiped by ${msg.by}!`);
+            }
+        }
+
+        // 🎮 LIVE TIC-TAC-TOE LOGIC
+        let xoBoard = ['', '', '', '', '', '', '', '', ''];
+        let xoTurn = '❌';
+        let xoActive = true;
+
+        function toggleGameModal() {
+            const drawer = document.getElementById('game-drawer');
+            drawer.classList.toggle('hidden');
+        }
+
+        function playXO(idx) {
+            if (!xoActive || xoBoard[idx] !== '') return;
+            xoBoard[idx] = xoTurn;
+            const nextTurn = xoTurn === '❌' ? '⭕' : '❌';
+            pubnub.publish({
+                channel: CHANNEL,
+                message: {
+                    type: 'xo',
+                    board: xoBoard,
+                    turn: nextTurn,
+                    lastPlayer: myName
+                }
+            });
+        }
+
+        function resetXO(broadcast) {
+            xoBoard = ['', '', '', '', '', '', '', '', ''];
+            xoTurn = '❌';
+            xoActive = true;
+            if (broadcast) {
+                pubnub.publish({
+                    channel: CHANNEL,
+                    message: {
+                        type: 'xo',
+                        board: xoBoard,
+                        turn: '❌',
+                        reset: true
+                    }
+                });
+            }
+        }
+
+        function syncXOBoard(data) {
+            xoBoard = data.board;
+            xoTurn = data.turn;
+            xoActive = true;
+
+            for (let i = 0; i < 9; i++) {
+                document.getElementById('xo-' + i).innerText = xoBoard[i];
+            }
+
+            const wins = [
+                [0,1,2],[3,4,5],[6,7,8],
+                [0,3,6],[1,4,7],[2,5,8],
+                [0,4,8],[2,4,6]
+            ];
+
+            for (let w of wins) {
+                const [a, b, c] = w;
+                if (xoBoard[a] && xoBoard[a] === xoBoard[b] && xoBoard[a] === xoBoard[c]) {
+                    document.getElementById('xo-status').innerText = `🏆 ${xoBoard[a]} Won! (${data.lastPlayer || 'Star'})`;
+                    xoActive = false;
+                    confetti({ particleCount: 60, spread: 60, origin: { y: 0.4 } });
+                    playToonSound('horn');
+                    return;
+                }
+            }
+
+            if (!xoBoard.includes('')) {
+                document.getElementById('xo-status').innerText = `🤝 Match Draw! Tap Reset`;
+                xoActive = false;
+                return;
+            }
+
+            document.getElementById('xo-status').innerText = `🎮 Live Turn: ${xoTurn}`;
+        }
+
+        // 🎨 MINI DOODLE PAD LOGIC
+        let canvas, ctx, drawing = false, penColor = "#000000";
+
+        function initDoodlePad() {
+            canvas = document.getElementById('doodle-canvas');
+            ctx = canvas.getContext('2d');
+            ctx.lineWidth = 4;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = penColor;
+
+            const getPos = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            };
+
+            const start = (e) => { drawing = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); };
+            const move = (e) => { if (!drawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); };
+            const end = () => { drawing = false; };
+
+            canvas.addEventListener('mousedown', start);
+            canvas.addEventListener('mousemove', move);
+            window.addEventListener('mouseup', end);
+
+            canvas.addEventListener('touchstart', start, { passive: false });
+            canvas.addEventListener('touchmove', move, { passive: false });
+            window.addEventListener('touchend', end);
+        }
+
+        function setPenColor(c) {
+            penColor = c;
+            if (ctx) ctx.strokeStyle = c;
+        }
+
+        function clearDoodle() {
+            if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function toggleDoodleModal() {
+            const modal = document.getElementById('doodle-modal');
+            modal.classList.toggle('hidden');
+            modal.classList.toggle('flex');
+        }
+
+        function sendDoodle() {
+            const dataUrl = canvas.toDataURL('image/png');
+            pubnub.publish({
+                channel: CHANNEL,
+                message: {
+                    type: 'doodle',
+                    uuid: myUUID,
+                    sender: myName,
+                    avatar: myAvatar,
+                    vip: isGodAdmin,
+                    image: dataUrl,
+                    sound: 'pop'
+                }
+            });
+            clearDoodle();
+            toggleDoodleModal();
+        }
+
+        // Toast Helper
+        function showToast(text) {
+            const t = document.getElementById('toon-toast');
+            document.getElementById('toon-toast-text').innerText = text;
+            t.classList.remove('hidden');
+            t.classList.add('flex');
+            setTimeout(() => {
+                t.classList.add('hidden');
+                t.classList.remove('flex');
+            }, 2600);
         }
     </script>
 </body>
