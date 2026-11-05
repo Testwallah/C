@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Instant Unlimited Chat (100% Free) ⚡</title>
+    <!-- PubNub की सबसे तेज़ और लेटेस्ट लाइव लाइब्रेरी -->
+    <script src="https://pubnub.com"></script>
+    <style>
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0b141a; color: #e9edef; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; padding: 10px; }
+        .chat-container { background: #111b21; border-radius: 16px; width: 100%; max-width: 450px; height: 90vh; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.6); border: 1px solid #222e35; overflow: hidden; }
+        .chat-header { background: #202c33; padding: 15px 20px; display: flex; align-items: center; gap: 15px; border-bottom: 1px solid #2a3942; }
+        .chat-header h3 { margin: 0; color: #00a884; font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .status-dot { width: 8px; height: 8px; background: #00e676; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px #00e676; }
+        #chat-box { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background-image: url('https://githubusercontent.com'); background-opacity: 0.06; }
+        .msg-wrapper { display: flex; flex-direction: column; max-width: 75%; }
+        .msg-wrapper.sent { align-self: flex-end; }
+        .msg-wrapper.received { align-self: flex-start; }
+        .sender-name { font-size: 11px; margin-bottom: 2px; color: #8696a0; font-weight: bold; padding-left: 5px; }
+        .msg { padding: 10px 14px; border-radius: 12px; font-size: 15px; word-wrap: break-word; line-height: 1.4; color: #fff; }
+        .sent .msg { background: #005c4b; border-top-right-radius: 0px; }
+        .received .msg { background: #202c33; border-top-left-radius: 0px; }
+        .setup-area { background: #202c33; padding: 10px 15px; display: flex; gap: 10px; border-bottom: 1px solid #2a3942; }
+        .setup-area input { flex: 1; padding: 8px 12px; border: 1px solid #2a3942; border-radius: 8px; background: #2a3942; color: #fff; font-size: 14px; outline: none; }
+        .input-area { display: flex; padding: 12px 15px; background: #202c33; gap: 10px; align-items: center; }
+        .input-area input { flex: 1; padding: 12px 18px; border: none; border-radius: 24px; background: #2a3942; color: #fff; font-size: 15px; outline: none; }
+        .input-area button { background: #00a884; border: none; color: white; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 18px; transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .input-area button:hover { background: #008f72; transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <!-- हेडर -->
+        <div class="chat-header">
+            <h3><span class="status-dot"></span> Superfast P2P Chat Room 😍🔥</h3>
+        </div>
+
+        <!-- नाम सेट करने की जगह -->
+        <div class="setup-area">
+            <input type="text" id="username-input" placeholder="अपना नाम लिखें (जैसे: राहुल कुमार) 😎">
+        </div>
+        
+        <!-- चैटिंग बॉक्स -->
+        <div id="chat-box"></div>
+        
+        <!-- मैसेज इनपुट एरिया -->
+        <div class="input-area">
+            <input type="text" id="message-input" placeholder="मैसेज टाइप करें... 0.001s में पहुंचेगा! 🚀" onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">🚀</button>
+        </div>
+    </div>
+
+    <script>
+        // 💎 आपका असली लाइव सीक्रेट चाबियों का सेटअप (Perfected!)
+        const my_pub_key = "pub-c-7620e370-d34b-4bd7-894b-1a8d5fc07c17";
+        const my_sub_key = "sub-c-c5b2542a-5fc3-4fd4-95b2-0700612e55cd";
+        
+        // एक रैंडम आईडी जनरेट करें ताकि आपकी और दूसरे की पहचान हो सके
+        const myUUID = "user_" + Math.floor(Math.random() * 999999);
+
+        // 1. PubNub को एक्टिवेट करना
+        const pubnub = new PubNub({
+            publishKey: my_pub_key,
+            subscribeKey: my_sub_key,
+            userId: myUUID
+        });
+
+        // 2. चैट रूम चैनल को जॉइन/सब्सक्राइब करना
+        pubnub.subscribe({ channels: ['mega-unlimited-chat-room'] });
+
+        // 3. जैसे ही कोई हवा की रफ़्तार से मैसेज भेजे, उसे स्क्रीन पर दिखाना
+        pubnub.addListener({
+            message: function(event) {
+                const chatBox = document.getElementById('chat-box');
+                const isMe = event.message.uuid === myUUID;
+                
+                // मैसेज का ढांचा (HTML Structure)
+                const msgWrapper = document.createElement('div');
+                msgWrapper.classList.add('msg-wrapper', isMe ? 'sent' : 'received');
+
+                const nameLabel = document.createElement('span');
+                nameLabel.classList.add('sender-name');
+                nameLabel.innerText = isMe ? "आप" : event.message.sender;
+
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('msg');
+                msgDiv.innerText = event.message.text;
+
+                msgWrapper.appendChild(nameLabel);
+                msgWrapper.appendChild(msgDiv);
+                chatBox.appendChild(msgWrapper);
+                
+                // ऑटो-स्क्रॉल ताकि नया मैसेज हमेशा सामने दिखे
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+        });
+
+        // 4. मैसेज हवा में फायर करने (भेजने) का फंक्शन
+        function sendMessage() {
+            const nameInput = document.getElementById('username-input');
+            const msgInput = document.getElementById('message-input');
+            
+            const senderName = nameInput.value.trim() || "Secret Hero 👤";
+            const messageText = msgInput.value.trim();
+
+            if (!messageText) return; // खाली मैसेज नहीं जाएगा!
+
+            // PubNub नेटवर्क पर मैसेज पब्लिश करना
+            pubnub.publish({
+                channel: 'mega-unlimited-chat-room',
+                message: {
+                    sender: senderName,
+                    text: messageText,
+                    uuid: myUUID
+                }
+            });
+
+            // मैसेज भेजने के बाद इनपुट बॉक्स खाली करें
+            msgInput.value = '';
+        }
+
+        // एंटर दबाने पर भी मैसेज सेंड हो जाए, उसके लिए शॉर्टकट:
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+</html>
