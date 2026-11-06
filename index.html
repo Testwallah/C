@@ -20,13 +20,13 @@
         }
         .toon-font { font-family: 'Fredoka', sans-serif; }
 
-        /* Clean Modern Toon Neo-Brutalist Style */
-        .toon-box {
+        /* Crisp & Neat Toon Cards & Buttons */
+        .toon-card {
             border: 3px solid #000;
             box-shadow: 0 4px 0 #000;
-            border-radius: 20px;
+            border-radius: 22px;
         }
-        .toon-pill {
+        .toon-btn {
             border: 2.5px solid #000;
             box-shadow: 0 3px 0 #000;
             border-radius: 16px;
@@ -37,68 +37,29 @@
             align-items: center;
             justify-content: center;
         }
-        .toon-pill:active {
+        .toon-btn:active {
             transform: translateY(3px);
             box-shadow: 0 0px 0 #000;
         }
 
-        /* Clean Dot Pattern Chat Area */
-        .chat-wallpaper {
-            background-color: #FFFDF7;
-            background-image: radial-gradient(#e2e8f0 1.8px, transparent 1.8px);
-            background-size: 20px 20px;
+        /* Clean Chat Background */
+        .chat-bg {
+            background-color: #F8FAFC;
+            background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
+            background-size: 22px 22px;
         }
 
-        @keyframes msgPop {
-            0% { transform: scale(0.85) translateY(8px); opacity: 0; }
+        @keyframes popIn {
+            0% { transform: scale(0.9) translateY(6px); opacity: 0; }
             100% { transform: scale(1) translateY(0); opacity: 1; }
         }
-        .msg-anim { animation: msgPop 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .msg-pop { animation: popIn 0.16s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
-        @keyframes quake {
-            0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(-12px, 8px) rotate(-2deg); }
-            40% { transform: translate(12px, -8px) rotate(2deg); }
-            60% { transform: translate(-10px, -6px) rotate(-1deg); }
-            80% { transform: translate(10px, 6px) rotate(1deg); }
-        }
-        .quake-mode { animation: quake 0.5s ease-in-out 2; }
-
-        .flip-mode { transform: rotate(180deg); }
-
-        .vip-gold {
-            background: linear-gradient(135deg, #FFE066 0%, #F59E0B 100%) !important;
+        .vip-bubble {
+            background: linear-gradient(135deg, #FEF08A 0%, #F59E0B 100%) !important;
             color: #000 !important;
-            border: 3px solid #000 !important;
-            box-shadow: 0 4px 0 #000, 0 0 18px rgba(245, 158, 11, 0.6) !important;
-        }
-
-        .blur-secret {
-            filter: blur(6px);
-            transition: filter 0.25s ease;
-            cursor: pointer;
-            user-select: none;
-        }
-        .blur-secret.revealed {
-            filter: blur(0px);
-        }
-
-        /* Wallpaper Themes */
-        .theme-default { background-color: #FFFDF7; background-image: radial-gradient(#cbd5e1 1.8px, transparent 1.8px); background-size: 20px 20px; }
-        .theme-dark { background-color: #0f172a; background-image: radial-gradient(#334155 1.8px, transparent 1.8px); background-size: 20px 20px; }
-        .theme-pink { background-color: #fff1f2; background-image: radial-gradient(#fda4af 1.8px, transparent 1.8px); background-size: 20px 20px; }
-        .theme-matrix { background-color: #022c22; background-image: radial-gradient(#10b981 1.8px, transparent 1.8px); background-size: 20px 20px; }
-
-        @keyframes floatUp {
-            0% { transform: translateY(100dvh) scale(0.6) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-20vh) scale(1.4) rotate(25deg); opacity: 0; }
-        }
-        .emoji-float {
-            position: fixed;
-            bottom: -50px;
-            z-index: 60;
-            pointer-events: none;
-            animation: floatUp 2.8s ease-out forwards;
+            border: 2.5px solid #000 !important;
+            box-shadow: 0 3px 0 #000 !important;
         }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -106,408 +67,346 @@
 </head>
 <body class="flex justify-center items-center">
 
-    <!-- EMOJI RAIN LAYER -->
-    <div id="emoji-rain-box" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
-
-    <!-- FAKE HACKER / FREEZE OVERLAY -->
-    <div id="hack-overlay" class="fixed inset-0 bg-black/95 text-[#4ADE80] font-mono z-50 hidden flex-col items-center justify-center p-6 text-center">
-        <div class="text-6xl mb-3 animate-pulse">👾💻</div>
-        <h2 id="hack-title" class="text-2xl font-black mb-2">SYSTEM HACKED BY KANISQ!</h2>
-        <p id="hack-sub" class="text-xs text-emerald-300 max-w-xs mb-4">Downloading Secret Data... 99%</p>
-        <div class="w-56 h-4 border-2 border-[#4ADE80] rounded-full overflow-hidden p-0.5">
-            <div class="h-full bg-[#4ADE80] animate-pulse w-full rounded-full"></div>
+    <!-- FULLSCREEN ADMIN VOICE BROADCAST LOCK -->
+    <div id="lock-overlay" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center p-6 text-center">
+        <div class="w-20 h-20 rounded-3xl bg-[#FFDE59] border-4 border-white flex items-center justify-center text-4xl mb-4 animate-bounce">
+            👑
         </div>
-    </div>
-
-    <!-- FULLSCREEN HIJACK OVERLAY (KANISQ REAL SUPERPOWER) -->
-    <div id="hijack-overlay" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center p-6 text-center">
-        <div class="text-6xl mb-3 animate-bounce">👑⚡</div>
-        <div class="text-xs font-extrabold uppercase tracking-widest text-[#FFDE59] mb-1">SYSTEM BROADCAST</div>
-        <h1 id="hijack-text" class="toon-font text-3xl sm:text-4xl font-black text-white leading-tight break-words max-w-xs">
-            KANISQ IS HERE!
+        <span class="text-[11px] font-black uppercase tracking-widest text-[#FFDE59] mb-1">ADMIN LIVE ANNOUNCEMENT</span>
+        <h1 id="lock-msg" class="toon-font text-3xl font-black text-white max-w-xs leading-snug break-words">
+            SYSTEM LOCKED
         </h1>
-        <div id="hijack-timer" class="mt-6 bg-[#FF5757] text-white border-2 border-white px-4 py-1.5 rounded-full text-xs font-black">
-            Locked for 5s...
+        <div id="lock-timer" class="mt-6 bg-[#FF5757] text-white border-2 border-white px-5 py-1.5 rounded-full text-xs font-black">
+            5s...
         </div>
     </div>
 
-    <!-- ONE-TIME ENTRY MODAL (Asks Roll No Only Once) -->
-    <div id="login-screen" class="fixed inset-0 bg-[#FFDE59] z-40 flex items-center justify-center p-5">
-        <div class="toon-box bg-white w-full max-w-xs p-6 text-center">
+    <!-- ONE-TIME FAST ENTRY -->
+    <div id="login-modal" class="fixed inset-0 bg-[#FFDE59] z-40 flex items-center justify-center p-5">
+        <div class="toon-card bg-white w-full max-w-xs p-6 text-center">
             <div class="w-16 h-16 mx-auto mb-3 bg-[#38BDF8] border-[3px] border-black rounded-2xl flex items-center justify-center text-3xl shadow-[0_4px_0_#000]">
                 ⚡
             </div>
-            <h1 class="toon-font text-3xl font-black text-black tracking-tight">AiR 1 UP</h1>
+            <h1 class="toon-font text-3xl font-black text-black">AiR 1 UP</h1>
             <p class="text-xs font-bold text-slate-500 mt-1 mb-5">बस एक बार अपना Roll No डालें 👇</p>
-
-            <input type="text" id="roll-input" onkeypress="if(event.key==='Enter') enterApp()" class="w-full bg-slate-100 border-[3px] border-black rounded-2xl py-3 px-4 text-center text-xl font-black text-black placeholder-slate-400 outline-none mb-4" placeholder="Roll No..." autocomplete="off">
-
-            <button onclick="enterApp()" class="toon-pill w-full bg-[#4ADE80] text-black text-lg py-3">
-                चैट शुरू करें 🚀
+            <input type="text" id="roll-input" onkeypress="if(event.key==='Enter') startApp()" class="w-full bg-slate-100 border-[3px] border-black rounded-2xl py-3 px-4 text-center text-xl font-black text-black placeholder-slate-400 outline-none mb-4" placeholder="Roll No..." autocomplete="off">
+            <button onclick="startApp()" class="toon-btn w-full bg-[#4ADE80] text-black text-lg py-3">
+                शुरू करें 🚀
             </button>
         </div>
     </div>
 
-    <!-- MOBILE-FIRST APP SHELL (100% Fit on Phone, Max-W-MD on Desktop) -->
-    <div id="app-shell" class="w-full max-w-md h-[100dvh] bg-[#FFFDF7] flex flex-col relative overflow-hidden sm:border-x-4 sm:border-black transition-transform duration-500">
+    <!-- MAIN CLEAN APP CONTAINER -->
+    <div id="app-shell" class="w-full max-w-md h-[100dvh] bg-white flex flex-col relative overflow-hidden sm:border-x-4 sm:border-black">
 
-        <!-- 1. SUPER CLEAN HEADER (Only Name, Online Count & 2 Clean Buttons) -->
+        <!-- 1. ULTRA-CLEAN HEADER -->
         <header class="bg-[#FFDE59] border-b-[3px] border-black px-3.5 py-2.5 flex items-center justify-between shrink-0 z-10">
             <div class="flex items-center gap-2.5 min-w-0">
-                <button id="my-avatar-btn" onclick="openIdentityPrompt()" class="w-10 h-10 bg-white border-[2.5px] border-black rounded-xl flex items-center justify-center text-xl shadow-[0_3px_0_#000] shrink-0">
+                <button id="my-avatar-btn" onclick="openIdModal()" class="w-10 h-10 bg-white border-[2.5px] border-black rounded-xl flex items-center justify-center text-xl shadow-[0_3px_0_#000] shrink-0">
                     😎
                 </button>
                 <div class="truncate">
                     <div class="flex items-center gap-1.5">
-                        <h2 class="toon-font text-lg font-black text-black leading-none tracking-tight">AiR 1 UP</h2>
-                        <span class="inline-block w-2.5 h-2.5 bg-[#22C55E] border border-black rounded-full animate-pulse"></span>
+                        <h2 class="toon-font text-lg font-black text-black leading-none">AiR 1 UP</h2>
+                        <span class="w-2.5 h-2.5 bg-[#22C55E] border border-black rounded-full animate-pulse"></span>
                     </div>
                     <div class="flex items-center gap-1.5 mt-0.5">
-                        <span id="my-badge-name" onclick="openIdentityPrompt()" class="text-[11px] font-extrabold text-black bg-white/90 border border-black px-2 py-0.2 rounded-md cursor-pointer truncate max-w-[115px]">
+                        <span id="my-name-badge" onclick="openIdModal()" class="text-[11px] font-extrabold text-black bg-white border border-black px-2 py-0.2 rounded-md cursor-pointer truncate max-w-[125px]">
                             Star
                         </span>
-                        <span id="typing-indicator" class="text-[10px] font-extrabold text-rose-600 hidden animate-pulse">
-                            ✍️ कोई लिख रहा है...
+                        <span id="typing-text" class="text-[10px] font-extrabold text-rose-600 hidden animate-pulse">
+                            ✍️ लिख रहा है...
                         </span>
                     </div>
                 </div>
             </div>
 
+            <!-- Only Clean Essential Top Buttons -->
             <div class="flex items-center gap-1.5 shrink-0">
-                <button onclick="cycleWallpaper()" class="toon-pill bg-white text-black px-2.5 py-1.5 text-xs" title="Theme बदलें">
-                    🎨
+                <button onclick="openArtStudio()" class="toon-btn bg-white text-black px-3 py-1.5 text-xs gap-1">
+                    🎨 <span>Art</span>
                 </button>
-                <button onclick="toggleSheet('game')" class="toon-pill bg-[#38BDF8] text-black px-2.5 py-1.5 text-xs gap-1">
-                    🎮 <span>Game</span>
+                <button onclick="openGameModal()" class="toon-btn bg-[#38BDF8] text-black px-3 py-1.5 text-xs gap-1">
+                    🎮 <span>XO</span>
                 </button>
-                <button id="crown-btn" onclick="toggleSheet('god')" class="hidden toon-pill bg-[#FF5757] text-white px-2.5 py-1.5 text-xs gap-1 animate-bounce">
-                    👑 <span>Power</span>
+                <button id="admin-btn" onclick="openAdminModal()" class="hidden toon-btn bg-[#FF5757] text-white px-2.5 py-1.5 text-xs gap-1">
+                    👑 <span>Admin</span>
                 </button>
             </div>
         </header>
 
-        <!-- PINNED / LIVE DJ NOTICE BANNER -->
-        <div id="top-notice" class="hidden bg-[#1E1B4B] text-[#FFDE59] border-b-[3px] border-black px-3.5 py-1.5 text-xs font-extrabold flex items-center justify-between shrink-0 z-10">
-            <span id="top-notice-text" class="truncate">📌 Notice</span>
-            <button onclick="document.getElementById('top-notice').classList.add('hidden')" class="bg-[#FF5757] text-white border border-black px-2 py-0.2 rounded text-[10px] ml-2">✕</button>
+        <!-- PINNED MESSAGE BAR -->
+        <div id="pin-banner" class="hidden bg-[#1E293B] text-[#FFDE59] border-b-[2.5px] border-black px-3.5 py-1.5 text-xs font-bold flex items-center justify-between shrink-0">
+            <span id="pin-text" class="truncate">📌 Pinned</span>
+            <button onclick="clearPinBanner()" class="text-white bg-white/10 px-2 py-0.5 rounded text-[10px] ml-2">✕</button>
         </div>
 
-        <!-- 2. MAIN CHAT AREA (85% Clean Space) -->
-        <main id="chat-box" class="flex-1 overflow-y-auto p-3.5 flex flex-col gap-3 theme-default no-scrollbar">
-            <div class="self-center bg-white border-2 border-black shadow-[0_2px_0_#000] px-3.5 py-1 rounded-full text-[11px] font-extrabold text-slate-700 text-center">
-                ⚡ <b>AiR 1 UP</b> Live Room • मैसेज दबाए रखें (Hold) = Edit/Delete
+        <!-- 2. SPACIOUS NEAT CHAT STREAM -->
+        <main id="chat-box" class="flex-1 overflow-y-auto p-3.5 flex flex-col gap-3 chat-bg no-scrollbar">
+            <div class="self-center bg-white border-2 border-black shadow-[0_2px_0_#000] px-3.5 py-1 rounded-full text-[11px] font-extrabold text-slate-600 text-center">
+                ⚡ सुपरफास्ट क्लीन चैट • मैसेज दबाए रखें (Hold) = Edit / Delete
             </div>
         </main>
 
-        <!-- REPLY BAR (Only shows when replying or editing) -->
-        <div id="reply-box" class="hidden bg-[#E0F2FE] border-t-2 border-black px-3.5 py-1.5 text-xs font-bold flex items-center justify-between shrink-0">
-            <span id="reply-label" class="truncate text-black">↩️ Replying...</span>
-            <button onclick="clearReply()" class="bg-black text-white px-2 py-0.5 rounded text-[10px]">✕</button>
+        <!-- REPLY OR EDIT STATUS BAR -->
+        <div id="context-bar" class="hidden bg-[#E0F2FE] border-t-2 border-black px-3.5 py-1.5 text-xs font-bold flex items-center justify-between shrink-0">
+            <span id="context-label" class="truncate text-black">↩️ Replying...</span>
+            <button onclick="resetContextBar()" class="bg-black text-white px-2 py-0.5 rounded text-[10px]">✕</button>
         </div>
 
-        <!-- 3. CLEAN BOTTOM INPUT BAR (Just [➕] [🎙️] [Input] [🚀]) -->
+        <!-- 3. CLEAN FAST FOOTER ([🎨 Draw] [💨/➕] [Input] [🚀]) -->
         <footer class="bg-white border-t-[3px] border-black p-2 flex items-center gap-1.5 shrink-0 z-10">
-            <button onclick="toggleSheet('tools')" class="toon-pill bg-[#FFDE59] text-black w-10 h-11 text-lg shrink-0" title="All Features">
-                ➕
+            <button onclick="openArtStudio()" class="toon-btn bg-[#FFDE59] text-black w-10 h-11 text-lg shrink-0" title="Pro Art Studio">
+                🎨
             </button>
-            <button id="mic-btn" onclick="startVoiceTyping()" class="toon-pill bg-[#FCE7F3] text-black w-10 h-11 text-base shrink-0" title="बोलकर लिखें">
-                🎙️
+            <button onclick="toggleQuickTray()" class="toon-btn bg-[#F1F5F9] text-black w-10 h-11 text-base shrink-0" title="Quick Sounds & Mic">
+                ⚡
             </button>
-            <input type="text" id="msg-input" oninput="sendTypingSignal()" onkeypress="if(event.key==='Enter') sendChat()" class="flex-1 min-w-0 bg-slate-100 border-[2.5px] border-black rounded-2xl px-3 py-2.5 text-sm font-bold text-black placeholder-slate-400 outline-none user-select-text" placeholder="मैसेज लिखें... (Hold=Menu)" autocomplete="off">
-            <button id="send-btn" onclick="sendChat()" class="toon-pill bg-[#4ADE80] text-black w-11 h-11 text-lg shrink-0">
+            <input type="text" id="msg-input" oninput="emitTyping()" onkeypress="if(event.key==='Enter') sendChat()" class="flex-1 min-w-0 bg-slate-100 border-[2.5px] border-black rounded-2xl px-3.5 py-2.5 text-sm font-bold text-black placeholder-slate-400 outline-none user-select-text" placeholder="मैसेज लिखें..." autocomplete="off">
+            <button id="send-btn" onclick="sendChat()" class="toon-btn bg-[#4ADE80] text-black w-11 h-11 text-lg shrink-0">
                 🚀
             </button>
         </footer>
 
+        <!-- COMPACT QUICK TRAY (Fart, Horn, Dice, Voice Mic) -->
+        <div id="quick-tray" class="hidden bg-white border-t-[3px] border-black px-3 py-2.5 flex items-center justify-between gap-2 shrink-0">
+            <button onclick="sendQuickCard('💨 पाद बम अटैक! नाक बंद करो भाई! 😂💨', 'fart')" class="toon-btn bg-[#BEF264] text-black px-3 py-2 text-xs flex-1 gap-1">
+                💨 <span>Fart बम</span>
+            </button>
+            <button onclick="rollLiveDice()" class="toon-btn bg-[#E0F2FE] text-black px-3 py-2 text-xs flex-1 gap-1">
+                🎲 <span>पासा</span>
+            </button>
+            <button onclick="sendQuickCard('🔥 सिस्टम हैंग! 🔥', 'horn')" class="toon-btn bg-[#FFEDD5] text-black px-3 py-2 text-xs flex-1 gap-1">
+                📢 <span>हॉर्न</span>
+            </button>
+            <button id="mic-btn" onclick="triggerVoiceInput()" class="toon-btn bg-[#FCE7F3] text-black px-3 py-2 text-xs flex-1 gap-1">
+                🎙️ <span>बोलें</span>
+            </button>
+        </div>
+
         <!-- ======================================================= -->
-        <!-- MESSAGE HOLD / LONG-PRESS ACTION MODAL (Edit/Delete/Copy)-->
+        <!-- 🎨 ADVANCED PRO ART STUDIO (Neon, Rainbow, Stamps, Undo)-->
         <!-- ======================================================= -->
-        <div id="msg-menu-modal" class="fixed inset-0 bg-black/60 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeMsgMenu()">
-            <div class="toon-box bg-white w-full max-w-xs p-4 text-center animate-[msgPop_0.15s_ease-out]">
-                <div class="text-xs font-extrabold text-slate-400 mb-1">MESSAGE OPTIONS</div>
-                <div id="menu-msg-preview" class="text-xs font-bold text-black bg-slate-100 border-2 border-black rounded-xl p-2 mb-3 truncate">
-                    ...
+        <div id="art-modal" class="fixed inset-0 bg-black/80 z-40 hidden items-center justify-center p-3">
+            <div class="toon-card bg-white w-full max-w-sm p-3.5 flex flex-col gap-2.5 animate-[popIn_0.15s_ease-out]">
+                <!-- Studio Header -->
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center gap-1.5">
+                        <span class="toon-font font-black text-base">🎨 Pro Art Studio</span>
+                        <span id="brush-mode-tag" class="text-[10px] font-extrabold bg-[#FFDE59] border border-black px-2 py-0.5 rounded-full">Pen</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="undoArt()" class="toon-btn bg-slate-100 px-2.5 py-1 text-xs" title="Undo">↩️ Undo</button>
+                        <button onclick="clearArtCanvas()" class="toon-btn bg-slate-100 px-2.5 py-1 text-xs" title="Clear">🗑️</button>
+                        <button onclick="closeArtStudio()" class="toon-btn bg-[#FF5757] text-white px-2.5 py-1 text-xs">✕</button>
+                    </div>
                 </div>
-                <!-- Quick Emoji Bar inside Hold Menu -->
+
+                <!-- Interactive High-Res Canvas -->
+                <div class="relative mx-auto w-full flex justify-center">
+                    <canvas id="art-canvas" width="320" height="250" class="border-[3px] border-black rounded-2xl bg-white touch-none shadow-inner cursor-crosshair"></canvas>
+                </div>
+
+                <!-- Brush Modes: Normal, Neon Glow, Rainbow, Eraser, Dark Bg -->
+                <div class="grid grid-cols-5 gap-1.5 text-[11px]">
+                    <button onclick="setBrushMode('pen')" id="bm-pen" class="toon-btn bg-[#FFDE59] py-1.5">✏️ Pen</button>
+                    <button onclick="setBrushMode('neon')" id="bm-neon" class="toon-btn bg-white py-1.5">✨ Neon</button>
+                    <button onclick="setBrushMode('rainbow')" id="bm-rainbow" class="toon-btn bg-white py-1.5">🌈 Magic</button>
+                    <button onclick="setBrushMode('eraser')" id="bm-eraser" class="toon-btn bg-white py-1.5">🧽 मिटाएं</button>
+                    <button onclick="toggleCanvasBg()" class="toon-btn bg-slate-900 text-white py-1.5">🌗 बोर्ड</button>
+                </div>
+
+                <!-- Color Swatches & Brush Size Slider -->
+                <div class="flex items-center justify-between gap-2 bg-slate-100 border-2 border-black rounded-xl px-2.5 py-1.5">
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="pickColor('#000000')" class="w-6 h-6 rounded-full bg-black border-2 border-white shadow"></button>
+                        <button onclick="pickColor('#EF4444')" class="w-6 h-6 rounded-full bg-red-500 border-2 border-black"></button>
+                        <button onclick="pickColor('#3B82F6')" class="w-6 h-6 rounded-full bg-blue-500 border-2 border-black"></button>
+                        <button onclick="pickColor('#10B981')" class="w-6 h-6 rounded-full bg-emerald-500 border-2 border-black"></button>
+                        <button onclick="pickColor('#F59E0B')" class="w-6 h-6 rounded-full bg-amber-400 border-2 border-black"></button>
+                        <button onclick="pickColor('#EC4899')" class="w-6 h-6 rounded-full bg-pink-500 border-2 border-black"></button>
+                    </div>
+                    <input type="range" id="brush-size" min="2" max="18" value="5" class="w-20 accent-black">
+                </div>
+
+                <!-- 1-Tap Stickers / Stamps on Canvas + Caption Input -->
+                <div class="flex items-center justify-between gap-1 text-base bg-[#FFFBEB] border-2 border-black rounded-xl px-2.5 py-1">
+                    <span class="text-[10px] font-black text-slate-500">Stamps:</span>
+                    <button onclick="placeStamp('😂')" class="hover:scale-125 transition">😂</button>
+                    <button onclick="placeStamp('🔥')" class="hover:scale-125 transition">🔥</button>
+                    <button onclick="placeStamp('❤️')" class="hover:scale-125 transition">❤️</button>
+                    <button onclick="placeStamp('👑')" class="hover:scale-125 transition">👑</button>
+                    <button onclick="placeStamp('💨')" class="hover:scale-125 transition">💨</button>
+                    <button onclick="placeStamp('💯')" class="hover:scale-125 transition">💯</button>
+                </div>
+
+                <div class="flex gap-2">
+                    <input type="text" id="art-caption" class="flex-1 bg-slate-100 border-2 border-black rounded-xl px-3 py-2 text-xs font-bold outline-none" placeholder="अपनी ड्राइंग के साथ कुछ लिखें...">
+                    <button onclick="sendArtMasterpiece()" class="toon-btn bg-[#4ADE80] text-black px-4 py-2 text-xs shrink-0">
+                        चैट में भेजें 🚀
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================================================= -->
+        <!-- 👆 MESSAGE HOLD MENU (Edit, Delete, Copy, Pin, React)   -->
+        <!-- ======================================================= -->
+        <div id="hold-modal" class="fixed inset-0 bg-black/60 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeHoldMenu()">
+            <div class="toon-card bg-white w-full max-w-xs p-4 text-center animate-[popIn_0.15s_ease-out]">
+                <div id="hold-preview" class="text-xs font-bold text-black bg-slate-100 border-2 border-black rounded-xl p-2 mb-3 truncate">
+                    Message
+                </div>
                 <div class="flex justify-around bg-[#FFFBEB] border-2 border-black rounded-xl py-1.5 px-2 mb-3 text-lg">
-                    <button onclick="quickMenuReact('❤️')" class="hover:scale-125 transition">❤️</button>
-                    <button onclick="quickMenuReact('😂')" class="hover:scale-125 transition">😂</button>
-                    <button onclick="quickMenuReact('🔥')" class="hover:scale-125 transition">🔥</button>
-                    <button onclick="quickMenuReact('💨')" class="hover:scale-125 transition">💨</button>
-                    <button onclick="quickMenuReact('👑')" class="hover:scale-125 transition">👑</button>
-                    <button onclick="quickMenuReact('💯')" class="hover:scale-125 transition">💯</button>
+                    <button onclick="reactFromHold('❤️')">❤️</button>
+                    <button onclick="reactFromHold('😂')">😂</button>
+                    <button onclick="reactFromHold('🔥')">🔥</button>
+                    <button onclick="reactFromHold('💨')">💨</button>
+                    <button onclick="reactFromHold('👑')">👑</button>
+                    <button onclick="reactFromHold('💯')">💯</button>
                 </div>
                 <div class="grid grid-cols-2 gap-2 text-xs">
-                    <button onclick="menuAction('reply')" class="toon-pill bg-[#E0F2FE] text-black py-2.5 gap-1">↩️ Reply</button>
-                    <button onclick="menuAction('copy')" class="toon-pill bg-[#FEF08A] text-black py-2.5 gap-1">📋 Copy</button>
-                    <button id="btn-menu-edit" onclick="menuAction('edit')" class="toon-pill bg-[#DCFCE7] text-black py-2.5 gap-1">✏️ Edit करें</button>
-                    <button id="btn-menu-del" onclick="menuAction('delete')" class="toon-pill bg-[#FF5757] text-white py-2.5 gap-1">🗑️ Delete सबमें</button>
-                    <button onclick="menuAction('pin')" class="toon-pill bg-[#F3E8FF] text-black py-2.5 gap-1">📌 Pin ऊपर</button>
-                    <button onclick="menuAction('speak')" class="toon-pill bg-[#FFEDD5] text-black py-2.5 gap-1">🔊 सुनें (Voice)</button>
-                </div>
-                <button onclick="closeMsgMenu()" class="toon-pill w-full bg-slate-200 text-black py-2 mt-2.5 text-xs">बंद करें ✕</button>
-            </div>
-        </div>
-
-        <!-- ======================================================= -->
-        <!-- SLIDE-UP SHEET 1: ➕ ACTION HUB (Clean & Useful)        -->
-        <!-- ======================================================= -->
-        <div id="sheet-tools" class="fixed inset-0 bg-black/60 z-30 hidden flex-col justify-end" onclick="if(event.target===this) closeAllSheets()">
-            <div class="bg-white border-t-4 border-black rounded-t-3xl p-4 w-full max-w-md mx-auto animate-[msgPop_0.15s_ease-out]">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="toon-font text-base font-black">⚡ सुपर फीचर्स चुनें</span>
-                    <button onclick="closeAllSheets()" class="toon-pill bg-slate-200 px-2.5 py-0.5 text-xs">✕</button>
-                </div>
-
-                <!-- 9 Most Useful & Fun Actions -->
-                <div class="grid grid-cols-3 gap-2 mb-3">
-                    <button onclick="openSketchModal()" class="toon-pill bg-[#E0F2FE] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">🎨</span><span>Draw भेजें</span>
-                    </button>
-                    <button onclick="sendSoundSticker('💨 पाद बम अटैक! नाक बंद करो भाई! 🤢💨', 'fart')" class="toon-pill bg-[#BEF264] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">💨</span><span>Fart साउंड बम</span>
-                    </button>
-                    <button onclick="toggleLiveDJ()" id="dj-btn" class="toon-pill bg-[#FEF08A] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">🎵</span><span>Live DJ Beat</span>
-                    </button>
-                    <button onclick="fireInteractiveCard('dice')" class="toon-pill bg-[#DCFCE7] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">🎲</span><span>Live लूडो पासा</span>
-                    </button>
-                    <button onclick="fireInteractiveCard('gift')" class="toon-pill bg-[#FFE4E6] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">🎁</span><span>Mystery गिफ्ट</span>
-                    </button>
-                    <button onclick="fireInteractiveCard('poll')" class="toon-pill bg-[#F3E8FF] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">📊</span><span>Yes/No वोटिंग</span>
-                    </button>
-                    <button onclick="fireInteractiveCard('truth')" class="toon-pill bg-[#FCE7F3] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">🍾</span><span>Truth / Dare</span>
-                    </button>
-                    <button onclick="toggleSecretFlag()" id="secret-toggle-btn" class="toon-pill bg-[#E0E7FF] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">🕵️</span><span id="secret-label">छुपा मैसेज (Blur)</span>
-                    </button>
-                    <button onclick="toggleBombFlag()" id="bomb-toggle-btn" class="toon-pill bg-[#FFEDD5] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">💣</span><span id="bomb-label">5s गायब मैसेज</span>
-                    </button>
-                    <button onclick="fireInteractiveCard('scratch')" class="toon-pill bg-[#FEF9C3] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">🎫</span><span>Scratch लॉटरी</span>
-                    </button>
-                    <button onclick="fireEmojiRain('🔥❤️😂💎🚀')" class="toon-pill bg-[#D1FAE5] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">🌧️</span><span>Emoji बारिश</span>
-                    </button>
-                    <button onclick="toggleBigTextFlag()" id="big-toggle-btn" class="toon-pill bg-[#F3E8FF] text-black py-2.5 flex-col gap-0.5 text-xs">
-                        <span class="text-xl">📢</span><span id="big-label">2x बड़ा अक्षर</span>
-                    </button>
-                </div>
-
-                <!-- Walkie-Talkie Instant Voice Broadcast Bar -->
-                <div class="bg-slate-100 border-2 border-black rounded-2xl p-2 mb-2.5 flex items-center gap-1.5">
-                    <span class="text-base">📻</span>
-                    <input type="text" id="walkie-input" class="flex-1 bg-white border-2 border-black rounded-xl px-2.5 py-1.5 text-xs font-bold text-black outline-none" placeholder="Walkie-Talkie: सबके स्पीकर में बोलें...">
-                    <button onclick="sendWalkieVoice()" class="toon-pill bg-[#38BDF8] text-black px-3 py-1.5 text-xs shrink-0">🔊 बोलो</button>
-                </div>
-
-                <!-- Quick Sound Stickers Row -->
-                <div class="flex gap-2 overflow-x-auto no-scrollbar pt-1">
-                    <button onclick="sendSoundSticker('💨 पूंऊंऊं... किसने छोड़ा भाई?! 🤢😂', 'fart')" class="toon-pill bg-[#BEF264] text-black px-3 py-1.5 text-xs shrink-0">💨 Fart Prank</button>
-                    <button onclick="sendSoundSticker('🔥 सिस्टम हैंग कर दिया! 🔥', 'horn')" class="toon-pill bg-[#FF914D] text-black px-3 py-1.5 text-xs shrink-0">📢 सिस्टम हैंग</button>
-                    <button onclick="sendSoundSticker('😂 भाई गजब बेइज्जती है! 😂', 'laugh')" class="toon-pill bg-[#FFDE59] text-black px-3 py-1.5 text-xs shrink-0">😂 गजब बेइज्जती</button>
-                    <button onclick="sendSoundSticker('💎 100% VIP ENTRY 💎', 'laser')" class="toon-pill bg-[#C084FC] text-black px-3 py-1.5 text-xs shrink-0">💎 VIP Entry</button>
-                    <button onclick="sendSoundSticker('🚨 पुलिस सायरन! भागो भाई! 🚨', 'siren')" class="toon-pill bg-[#FF5757] text-white px-3 py-1.5 text-xs shrink-0">🚨 Siren</button>
-                    <button onclick="sendSoundSticker('🇮🇳 जय हिन्द! AiR 1 UP 🇮🇳', 'horn')" class="toon-pill bg-[#4ADE80] text-black px-3 py-1.5 text-xs shrink-0">🇮🇳 जय हिन्द</button>
+                    <button onclick="execHoldAction('reply')" class="toon-btn bg-[#E0F2FE] text-black py-2.5">↩️ Reply</button>
+                    <button onclick="execHoldAction('copy')" class="toon-btn bg-[#FEF08A] text-black py-2.5">📋 Copy</button>
+                    <button id="hold-edit-btn" onclick="execHoldAction('edit')" class="toon-btn bg-[#DCFCE7] text-black py-2.5">✏️ Edit करें</button>
+                    <button id="hold-del-btn" onclick="execHoldAction('delete')" class="toon-btn bg-[#FF5757] text-white py-2.5">🗑️ Delete सबमें</button>
+                    <button onclick="execHoldAction('pin')" class="toon-btn bg-[#F3E8FF] text-black py-2.5">📌 Pin ऊपर</button>
+                    <button onclick="execHoldAction('speak')" class="toon-btn bg-[#FFEDD5] text-black py-2.5">🔊 Voice सुनें</button>
                 </div>
             </div>
         </div>
 
         <!-- ======================================================= -->
-        <!-- SLIDE-UP SHEET 2: 🎮 LIVE GAMES (XO & Cricket Battle)   -->
+        <!-- 👑 KANISQ REAL ADMIN CONTROL PANEL                      -->
         <!-- ======================================================= -->
-        <div id="sheet-game" class="fixed inset-0 bg-black/60 z-30 hidden flex-col justify-end" onclick="if(event.target===this) closeAllSheets()">
-            <div class="bg-[#FFFBEB] border-t-4 border-black rounded-t-3xl p-4 w-full max-w-md mx-auto">
+        <div id="admin-modal" class="fixed inset-0 bg-black/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeAdminModal()">
+            <div class="toon-card bg-[#1E293B] text-white w-full max-w-sm p-4 animate-[popIn_0.15s_ease-out]">
                 <div class="flex justify-between items-center mb-3">
-                    <div class="flex gap-2">
-                        <button onclick="switchGame('xo')" id="tab-xo" class="toon-pill bg-[#FFDE59] px-3 py-1 text-xs">❌⭕ Live XO</button>
-                        <button onclick="switchGame('cric')" id="tab-cric" class="toon-pill bg-white px-3 py-1 text-xs">🏏 Super Over</button>
-                    </div>
-                    <button onclick="closeAllSheets()" class="toon-pill bg-[#FF5757] text-white px-2.5 py-1 text-xs">✕</button>
+                    <span class="toon-font text-base font-black text-[#FFDE59]">👑 KANISQ REAL ADMIN PANEL</span>
+                    <button onclick="closeAdminModal()" class="toon-btn bg-[#FF5757] text-white px-2.5 py-0.5 text-xs">✕</button>
                 </div>
 
-                <!-- XO Board -->
-                <div id="panel-xo" class="text-center">
-                    <div class="flex justify-between items-center mb-2 px-2">
-                        <span id="xo-turn-label" class="text-xs font-black bg-white border-2 border-black px-2.5 py-1 rounded-xl">Turn: ❌</span>
-                        <button onclick="resetXO(true)" class="toon-pill bg-[#4ADE80] px-3 py-1 text-xs">🔄 New Game</button>
-                    </div>
-                    <div class="grid grid-cols-3 gap-2 max-w-[220px] mx-auto my-2">
-                        <button onclick="tapXO(0)" id="cell-0" class="toon-pill bg-white h-16 text-2xl"></button>
-                        <button onclick="tapXO(1)" id="cell-1" class="toon-pill bg-white h-16 text-2xl"></button>
-                        <button onclick="tapXO(2)" id="cell-2" class="toon-pill bg-white h-16 text-2xl"></button>
-                        <button onclick="tapXO(3)" id="cell-3" class="toon-pill bg-white h-16 text-2xl"></button>
-                        <button onclick="tapXO(4)" id="cell-4" class="toon-pill bg-white h-16 text-2xl"></button>
-                        <button onclick="tapXO(5)" id="cell-5" class="toon-pill bg-white h-16 text-2xl"></button>
-                        <button onclick="tapXO(6)" id="cell-6" class="toon-pill bg-white h-16 text-2xl"></button>
-                        <button onclick="tapXO(7)" id="cell-7" class="toon-pill bg-white h-16 text-2xl"></button>
-                        <button onclick="tapXO(8)" id="cell-8" class="toon-pill bg-white h-16 text-2xl"></button>
-                    </div>
-                </div>
-
-                <!-- Super Over Cricket -->
-                <div id="panel-cric" class="hidden text-center py-2">
-                    <div class="toon-box bg-white p-3 mb-3 flex justify-between items-center">
-                        <div class="text-left">
-                            <div class="text-[10px] font-bold text-slate-500">YOUR SCORE</div>
-                            <div id="cric-runs" class="toon-font text-2xl font-black text-emerald-600">0 Runs</div>
-                        </div>
-                        <div id="cric-commentary" class="text-xs font-extrabold bg-[#FFDE59] border-2 border-black px-2.5 py-1 rounded-xl">
-                            बैट घुमाओ! 🏏
-                        </div>
-                        <button onclick="postCricketScore()" class="toon-pill bg-[#38BDF8] px-3 py-1.5 text-xs">🏆 चैट में भेजें</button>
-                    </div>
-                    <div class="grid grid-cols-5 gap-2">
-                        <button onclick="batShot(1)" class="toon-pill bg-white py-3 text-base">1</button>
-                        <button onclick="batShot(2)" class="toon-pill bg-white py-3 text-base">2</button>
-                        <button onclick="batShot(3)" class="toon-pill bg-white py-3 text-base">3</button>
-                        <button onclick="batShot(4)" class="toon-pill bg-[#38BDF8] py-3 text-base">4 🔥</button>
-                        <button onclick="batShot(6)" class="toon-pill bg-[#FF914D] py-3 text-base">6 🚀</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ======================================================= -->
-        <!-- SLIDE-UP SHEET 3: 👑 KANISQ REAL SUPERPOWERS            -->
-        <!-- ======================================================= -->
-        <div id="sheet-god" class="fixed inset-0 bg-black/75 z-30 hidden flex-col justify-end" onclick="if(event.target===this) closeAllSheets()">
-            <div class="bg-[#1E1B4B] text-white border-t-4 border-black rounded-t-3xl p-4 w-full max-w-md mx-auto">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="toon-font text-base font-black text-[#FFDE59]">👑 KANISQ SUPREME CONTROL</span>
-                    <button onclick="closeAllSheets()" class="toon-pill bg-[#FF5757] text-white px-2.5 py-0.5 text-xs">✕</button>
-                </div>
-
-                <!-- Power 1: Full Screen Hijack + Voice Speak on everyone's phone -->
+                <!-- 1. Real User Moderation: Mute / Unmute or Force Rename anyone -->
                 <div class="bg-white/10 border-2 border-black rounded-2xl p-2.5 mb-2.5">
-                    <label class="text-[11px] font-extrabold text-[#FFDE59] block mb-1">
-                        📢 1. सबकी स्क्रीन लॉक करें + सबके फोन में बुलवाएं (Voice):
-                    </label>
-                    <div class="flex gap-1.5">
-                        <input type="text" id="god-hijack-input" class="flex-1 bg-white text-black font-bold text-xs px-3 py-2 rounded-xl border-2 border-black outline-none" placeholder="जैसे: Kanisq भैया आ गए हैं!">
-                        <button onclick="fireGodHijack()" class="toon-pill bg-[#FF5757] text-white px-3 py-2 text-xs shrink-0">🔥 Lock & बोलें</button>
-                    </div>
-                </div>
-
-                <!-- Power 2: Fake / Puppet Message as Chiko or Vikalp or Anyone -->
-                <div class="bg-white/10 border-2 border-black rounded-2xl p-2.5 mb-3">
-                    <label class="text-[11px] font-extrabold text-[#38BDF8] block mb-1">
-                        🎭 2. किसी दूसरे के नाम से मैसेज भेजें (Puppet Mode):
+                    <label class="text-[11px] font-extrabold text-[#38BDF8] block mb-1.5">
+                        🛡️ 1. किसी को भी Mute करें या उसका नाम बदलें:
                     </label>
                     <div class="flex gap-1.5 mb-1.5">
-                        <input type="text" id="puppet-name" class="w-1/3 bg-white text-black font-bold text-xs px-2.5 py-2 rounded-xl border-2 border-black outline-none" value="Chiko 🥰" placeholder="किसका नाम?">
-                        <input type="text" id="puppet-msg" class="flex-1 bg-white text-black font-bold text-xs px-2.5 py-2 rounded-xl border-2 border-black outline-none" placeholder="क्या बुलवाना है?">
-                        <button onclick="firePuppetMessage()" class="toon-pill bg-[#4ADE80] text-black px-3 py-2 text-xs shrink-0">Send 🎭</button>
+                        <input type="text" id="mod-target" class="w-1/2 bg-white text-black font-bold text-xs px-2.5 py-2 rounded-xl border-2 border-black outline-none" value="Chiko 🥰" placeholder="किसका नाम?">
+                        <input type="text" id="mod-newname" class="w-1/2 bg-white text-black font-bold text-xs px-2.5 py-2 rounded-xl border-2 border-black outline-none" placeholder="नया नाम (Rename)...">
                     </div>
-                    <div class="flex gap-1 text-[10px]">
-                        <button onclick="document.getElementById('puppet-name').value='Chiko 🥰'" class="bg-white/20 px-2 py-0.5 rounded">Chiko 🥰 चुनें</button>
-                        <button onclick="document.getElementById('puppet-name').value='Vikalp 🔥'" class="bg-white/20 px-2 py-0.5 rounded">Vikalp 🔥 चुनें</button>
+                    <div class="flex gap-1.5 text-xs">
+                        <button onclick="adminToggleMuteUser()" class="toon-btn flex-1 bg-[#FF5757] text-white py-1.5">🔇 Mute / Unmute</button>
+                        <button onclick="adminRenameUser()" class="toon-btn flex-1 bg-[#FFDE59] text-black py-1.5">🏷️ नाम बदलें</button>
+                    </div>
+                    <div class="flex gap-1.5 mt-1.5 text-[10px]">
+                        <button onclick="document.getElementById('mod-target').value='Chiko 🥰'" class="bg-white/20 px-2 py-0.5 rounded">Chiko 🥰</button>
+                        <button onclick="document.getElementById('mod-target').value='Vikalp 🔥'" class="bg-white/20 px-2 py-0.5 rounded">Vikalp 🔥</button>
                     </div>
                 </div>
 
-                <!-- Instant 1-Tap Room Powers -->
-                <div class="grid grid-cols-4 gap-1.5">
-                    <button onclick="fireRoomEffect('fart_attack')" class="toon-pill bg-[#BEF264] text-black py-2 flex-col text-[10px]">
-                        <span class="text-lg">💨</span><span>सबमें Fart</span>
-                    </button>
-                    <button onclick="fireRoomEffect('hack')" class="toon-pill bg-[#10B981] text-black py-2 flex-col text-[10px]">
-                        <span class="text-lg">👾</span><span>Fake Hack</span>
-                    </button>
-                    <button onclick="fireRoomEffect('freeze')" class="toon-pill bg-[#BAE6FD] text-black py-2 flex-col text-[10px]">
-                        <span class="text-lg">🥶</span><span>Ice Freeze</span>
-                    </button>
-                    <button onclick="fireRoomEffect('siren_all')" class="toon-pill bg-[#F43F5E] text-white py-2 flex-col text-[10px]">
-                        <span class="text-lg">🚨</span><span>सबमें सायरन</span>
-                    </button>
-                    <button onclick="fireRoomEffect('quake')" class="toon-pill bg-[#FF914D] text-black py-2 flex-col text-[10px]">
-                        <span class="text-lg">🌋</span><span>भूकंप</span>
-                    </button>
-                    <button onclick="fireRoomEffect('flip')" class="toon-pill bg-[#38BDF8] text-black py-2 flex-col text-[10px]">
-                        <span class="text-lg">🙃</span><span>उल्टी स्क्रीन</span>
-                    </button>
-                    <button onclick="fireRoomEffect('party')" class="toon-pill bg-[#4ADE80] text-black py-2 flex-col text-[10px]">
-                        <span class="text-lg">🎉</span><span>Party Rain</span>
-                    </button>
-                    <button onclick="fireRoomEffect('wipe')" class="toon-pill bg-[#FF5757] text-white py-2 flex-col text-[10px]">
-                        <span class="text-lg">🧹</span><span>चैट साफ</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- ======================================================= -->
-        <!-- SKETCH MODAL & SECRET ROLL SWITCHER                     -->
-        <!-- ======================================================= -->
-        <div id="sketch-modal" class="fixed inset-0 bg-black/75 z-40 hidden items-center justify-center p-4">
-            <div class="toon-box bg-white w-full max-w-xs p-4 text-center">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="toon-font font-black text-sm">🎨 Live Sketch</span>
-                    <button onclick="closeSketchModal()" class="toon-pill bg-[#FF5757] text-white px-2.5 py-0.5 text-xs">✕</button>
-                </div>
-                <canvas id="sketch-pad" width="260" height="210" class="border-[3px] border-black rounded-2xl bg-slate-50 mx-auto touch-none"></canvas>
-                <div class="flex justify-between items-center mt-3">
+                <!-- 2. Puppet Message (Send message as anyone) -->
+                <div class="bg-white/10 border-2 border-black rounded-2xl p-2.5 mb-2.5">
+                    <label class="text-[11px] font-extrabold text-[#4ADE80] block mb-1">
+                        🎭 2. किसी दूसरे के नाम से मैसेज भेजें (Puppet):
+                    </label>
                     <div class="flex gap-1.5">
-                        <button onclick="penCol='#000'" class="w-6 h-6 rounded-full bg-black border-2 border-black"></button>
-                        <button onclick="penCol='#EF4444'" class="w-6 h-6 rounded-full bg-red-500 border-2 border-black"></button>
-                        <button onclick="penCol='#3B82F6'" class="w-6 h-6 rounded-full bg-blue-500 border-2 border-black"></button>
+                        <input type="text" id="puppet-who" class="w-1/3 bg-white text-black font-bold text-xs px-2 py-2 rounded-xl border-2 border-black outline-none" value="Chiko 🥰">
+                        <input type="text" id="puppet-text" class="flex-1 bg-white text-black font-bold text-xs px-2.5 py-2 rounded-xl border-2 border-black outline-none" placeholder="मैसेज लिखें...">
+                        <button onclick="adminSendPuppet()" class="toon-btn bg-[#4ADE80] text-black px-3 py-2 text-xs">Send</button>
                     </div>
-                    <button onclick="clearSketch()" class="toon-pill bg-slate-200 px-3 py-1 text-xs">साफ करें</button>
-                    <button onclick="sendSketch()" class="toon-pill bg-[#4ADE80] px-3.5 py-1 text-xs">भेजें 🚀</button>
+                </div>
+
+                <!-- 3. Screen Lock + Voice Speak on All Phones -->
+                <div class="bg-white/10 border-2 border-black rounded-2xl p-2.5 mb-3">
+                    <label class="text-[11px] font-extrabold text-[#FFDE59] block mb-1">
+                        📢 3. सबकी स्क्रीन लॉक + सबके स्पीकर में बोलें:
+                    </label>
+                    <div class="flex gap-1.5">
+                        <input type="text" id="lock-input" class="flex-1 bg-white text-black font-bold text-xs px-2.5 py-2 rounded-xl border-2 border-black outline-none" placeholder="जैसे: Kanisq Admin आ गए हैं!">
+                        <button onclick="adminFireLock()" class="toon-btn bg-[#FF914D] text-black px-3 py-2 text-xs">Lock 🔊</button>
+                    </div>
+                </div>
+
+                <!-- 4. Room Controls -->
+                <div class="grid grid-cols-3 gap-2 text-xs">
+                    <button onclick="adminRoomCmd('fart_all')" class="toon-btn bg-[#BEF264] text-black py-2">💨 सबमें Fart</button>
+                    <button onclick="adminRoomCmd('party_all')" class="toon-btn bg-[#38BDF8] text-black py-2">🎉 Party</button>
+                    <button onclick="adminRoomCmd('clear_all')" class="toon-btn bg-[#FF5757] text-white py-2">🧹 चैट साफ</button>
                 </div>
             </div>
         </div>
 
-        <div id="id-modal" class="fixed inset-0 bg-black/75 z-40 hidden items-center justify-center p-4">
-            <div class="toon-box bg-white w-full max-w-xs p-5 text-center">
+        <!-- ======================================================= -->
+        <!-- 🎮 CLEAN LIVE TIC-TAC-TOE MODAL                         -->
+        <!-- ======================================================= -->
+        <div id="game-modal" class="fixed inset-0 bg-black/70 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeGameModal()">
+            <div class="toon-card bg-[#FFFBEB] w-full max-w-xs p-4 text-center animate-[popIn_0.15s_ease-out]">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="toon-font font-black text-base">🎮 Live XO Match</span>
+                    <button onclick="closeGameModal()" class="toon-btn bg-[#FF5757] text-white px-2.5 py-0.5 text-xs">✕</button>
+                </div>
+                <div class="flex justify-between items-center mb-3 px-1">
+                    <span id="xo-status" class="text-xs font-black bg-white border-2 border-black px-3 py-1 rounded-xl">Turn: ❌</span>
+                    <button onclick="resetXOGame(true)" class="toon-btn bg-[#4ADE80] px-3 py-1 text-xs">🔄 Reset</button>
+                </div>
+                <div class="grid grid-cols-3 gap-2 max-w-[220px] mx-auto">
+                    <button onclick="playXO(0)" id="xo-0" class="toon-btn bg-white h-16 text-2xl"></button>
+                    <button onclick="playXO(1)" id="xo-1" class="toon-btn bg-white h-16 text-2xl"></button>
+                    <button onclick="playXO(2)" id="xo-2" class="toon-btn bg-white h-16 text-2xl"></button>
+                    <button onclick="playXO(3)" id="xo-3" class="toon-btn bg-white h-16 text-2xl"></button>
+                    <button onclick="playXO(4)" id="xo-4" class="toon-btn bg-white h-16 text-2xl"></button>
+                    <button onclick="playXO(5)" id="xo-5" class="toon-btn bg-white h-16 text-2xl"></button>
+                    <button onclick="playXO(6)" id="xo-6" class="toon-btn bg-white h-16 text-2xl"></button>
+                    <button onclick="playXO(7)" id="xo-7" class="toon-btn bg-white h-16 text-2xl"></button>
+                    <button onclick="playXO(8)" id="xo-8" class="toon-btn bg-white h-16 text-2xl"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ROLL / SECRET CODE SWITCH MODAL -->
+        <div id="id-modal" class="fixed inset-0 bg-black/70 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeIdModal()">
+            <div class="toon-card bg-white w-full max-w-xs p-5 text-center">
                 <h3 class="toon-font font-black text-base mb-2">⚡ Roll No / Secret Code</h3>
-                <input type="text" id="switch-code-input" onkeypress="if(event.key==='Enter') confirmIdentitySwitch()" class="w-full bg-slate-100 border-[2.5px] border-black rounded-xl py-2 px-3 text-center font-black mb-3 outline-none" placeholder="Code डालें...">
+                <input type="text" id="code-input" onkeypress="if(event.key==='Enter') saveNewIdentity()" class="w-full bg-slate-100 border-[2.5px] border-black rounded-xl py-2 px-3 text-center font-black mb-3 outline-none" placeholder="Code डालें...">
                 <div class="flex gap-2">
-                    <button onclick="document.getElementById('id-modal').classList.add('hidden')" class="toon-pill flex-1 bg-slate-200 py-2 text-xs">रद्द करें</button>
-                    <button onclick="confirmIdentitySwitch()" class="toon-pill flex-1 bg-[#FFDE59] py-2 text-xs">बदलें ✨</button>
+                    <button onclick="closeIdModal()" class="toon-btn flex-1 bg-slate-200 py-2 text-xs">रद्द करें</button>
+                    <button onclick="saveNewIdentity()" class="toon-btn flex-1 bg-[#FFDE59] py-2 text-xs">बदलें ✨</button>
                 </div>
             </div>
         </div>
 
-        <!-- FLOATING TOAST -->
-        <div id="toast-pill" class="fixed top-14 left-1/2 -translate-x-1/2 bg-black text-[#FFDE59] border-2 border-white px-4 py-1.5 rounded-full text-xs font-extrabold z-50 hidden shadow-lg">
+        <!-- CRISP TOAST NOTIFICATION -->
+        <div id="toast-box" class="fixed top-14 left-1/2 -translate-x-1/2 bg-black text-[#FFDE59] border-2 border-white px-4 py-1.5 rounded-full text-xs font-extrabold z-50 hidden shadow-lg">
             ⚡ Ready!
         </div>
 
     </div>
 
     <script>
-        // 💎 PubNub Live Setup
+        // 💎 PubNub Real-Time Core
         const pubnub = new PubNub({
             publishKey: "pub-c-7620e370-d34b-4bd7-894b-1a8d5fc07c17",
             subscribeKey: "sub-c-c5b2542a-5fc3-4fd4-95b2-0700612e55cd",
             userId: "u_" + Math.floor(Math.random() * 999999)
         });
-        const CHANNEL = "air-1-up-v6-pro";
+        const CHANNEL = "air-1-up-v7-clean";
         pubnub.subscribe({ channels: [CHANNEL] });
 
         let myUUID = pubnub.getUUID();
         let myName = "Star";
         let myAvatar = "😎";
         let isKanisq = false;
-        let isBombMsg = false;
-        let isSecretMsg = false;
-        let isBigMsg = false;
-        let currentThemeIdx = 0;
-        const themes = ['theme-default', 'theme-dark', 'theme-pink', 'theme-matrix'];
-        let replyContext = null;
-        let editingMsgId = null;
-        let selectedMsgData = null;
-        let messagesStore = {};
-        let djLoop = null;
-        let isDjPlaying = false;
+        let isMutedByAdmin = false;
 
-        // 🎵 Clean WebAudio Effects & Realistic Fart Sound Synthesizer
-        function sfx(type) {
+        let replyData = null;
+        let editingId = null;
+        let activeHoldMsg = null;
+        const msgCache = {};
+        const mutedList = {};
+
+        // 🎵 Crisp Sound Engine (Fart, Pop, Horn)
+        function playSfx(type) {
             try {
                 if (Tone.context.state !== 'running') Tone.start();
                 const now = Tone.now();
@@ -531,66 +430,43 @@
                     synth.triggerAttackRelease("F4", "16n", now);
                     synth.triggerAttackRelease("A4", "16n", now + 0.08);
                     synth.triggerAttackRelease("C5", "8n", now + 0.16);
-                } else if (type === 'laser') {
-                    synth.triggerAttackRelease("C6", "16n", now);
-                    synth.triggerAttackRelease("G4", "16n", now + 0.07);
-                } else if (type === 'laugh') {
-                    synth.triggerAttackRelease("E5", "16n", now);
-                    synth.triggerAttackRelease("G5", "16n", now + 0.08);
-                    synth.triggerAttackRelease("C6", "8n", now + 0.16);
-                } else if (type === 'siren') {
-                    synth.triggerAttackRelease("A5", "8n", now);
-                    synth.triggerAttackRelease("E5", "8n", now + 0.15);
-                    synth.triggerAttackRelease("A5", "8n", now + 0.3);
                 }
             } catch (e) {}
         }
 
-        // Speak Hindi/English aloud on everyone's phone (Kanisq Power & Walkie Talkie)
-        function speakLoud(text) {
+        function speakText(txt) {
             try {
                 if ('speechSynthesis' in window) {
                     window.speechSynthesis.cancel();
-                    const u = new SpeechSynthesisUtterance(text);
+                    const u = new SpeechSynthesisUtterance(txt);
                     u.lang = 'hi-IN';
                     u.rate = 1.05;
-                    u.pitch = 1.1;
                     window.speechSynthesis.speak(u);
                 }
             } catch (e) {}
         }
 
-        // 🎨 Cycle Chat Wallpaper Themes
-        function cycleWallpaper() {
-            const box = document.getElementById('chat-box');
-            box.classList.remove(themes[currentThemeIdx]);
-            currentThemeIdx = (currentThemeIdx + 1) % themes.length;
-            box.classList.add(themes[currentThemeIdx]);
-            sfx('pop');
-            const names = ["☀️ Classic Cream", "🌙 Midnight Dark", "🌸 Candy Pink", "💻 Matrix Neon"];
-            toast(`🎨 Theme: ${names[currentThemeIdx]}`);
-        }
-
-        // 🔐 Silent Identity Resolver (99 = Chiko, 104 = Vikalp, Kanisq = Supreme Admin)
-        function applyIdentity(raw) {
+        // 🔐 Identity Logic (99 = Chiko, 104 = Vikalp, Kanisq = Real Admin)
+        function resolveIdentity(raw) {
             const val = (raw || "").trim();
             const low = val.toLowerCase();
 
             if (val === "99") {
                 myName = "Chiko 🥰";
                 myAvatar = "🐣";
-                toast("🥰 Chiko सेट हो गया!");
+                showToast("🥰 Chiko सेट हो गया!");
             } else if (val === "104") {
                 myName = "Vikalp 🔥";
                 myAvatar = "⚡";
-                toast("🔥 Vikalp सेट हो गया!");
+                showToast("🔥 Vikalp सेट हो गया!");
             } else if (low === "kanisq") {
                 myName = "Kanisq 👑";
                 myAvatar = "👑";
                 isKanisq = true;
-                document.getElementById('crown-btn').classList.remove('hidden');
-                toast("👑 KANISQ GOD MODE UNLOCKED!");
-                confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                isMutedByAdmin = false;
+                document.getElementById('admin-btn').classList.remove('hidden');
+                showToast("👑 KANISQ ADMIN UNLOCKED!");
+                confetti({ particleCount: 70, spread: 65, origin: { y: 0.6 } });
             } else if (val !== "") {
                 myName = /^\d+$/.test(val) ? `Roll #${val}` : val;
                 myAvatar = "😎";
@@ -599,147 +475,140 @@
                 myAvatar = "😎";
             }
 
-            document.getElementById('my-badge-name').innerText = myName;
-            document.getElementById('my-avatar-btn').innerText = myAvatar;
-            try { localStorage.setItem('air1up_roll_v6', val || myName); } catch (e) {}
+            updateIdentityUI();
+            try { localStorage.setItem('air1up_clean_id', val || myName); } catch (e) {}
         }
 
-        function enterApp() {
+        function updateIdentityUI() {
+            document.getElementById('my-name-badge').innerText = myName;
+            document.getElementById('my-avatar-btn').innerText = myAvatar;
+        }
+
+        function startApp() {
             const v = document.getElementById('roll-input').value.trim();
-            applyIdentity(v);
-            document.getElementById('login-screen').classList.add('hidden');
-            sfx('pop');
+            resolveIdentity(v);
+            document.getElementById('login-modal').classList.add('hidden');
+            playSfx('pop');
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             try {
-                const saved = localStorage.getItem('air1up_roll_v6');
+                const saved = localStorage.getItem('air1up_clean_id');
                 if (saved) {
-                    applyIdentity(saved);
-                    document.getElementById('login-screen').classList.add('hidden');
+                    resolveIdentity(saved);
+                    document.getElementById('login-modal').classList.add('hidden');
                 }
             } catch (e) {}
-            setupSketchPad();
+            initArtStudio();
         });
 
-        function openIdentityPrompt() {
+        function openIdModal() {
             document.getElementById('id-modal').classList.remove('hidden');
             document.getElementById('id-modal').classList.add('flex');
-            document.getElementById('switch-code-input').focus();
+            document.getElementById('code-input').focus();
         }
-        function confirmIdentitySwitch() {
-            const v = document.getElementById('switch-code-input').value.trim();
-            if (v) applyIdentity(v);
-            document.getElementById('switch-code-input').value = '';
+        function closeIdModal() {
             document.getElementById('id-modal').classList.add('hidden');
+            document.getElementById('id-modal').classList.remove('flex');
+        }
+        function saveNewIdentity() {
+            const v = document.getElementById('code-input').value.trim();
+            if (v) resolveIdentity(v);
+            document.getElementById('code-input').value = '';
+            closeIdModal();
         }
 
-        // 📡 Live PubNub Listener
+        // 📡 Live PubNub Event Stream
         pubnub.addListener({
             message: function(ev) {
                 const m = ev.message;
                 if (!m) return;
 
-                if (m.type === 'chat' || m.type === 'sticker' || m.type === 'sketch' || m.type === 'card') {
-                    drawMessage(m);
-                    if (m.sfx) sfx(m.sfx);
-                    else if (m.uuid !== myUUID) sfx('pop');
-                } else if (m.type === 'edit_msg') {
-                    const txtEl = document.getElementById('txt-' + m.id);
-                    if (txtEl) {
-                        txtEl.innerText = m.newText;
-                        const edTag = document.getElementById('ed-' + m.id);
-                        if (edTag) edTag.classList.remove('hidden');
+                if (m.type === 'chat' || m.type === 'art' || m.type === 'quick') {
+                    renderMessage(m);
+                    if (m.sfx) playSfx(m.sfx);
+                    else if (m.uuid !== myUUID) playSfx('pop');
+                } else if (m.type === 'edit') {
+                    const el = document.getElementById('msg-txt-' + m.id);
+                    if (el) {
+                        el.innerText = m.newText;
+                        const tag = document.getElementById('msg-ed-' + m.id);
+                        if (tag) tag.classList.remove('hidden');
                     }
-                    if (messagesStore[m.id]) messagesStore[m.id].text = m.newText;
-                } else if (m.type === 'del_msg') {
-                    const wrapEl = document.getElementById('wrap-' + m.id);
-                    if (wrapEl) {
-                        wrapEl.style.transition = 'all 0.2s ease';
-                        wrapEl.style.transform = 'scale(0)';
-                        setTimeout(() => wrapEl.remove(), 200);
-                    }
-                    delete messagesStore[m.id];
-                } else if (m.type === 'pin_msg') {
-                    const notice = document.getElementById('top-notice');
-                    notice.classList.remove('hidden');
-                    document.getElementById('top-notice-text').innerText = `📌 ${m.sender}: ${m.text}`;
-                    sfx('pop');
-                } else if (m.type === 'hijack') {
-                    triggerHijackScreen(m.text);
-                } else if (m.type === 'room_fx') {
-                    runRoomEffect(m.effect, m.by);
-                } else if (m.type === 'xo') {
-                    updateXOBoard(m);
+                    if (msgCache[m.id]) msgCache[m.id].text = m.newText;
+                } else if (m.type === 'delete') {
+                    const row = document.getElementById('msg-row-' + m.id);
+                    if (row) row.remove();
+                    delete msgCache[m.id];
                 } else if (m.type === 'react') {
-                    const rEl = document.getElementById('r-' + m.id);
-                    if (rEl) {
-                        rEl.classList.remove('hidden');
-                        rEl.innerText = (rEl.innerText + ' ' + m.emoji).trim();
-                        sfx('pop');
+                    const r = document.getElementById('msg-react-' + m.id);
+                    if (r) {
+                        r.classList.remove('hidden');
+                        r.innerText = (r.innerText + ' ' + m.emoji).trim();
+                        playSfx('pop');
                     }
-                } else if (m.type === 'vote') {
-                    const vEl = document.getElementById(`poll-${m.cardId}-${m.choice}`);
-                    if (vEl) {
-                        vEl.innerText = parseInt(vEl.innerText || '0', 10) + 1;
-                        sfx('pop');
-                    }
+                } else if (m.type === 'pin') {
+                    const b = document.getElementById('pin-banner');
+                    b.classList.remove('hidden');
+                    document.getElementById('pin-text').innerText = `📌 ${m.sender}: ${m.text}`;
+                    playSfx('pop');
                 } else if (m.type === 'typing') {
                     if (m.uuid !== myUUID) {
-                        const tEl = document.getElementById('typing-indicator');
-                        tEl.innerText = `✍️ ${m.sender} लिख रहा है...`;
-                        tEl.classList.remove('hidden');
-                        clearTimeout(window._typTimer);
-                        window._typTimer = setTimeout(() => tEl.classList.add('hidden'), 2400);
+                        const t = document.getElementById('typing-text');
+                        t.innerText = `✍️ ${m.sender} लिख रहा है...`;
+                        t.classList.remove('hidden');
+                        clearTimeout(window._typT);
+                        window._typT = setTimeout(() => t.classList.add('hidden'), 2200);
                     }
-                } else if (m.type === 'dj') {
-                    syncRoomDJ(m.play, m.by);
-                } else if (m.type === 'walkie') {
-                    drawMessage({
-                        type: 'sticker',
-                        id: 'wk' + Date.now(),
-                        uuid: m.uuid,
-                        sender: m.sender,
-                        avatar: m.avatar,
-                        vip: m.vip,
-                        text: `📻 Walkie-Talkie: "${m.text}" 🔊`,
-                        time: m.time
-                    });
-                    speakLoud(`${m.sender} बोल रहे हैं: ${m.text}`);
-                } else if (m.type === 'emoji_rain') {
-                    spawnEmojiRain(m.emojis || '🔥❤️😂💎🚀');
+                } else if (m.type === 'xo') {
+                    syncXOBoard(m);
+                } else if (m.type === 'admin_mod') {
+                    handleAdminMod(m);
+                } else if (m.type === 'admin_lock') {
+                    showLockBroadcast(m.text);
+                } else if (m.type === 'admin_room') {
+                    if (m.cmd === 'fart_all') {
+                        playSfx('fart');
+                        showToast(`💨 Admin ने सबके फोन में Fart बजाया!`);
+                    } else if (m.cmd === 'party_all') {
+                        confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+                        playSfx('horn');
+                    } else if (m.cmd === 'clear_all') {
+                        document.getElementById('chat-box').innerHTML = '';
+                        showToast(`🧹 Admin ने चैट साफ कर दी!`);
+                    }
                 }
             }
         });
 
-        // 💬 Send Chat Message or Save Edited Message
+        // 💬 Send Chat or Save Edit
         function sendChat() {
             const inp = document.getElementById('msg-input');
-            const txt = inp.value.trim();
-            if (!txt) return;
+            const text = inp.value.trim();
+            if (!text) return;
 
-            if (txt.toLowerCase() === 'kanisq') {
-                applyIdentity('Kanisq');
+            // Secret Kanisq Trigger in Chat Input
+            if (text.toLowerCase() === 'kanisq') {
+                resolveIdentity('Kanisq');
                 inp.value = '';
-                clearReply();
-                toggleSheet('god');
+                resetContextBar();
+                openAdminModal();
                 return;
             }
 
-            // If we are currently editing an existing message
-            if (editingMsgId) {
+            if (isMutedByAdmin && !isKanisq) {
+                showToast("🔇 Admin ने आपको Mute किया है!");
+                return;
+            }
+
+            if (editingId) {
                 pubnub.publish({
                     channel: CHANNEL,
-                    message: {
-                        type: 'edit_msg',
-                        id: editingMsgId,
-                        newText: txt,
-                        by: myName
-                    }
+                    message: { type: 'edit', id: editingId, newText: text }
                 });
                 inp.value = '';
-                clearReply();
-                toast("✏️ मैसेज Edit हो गया!");
+                resetContextBar();
+                showToast("✏️ मैसेज Edit हो गया!");
                 return;
             }
 
@@ -752,58 +621,46 @@
                     sender: myName,
                     avatar: myAvatar,
                     vip: isKanisq,
-                    text: txt,
-                    bomb: isBombMsg,
-                    secret: isSecretMsg,
-                    big: isBigMsg,
-                    reply: replyContext,
+                    text: text,
+                    reply: replyData,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
             });
 
             inp.value = '';
-            if (isSecretMsg) toggleSecretFlag(true);
-            if (isBigMsg) toggleBigTextFlag(true);
-            clearReply();
+            resetContextBar();
         }
 
-        // Render Clean Message Bubble with Hold / Long-Press Support
-        function drawMessage(m) {
+        // Render Clean Message Bubble
+        function renderMessage(m) {
             const box = document.getElementById('chat-box');
             const isMe = (m.uuid === myUUID) && !m.puppet;
             const id = m.id || ('m' + Math.random().toString(36).slice(2));
-            messagesStore[id] = { id, text: m.text || '', sender: m.sender || 'Star', isMe };
+            msgCache[id] = { id, text: m.text || '', sender: m.sender || 'Star', isMe };
 
-            const wrap = document.createElement('div');
-            wrap.id = 'wrap-' + id;
-            wrap.className = `msg-anim flex flex-col max-w-[82%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`;
+            const row = document.createElement('div');
+            row.id = 'msg-row-' + id;
+            row.className = `msg-pop flex flex-col max-w-[82%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`;
 
             const meta = document.createElement('div');
-            meta.className = 'text-[11px] font-extrabold text-slate-600 px-1 mb-0.5 flex items-center gap-1';
+            meta.className = 'text-[11px] font-extrabold text-slate-500 px-1 mb-0.5 flex items-center gap-1';
             meta.innerHTML = `${isMe ? 'आप' : `${m.avatar || '😎'} ${m.sender}`} <span class="text-[9px] opacity-60">${m.time || ''}</span>`;
 
             const bubble = document.createElement('div');
-            let style = isMe ? 'bg-[#4ADE80] text-black rounded-tr-none' : 'bg-white text-black rounded-tl-none';
-            if (m.vip) style = 'vip-gold';
-            if (m.type === 'sticker') style = 'bg-[#FFDE59] text-black text-sm font-black';
+            let bgClass = isMe ? 'bg-[#4ADE80] text-black rounded-tr-none' : 'bg-white text-black rounded-tl-none';
+            if (m.vip) bgClass = 'vip-bubble';
+            if (m.type === 'quick') bgClass = 'bg-[#FFDE59] text-black font-black';
 
-            bubble.className = `px-3.5 py-2 rounded-2xl border-[2.5px] border-black shadow-[0_3px_0_#000] text-sm font-bold break-words cursor-pointer active:scale-[0.98] transition-transform ${style}`;
+            bubble.className = `px-3.5 py-2 rounded-2xl border-[2.5px] border-black shadow-[0_3px_0_#000] text-sm font-bold break-words cursor-pointer active:scale-[0.98] transition-transform ${bgClass}`;
 
-            // Attach Long-Press (Hold) & Right-Click Listener to open Edit/Delete/Copy menu
-            let holdTimer = null;
-            const startHold = () => {
-                holdTimer = setTimeout(() => {
-                    openMsgMenu(id);
-                }, 420);
-            };
-            const cancelHold = () => { if (holdTimer) clearTimeout(holdTimer); };
-            bubble.addEventListener('touchstart', startHold, { passive: true });
-            bubble.addEventListener('touchend', cancelHold);
-            bubble.addEventListener('touchmove', cancelHold);
-            bubble.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                openMsgMenu(id);
-            });
+            // Hold / Long-Press & Right-Click Menu
+            let pressTimer = null;
+            const startPress = () => { pressTimer = setTimeout(() => openHoldMenu(id), 400); };
+            const clearPress = () => { if (pressTimer) clearTimeout(pressTimer); };
+            bubble.addEventListener('touchstart', startPress, { passive: true });
+            bubble.addEventListener('touchend', clearPress);
+            bubble.addEventListener('touchmove', clearPress);
+            bubble.addEventListener('contextmenu', (e) => { e.preventDefault(); openHoldMenu(id); });
 
             if (m.reply) {
                 const q = document.createElement('div');
@@ -812,702 +669,553 @@
                 bubble.appendChild(q);
             }
 
-            if (m.type === 'sketch' && m.img) {
+            if (m.type === 'art' && m.img) {
                 const img = document.createElement('img');
                 img.src = m.img;
-                img.className = 'w-44 h-auto rounded-xl border-2 border-black bg-white';
+                img.className = 'w-52 h-auto rounded-xl border-2 border-black bg-white mb-1';
                 bubble.appendChild(img);
-            } else if (m.type === 'card' && m.cardKind === 'poll') {
-                bubble.innerHTML = `
-                    <div class="text-xs font-black mb-2">📊 ${m.text}</div>
-                    <div class="flex gap-2">
-                        <button onclick="votePoll('${id}','yes')" class="toon-pill bg-[#4ADE80] px-3 py-1 text-xs flex-1">👍 हाँ (<span id="poll-${id}-yes">0</span>)</button>
-                        <button onclick="votePoll('${id}','no')" class="toon-pill bg-[#FF5757] text-white px-3 py-1 text-xs flex-1">👎 नहीं (<span id="poll-${id}-no">0</span>)</button>
-                    </div>
-                `;
-            } else if (m.type === 'card' && m.cardKind === 'gift') {
-                bubble.innerHTML = `
-                    <div onclick="openMysteryGift(this)" class="text-center py-1 px-2 cursor-pointer">
-                        <div class="text-3xl animate-bounce">🎁</div>
-                        <div class="text-xs font-black mt-1">Mystery Box! टैप करके खोलें ✨</div>
-                    </div>
-                `;
-            } else if (m.type === 'card' && m.cardKind === 'scratch') {
-                bubble.innerHTML = `
-                    <div onclick="revealScratchCard(this)" class="bg-slate-800 text-[#FFDE59] border-2 border-dashed border-[#FFDE59] rounded-xl p-2.5 text-center cursor-pointer select-none">
-                        <div class="text-lg">🎫 SCRATCH CARD</div>
-                        <div class="text-[10px] text-white mt-0.5">✨ घिसने (Scratch) के लिए टैप करें!</div>
-                    </div>
-                `;
+                if (m.text) {
+                    const cap = document.createElement('div');
+                    cap.id = 'msg-txt-' + id;
+                    cap.className = 'text-xs font-extrabold mt-1';
+                    cap.innerText = m.text;
+                    bubble.appendChild(cap);
+                }
             } else {
-                const span = document.createElement('span');
-                span.id = 'txt-' + id;
-                span.innerText = m.text;
-                if (m.big) {
-                    span.className = 'text-xl sm:text-2xl font-black leading-snug block py-0.5';
-                }
-                if (m.secret) {
-                    span.className = (span.className + ' blur-secret').trim();
-                    span.title = 'देखने के लिए टैप करें';
-                    span.onclick = function(e) {
-                        e.stopPropagation();
-                        this.classList.toggle('revealed');
-                        sfx('pop');
-                    };
-                }
-                bubble.appendChild(span);
+                const txtSpan = document.createElement('span');
+                txtSpan.id = 'msg-txt-' + id;
+                txtSpan.innerText = m.text;
+                bubble.appendChild(txtSpan);
 
-                const editedBadge = document.createElement('span');
-                editedBadge.id = 'ed-' + id;
-                editedBadge.className = 'hidden text-[9px] opacity-60 ml-1 italic';
-                editedBadge.innerText = '(edited)';
-                bubble.appendChild(editedBadge);
+                const edSpan = document.createElement('span');
+                edSpan.id = 'msg-ed-' + id;
+                edSpan.className = 'hidden text-[9px] opacity-60 ml-1 italic';
+                edSpan.innerText = '(edited)';
+                bubble.appendChild(edSpan);
             }
 
-            if (m.bomb) {
-                const b = document.createElement('span');
-                b.className = 'ml-1.5 text-[10px] bg-red-600 text-white px-1.5 py-0.5 rounded-full';
-                b.innerText = '💣 5s';
-                bubble.appendChild(b);
-                setTimeout(() => wrap.remove(), 5500);
-            }
+            const reactPill = document.createElement('div');
+            reactPill.id = 'msg-react-' + id;
+            reactPill.className = 'hidden bg-white border-[2px] border-black text-black px-2 py-0.2 rounded-full text-[11px] font-black -mt-1.5 z-10 shadow-sm';
 
-            // Minimal Reaction & Options Bar
-            const bar = document.createElement('div');
-            bar.className = 'flex items-center gap-2 mt-1 px-1 text-[11px] font-bold text-slate-500';
-            const cleanSender = (m.sender || 'Star').replace(/'/g, "");
-            const cleanTxt = (m.text || 'Photo').replace(/'/g, "").slice(0, 30);
-            bar.innerHTML = `
-                <button onclick="reactMsg('${id}','❤️')" class="active:scale-125">❤️</button>
-                <button onclick="reactMsg('${id}','😂')" class="active:scale-125">😂</button>
-                <button onclick="reactMsg('${id}','🔥')" class="active:scale-125">🔥</button>
-                <button onclick="reactMsg('${id}','💨')" class="active:scale-125">💨</button>
-                <button onclick="setReply('${cleanSender}','${cleanTxt}')" class="text-[10px] underline">Reply</button>
-                <button onclick="openMsgMenu('${id}')" class="text-[10px] bg-slate-200 border border-black text-black px-1.5 rounded-md font-black" title="Edit / Delete / Copy">•••</button>
-                <span id="r-${id}" class="hidden bg-white border border-black text-black px-1.5 rounded-full text-[10px]"></span>
-            `;
-
-            wrap.appendChild(meta);
-            wrap.appendChild(bubble);
-            wrap.appendChild(bar);
-            box.appendChild(wrap);
+            row.appendChild(meta);
+            row.appendChild(bubble);
+            row.appendChild(reactPill);
+            box.appendChild(row);
             box.scrollTop = box.scrollHeight;
         }
 
-        // 🧰 Hold / Long-Press Action Menu Handlers (Edit, Delete, Copy, Pin, Speak)
-        function openMsgMenu(id) {
-            const info = messagesStore[id];
-            if (!info) return;
-            selectedMsgData = info;
-            sfx('pop');
-            document.getElementById('menu-msg-preview').innerText = info.text || '🎨 Media / Card';
+        // 👆 Hold Menu Operations (Edit, Delete, Copy, Pin, Speak)
+        function openHoldMenu(id) {
+            const item = msgCache[id];
+            if (!item) return;
+            activeHoldMsg = item;
+            playSfx('pop');
 
-            // Edit allowed for sender or Kanisq; Delete allowed for sender or Kanisq
-            const canModify = info.isMe || isKanisq;
-            document.getElementById('btn-menu-edit').style.opacity = canModify ? '1' : '0.45';
-            document.getElementById('btn-menu-del').style.opacity = canModify ? '1' : '0.45';
+            document.getElementById('hold-preview').innerText = item.text || '🎨 Art Drawing';
+            const allowed = item.isMe || isKanisq;
+            document.getElementById('hold-edit-btn').style.opacity = allowed ? '1' : '0.4';
+            document.getElementById('hold-del-btn').style.opacity = allowed ? '1' : '0.4';
 
-            const modal = document.getElementById('msg-menu-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+            const m = document.getElementById('hold-modal');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
         }
 
-        function closeMsgMenu() {
-            const modal = document.getElementById('msg-menu-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
+        function closeHoldMenu() {
+            const m = document.getElementById('hold-modal');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
         }
 
-        function quickMenuReact(emoji) {
-            if (!selectedMsgData) return;
-            reactMsg(selectedMsgData.id, emoji);
-            if (emoji === '💨') sfx('fart');
-            closeMsgMenu();
+        function reactFromHold(emoji) {
+            if (!activeHoldMsg) return;
+            pubnub.publish({ channel: CHANNEL, message: { type: 'react', id: activeHoldMsg.id, emoji } });
+            if (emoji === '💨') playSfx('fart');
+            closeHoldMenu();
         }
 
-        function menuAction(act) {
-            if (!selectedMsgData) return;
-            const { id, text, sender, isMe } = selectedMsgData;
-            closeMsgMenu();
+        function execHoldAction(act) {
+            if (!activeHoldMsg) return;
+            const { id, text, sender, isMe } = activeHoldMsg;
+            closeHoldMenu();
 
             if (act === 'reply') {
-                setReply(sender, text.slice(0, 35));
+                editingId = null;
+                replyData = { sender, text: (text || '🎨 Art').slice(0, 35) };
+                document.getElementById('context-bar').classList.remove('hidden');
+                document.getElementById('context-label').innerText = `↩️ ${sender}: ${replyData.text}`;
+                document.getElementById('msg-input').focus();
             } else if (act === 'copy') {
                 try {
-                    const ta = document.createElement('textarea');
-                    ta.value = text;
-                    document.body.appendChild(ta);
-                    ta.select();
+                    const t = document.createElement('textarea');
+                    t.value = text || '';
+                    document.body.appendChild(t);
+                    t.select();
                     document.execCommand('copy');
-                    ta.remove();
-                    toast("📋 मैसेज Copy हो गया!");
-                } catch (e) {
-                    toast("📋 Copied!");
-                }
+                    t.remove();
+                    showToast("📋 Copy हो गया!");
+                } catch (e) {}
             } else if (act === 'edit') {
                 if (!isMe && !isKanisq) {
-                    toast("🔒 सिर्फ अपना मैसेज Edit कर सकते हैं!");
+                    showToast("🔒 सिर्फ अपना मैसेज Edit कर सकते हैं!");
                     return;
                 }
-                editingMsgId = id;
-                document.getElementById('reply-box').classList.remove('hidden');
-                document.getElementById('reply-label').innerText = `✏️ Editing: ${text.slice(0, 28)}...`;
+                editingId = id;
+                replyData = null;
+                document.getElementById('context-bar').classList.remove('hidden');
+                document.getElementById('context-label').innerText = `✏️ Editing: ${(text || '').slice(0, 28)}`;
                 const inp = document.getElementById('msg-input');
-                inp.value = text;
+                inp.value = text || '';
                 inp.focus();
             } else if (act === 'delete') {
                 if (!isMe && !isKanisq) {
-                    toast("🔒 सिर्फ अपना मैसेज Delete कर सकते हैं!");
+                    showToast("🔒 सिर्फ अपना मैसेज Delete कर सकते हैं!");
                     return;
                 }
-                pubnub.publish({
-                    channel: CHANNEL,
-                    message: { type: 'del_msg', id: id, by: myName }
-                });
-                toast("🗑️ सबके फोन से मैसेज Delete कर दिया!");
+                pubnub.publish({ channel: CHANNEL, message: { type: 'delete', id } });
+                showToast("🗑️ सबमें से Delete हो गया!");
             } else if (act === 'pin') {
-                pubnub.publish({
-                    channel: CHANNEL,
-                    message: { type: 'pin_msg', sender, text: text.slice(0, 60) }
-                });
-                toast("📌 मैसेज ऊपर Pin हो गया!");
+                pubnub.publish({ channel: CHANNEL, message: { type: 'pin', sender, text: (text || '🎨 Art').slice(0, 55) } });
             } else if (act === 'speak') {
-                speakLoud(`${sender} ने लिखा: ${text}`);
-                toast("🔊 बोलकर सुनाया जा रहा है...");
+                speakText(`${sender} ने लिखा: ${text || 'ड्राइंग'}`);
             }
         }
 
-        function reactMsg(id, emoji) {
-            pubnub.publish({ channel: CHANNEL, message: { type: 'react', id, emoji } });
-        }
-        function votePoll(cardId, choice) {
-            pubnub.publish({ channel: CHANNEL, message: { type: 'vote', cardId, choice } });
-        }
-        function setReply(sender, text) {
-            editingMsgId = null;
-            replyContext = { sender, text };
-            document.getElementById('reply-box').classList.remove('hidden');
-            document.getElementById('reply-label').innerText = `↩️ ${sender}: ${text}`;
-            document.getElementById('msg-input').focus();
-        }
-        function clearReply() {
-            replyContext = null;
-            editingMsgId = null;
-            document.getElementById('reply-box').classList.add('hidden');
+        function resetContextBar() {
+            replyData = null;
+            editingId = null;
+            document.getElementById('context-bar').classList.add('hidden');
         }
 
-        // 🎙️ Voice Typing (Hindi + English)
-        function startVoiceTyping() {
+        function clearPinBanner() {
+            document.getElementById('pin-banner').classList.add('hidden');
+        }
+
+        // ⚡ Quick Tray & Voice Typing
+        function toggleQuickTray() {
+            document.getElementById('quick-tray').classList.toggle('hidden');
+        }
+
+        function sendQuickCard(text, sfx) {
+            document.getElementById('quick-tray').classList.add('hidden');
+            pubnub.publish({
+                channel: CHANNEL,
+                message: {
+                    type: 'quick',
+                    id: 'q' + Date.now(),
+                    uuid: myUUID,
+                    sender: myName,
+                    avatar: myAvatar,
+                    vip: isKanisq,
+                    text,
+                    sfx,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            });
+        }
+
+        function rollLiveDice() {
+            const d = Math.floor(1 + Math.random() * 6);
+            sendQuickCard(`🎲 लूडो पासा फेंका: [ ${d} ] आया!`, 'pop');
+        }
+
+        function triggerVoiceInput() {
             const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SR) {
-                toast("🎙️ आपके ब्राउज़र में Voice सपोर्ट नहीं है!");
+                showToast("🎙️ आपके ब्राउज़र में Voice सपोर्ट नहीं है!");
                 return;
             }
             try {
                 const rec = new SR();
                 rec.lang = 'hi-IN';
-                const btn = document.getElementById('mic-btn');
-                btn.classList.add('bg-[#FF5757]', 'text-white', 'animate-pulse');
-                toast("🎙️ अब बोलिए...");
+                showToast("🎙️ अब बोलिए...");
                 rec.onresult = (e) => {
                     const spoken = e.results[0][0].transcript;
                     const inp = document.getElementById('msg-input');
-                    inp.value = (inp.value + " " + spoken).trim();
+                    inp.value = (inp.value + ' ' + spoken).trim();
                     inp.focus();
                 };
-                rec.onend = () => {
-                    btn.classList.remove('bg-[#FF5757]', 'text-white', 'animate-pulse');
-                };
                 rec.start();
-            } catch (e) {
-                toast("🎙️ Mic चालू नहीं हो पाया");
-            }
+            } catch (e) {}
         }
 
-        let lastTyp = 0;
-        function sendTypingSignal() {
-            if (Date.now() - lastTyp > 2200) {
-                lastTyp = Date.now();
+        let lastTypTime = 0;
+        function emitTyping() {
+            if (Date.now() - lastTypTime > 2000) {
+                lastTypTime = Date.now();
                 pubnub.publish({ channel: CHANNEL, message: { type: 'typing', uuid: myUUID, sender: myName } });
             }
         }
 
-        // ➕ Bottom Sheet Navigation
-        function closeAllSheets() {
-            ['tools', 'game', 'god'].forEach(k => document.getElementById('sheet-' + k).classList.add('hidden'));
-        }
-        function toggleSheet(name) {
-            const el = document.getElementById('sheet-' + name);
-            const isHidden = el.classList.contains('hidden');
-            closeAllSheets();
-            if (isHidden) {
-                el.classList.remove('hidden');
-                el.classList.add('flex');
-            }
-        }
+        // =======================================================
+        // 🎨 ADVANCED PRO ART STUDIO ENGINE
+        // =======================================================
+        let artCanvas, artCtx, drawing = false;
+        let brushMode = 'pen'; // pen | neon | rainbow | eraser
+        let strokeColor = '#000000';
+        let rainbowHue = 0;
+        let darkBoard = false;
+        let undoStack = [];
 
-        // 🎲 Interactive Cards & Sound Stickers
-        function sendSoundSticker(text, sound) {
-            closeAllSheets();
-            pubnub.publish({
-                channel: CHANNEL,
-                message: {
-                    type: 'sticker',
-                    id: 's' + Date.now(),
-                    uuid: myUUID,
-                    sender: myName,
-                    avatar: myAvatar,
-                    vip: isKanisq,
-                    text: text,
-                    sfx: sound
+        function initArtStudio() {
+            artCanvas = document.getElementById('art-canvas');
+            artCtx = artCanvas.getContext('2d');
+            fillCanvasBg('#FFFFFF');
+            saveArtSnapshot();
+
+            const getCoords = (e) => {
+                const rect = artCanvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return {
+                    x: (clientX - rect.left) * (artCanvas.width / rect.width),
+                    y: (clientY - rect.top) * (artCanvas.height / rect.height)
+                };
+            };
+
+            const startDraw = (e) => {
+                drawing = true;
+                const p = getCoords(e);
+                artCtx.beginPath();
+                artCtx.moveTo(p.x, p.y);
+            };
+
+            const moveDraw = (e) => {
+                if (!drawing) return;
+                e.preventDefault();
+                const p = getCoords(e);
+                const size = parseInt(document.getElementById('brush-size').value, 10) || 5;
+
+                artCtx.lineCap = 'round';
+                artCtx.lineJoin = 'round';
+                artCtx.lineWidth = size;
+
+                if (brushMode === 'eraser') {
+                    artCtx.shadowBlur = 0;
+                    artCtx.strokeStyle = darkBoard ? '#0F172A' : '#FFFFFF';
+                    artCtx.lineWidth = size * 2.2;
+                } else if (brushMode === 'neon') {
+                    artCtx.strokeStyle = strokeColor;
+                    artCtx.shadowColor = strokeColor;
+                    artCtx.shadowBlur = 14;
+                } else if (brushMode === 'rainbow') {
+                    rainbowHue = (rainbowHue + 12) % 360;
+                    const c = `hsl(${rainbowHue}, 95%, 55%)`;
+                    artCtx.strokeStyle = c;
+                    artCtx.shadowColor = c;
+                    artCtx.shadowBlur = 6;
+                } else {
+                    artCtx.shadowBlur = 0;
+                    artCtx.strokeStyle = strokeColor;
                 }
+
+                artCtx.lineTo(p.x, p.y);
+                artCtx.stroke();
+                artCtx.beginPath();
+                artCtx.moveTo(p.x, p.y);
+            };
+
+            const endDraw = () => {
+                if (!drawing) return;
+                drawing = false;
+                artCtx.shadowBlur = 0;
+                saveArtSnapshot();
+            };
+
+            artCanvas.addEventListener('mousedown', startDraw);
+            artCanvas.addEventListener('mousemove', moveDraw);
+            window.addEventListener('mouseup', endDraw);
+            artCanvas.addEventListener('touchstart', startDraw, { passive: false });
+            artCanvas.addEventListener('touchmove', moveDraw, { passive: false });
+            artCanvas.addEventListener('touchend', endDraw);
+        }
+
+        function fillCanvasBg(col) {
+            artCtx.shadowBlur = 0;
+            artCtx.fillStyle = col;
+            artCtx.fillRect(0, 0, artCanvas.width, artCanvas.height);
+        }
+
+        function saveArtSnapshot() {
+            if (undoStack.length > 12) undoStack.shift();
+            undoStack.push(artCanvas.toDataURL());
+        }
+
+        function undoArt() {
+            if (undoStack.length <= 1) return;
+            undoStack.pop();
+            const prev = undoStack[undoStack.length - 1];
+            const img = new Image();
+            img.onload = () => {
+                artCtx.shadowBlur = 0;
+                artCtx.clearRect(0, 0, artCanvas.width, artCanvas.height);
+                artCtx.drawImage(img, 0, 0);
+            };
+            img.src = prev;
+            playSfx('pop');
+        }
+
+        function setBrushMode(mode) {
+            brushMode = mode;
+            const labels = { pen: 'Pen', neon: 'Neon Glow', rainbow: 'Rainbow', eraser: 'Eraser' };
+            document.getElementById('brush-mode-tag').innerText = labels[mode] || 'Pen';
+            ['pen', 'neon', 'rainbow', 'eraser'].forEach(m => {
+                const b = document.getElementById('bm-' + m);
+                if (b) b.className = `toon-btn ${m === mode ? 'bg-[#FFDE59]' : 'bg-white'} py-1.5`;
             });
+            playSfx('pop');
         }
 
-        function fireInteractiveCard(kind) {
-            closeAllSheets();
-            if (kind === 'dice') {
-                const n = Math.floor(1 + Math.random() * 6);
-                sendSoundSticker(`🎲 लूडो पासा फेंका: [ ${n} ] आया!`, 'pop');
-            } else if (kind === 'gift') {
-                pubnub.publish({
-                    channel: CHANNEL,
-                    message: {
-                        type: 'card',
-                        cardKind: 'gift',
-                        id: 'g' + Date.now(),
-                        uuid: myUUID,
-                        sender: myName,
-                        avatar: myAvatar,
-                        text: '🎁 Mystery Box',
-                        sfx: 'pop'
-                    }
-                });
-            } else if (kind === 'truth') {
-                const qs = [
-                    "🍾 Truth: चैट में तुम्हारा सबसे फेवरेट कौन है?",
-                    "🍾 Dare: अभी Fart वाला बटन दबाकर सबको हंसाओ 💨😂",
-                    "🍾 Truth: आखिरी बार झूठ कब बोला था?",
-                    "🍾 Dare: चैट में लिखो 'पार्टी मेरी तरफ से!' 🍕"
-                ];
-                sendSoundSticker(qs[Math.floor(Math.random() * qs.length)], 'horn');
-            } else if (kind === 'poll') {
-                pubnub.publish({
-                    channel: CHANNEL,
-                    message: {
-                        type: 'card',
-                        cardKind: 'poll',
-                        id: 'p' + Date.now(),
-                        uuid: myUUID,
-                        sender: myName,
-                        avatar: myAvatar,
-                        text: 'क्या अभी एक लाइव XO मैच हो जाए? 🎮',
-                        sfx: 'pop'
-                    }
-                });
-            } else if (kind === 'scratch') {
-                pubnub.publish({
-                    channel: CHANNEL,
-                    message: {
-                        type: 'card',
-                        cardKind: 'scratch',
-                        id: 'sc' + Date.now(),
-                        uuid: myUUID,
-                        sender: myName,
-                        avatar: myAvatar,
-                        text: '🎫 Scratch Card',
-                        sfx: 'pop'
-                    }
-                });
-            }
+        function pickColor(c) {
+            strokeColor = c;
+            if (brushMode === 'eraser' || brushMode === 'rainbow') setBrushMode('pen');
+            playSfx('pop');
         }
 
-        function revealScratchCard(el) {
-            const rewards = [
-                { txt: "🎰 JACKPOT! ₹1,00,000 नकली कैश जीता! 🤑", s: "horn" },
-                { txt: "💨 अरे यार! खाली डब्बा और पाद बम निकला 😂", s: "fart" },
-                { txt: "👑 VIP सुपरस्टार का ताज मिला!", s: "laser" },
-                { txt: "🍫 चॉकलेट पार्टी! भेजने वाला अब चॉकलेट खिलाएगा!", s: "pop" },
-                { txt: "🤡 पोपट हो गया! अगली बार ट्राई करें 😂", s: "laugh" }
-            ];
-            const r = rewards[Math.floor(Math.random() * rewards.length)];
-            el.className = "bg-[#FEF08A] text-black border-2 border-black rounded-xl p-2.5 text-center font-black text-xs";
-            el.innerHTML = r.txt;
-            sfx(r.s);
-            if (r.s === 'horn') confetti({ particleCount: 50, spread: 60 });
+        function toggleCanvasBg() {
+            darkBoard = !darkBoard;
+            fillCanvasBg(darkBoard ? '#0F172A' : '#FFFFFF');
+            if (darkBoard && strokeColor === '#000000') strokeColor = '#38BDF8';
+            if (!darkBoard && strokeColor === '#38BDF8') strokeColor = '#000000';
+            saveArtSnapshot();
+            playSfx('pop');
         }
 
-        function sendWalkieVoice() {
-            const inp = document.getElementById('walkie-input');
-            const txt = inp.value.trim();
-            if (!txt) {
-                toast("📻 पहले कुछ लिखें जो सबके फोन में बोलना है!");
-                return;
-            }
-            inp.value = '';
-            closeAllSheets();
+        function placeStamp(emoji) {
+            artCtx.shadowBlur = 0;
+            artCtx.font = "34px serif";
+            artCtx.textAlign = "center";
+            artCtx.textBaseline = "middle";
+            const x = 50 + Math.random() * (artCanvas.width - 100);
+            const y = 45 + Math.random() * (artCanvas.height - 90);
+            artCtx.fillText(emoji, x, y);
+            saveArtSnapshot();
+            playSfx('pop');
+        }
+
+        function clearArtCanvas() {
+            fillCanvasBg(darkBoard ? '#0F172A' : '#FFFFFF');
+            saveArtSnapshot();
+            playSfx('pop');
+        }
+
+        function openArtStudio() {
+            const m = document.getElementById('art-modal');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        }
+
+        function closeArtStudio() {
+            const m = document.getElementById('art-modal');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+
+        function sendArtMasterpiece() {
+            const cap = document.getElementById('art-caption').value.trim();
             pubnub.publish({
                 channel: CHANNEL,
                 message: {
-                    type: 'walkie',
+                    type: 'art',
+                    id: 'art' + Date.now(),
                     uuid: myUUID,
                     sender: myName,
                     avatar: myAvatar,
                     vip: isKanisq,
-                    text: txt,
+                    img: artCanvas.toDataURL('image/png'),
+                    text: cap,
+                    sfx: 'pop',
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
             });
+            document.getElementById('art-caption').value = '';
+            clearArtCanvas();
+            closeArtStudio();
         }
 
-        function fireEmojiRain(emojis) {
-            closeAllSheets();
+        // =======================================================
+        // 👑 KANISQ REAL ADMIN POWERS
+        // =======================================================
+        function openAdminModal() {
+            const m = document.getElementById('admin-modal');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        }
+        function closeAdminModal() {
+            const m = document.getElementById('admin-modal');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+
+        function adminToggleMuteUser() {
+            const target = document.getElementById('mod-target').value.trim();
+            if (!target) return;
+            const newMuteState = !mutedList[target];
+            mutedList[target] = newMuteState;
             pubnub.publish({
                 channel: CHANNEL,
-                message: { type: 'emoji_rain', emojis, by: myName }
+                message: { type: 'admin_mod', action: 'mute', target, muted: newMuteState }
             });
+            closeAdminModal();
         }
 
-        function spawnEmojiRain(emojiStr) {
-            const box = document.getElementById('emoji-rain-box');
-            const arr = Array.from(emojiStr);
-            sfx('pop');
-            for (let i = 0; i < 24; i++) {
-                setTimeout(() => {
-                    const d = document.createElement('div');
-                    d.className = 'emoji-float text-3xl';
-                    d.style.left = Math.floor(Math.random() * 90) + 'vw';
-                    d.innerText = arr[i % arr.length];
-                    box.appendChild(d);
-                    setTimeout(() => d.remove(), 3000);
-                }, i * 70);
+        function adminRenameUser() {
+            const target = document.getElementById('mod-target').value.trim();
+            const newName = document.getElementById('mod-newname').value.trim();
+            if (!target || !newName) {
+                showToast("🏷️ किसका और क्या नाम रखना है दोनों लिखें!");
+                return;
             }
-        }
-
-        function toggleBigTextFlag(forceOff) {
-            isBigMsg = forceOff ? false : !isBigMsg;
-            document.getElementById('big-label').innerText = isBigMsg ? "📢 2x ON" : "2x बड़ा अक्षर";
-            if (!forceOff) {
-                toast(isBigMsg ? "📢 अब अगला मैसेज 2x बड़े अक्षरों में जाएगा!" : "📢 नॉर्मल साइज");
-                closeAllSheets();
-            }
-        }
-
-        function openMysteryGift(el) {
-            const prizes = [
-                { txt: "💎 डायमंड क्राउन मिला! +1000 Aura!", sound: "horn" },
-                { txt: "💨 अरे भाई! बॉक्स से पाद बम निकला! 😂💨", sound: "fart" },
-                { txt: "🍕 गरमा-गरम पिज़्ज़ा पार्टी मिली!", sound: "pop" },
-                { txt: "👑 VIP Golden Luck अनलॉक हुआ!", sound: "laser" },
-                { txt: "🐸 टर्र-टर्र! बॉक्स से मेंढक निकला 😂", sound: "laugh" }
-            ];
-            const pick = prizes[Math.floor(Math.random() * prizes.length)];
-            el.innerHTML = `<div class="text-xs font-black py-1">${pick.txt}</div>`;
-            sfx(pick.sound);
-            if (pick.sound === 'horn') confetti({ particleCount: 40, spread: 60 });
-        }
-
-        function toggleSecretFlag(forceOff) {
-            isSecretMsg = forceOff ? false : !isSecretMsg;
-            document.getElementById('secret-label').innerText = isSecretMsg ? "🕵️ Blur ON" : "छुपा मैसेज (Blur)";
-            if (!forceOff) {
-                toast(isSecretMsg ? "🕵️ अब अगला मैसेज Blur होकर जाएगा (टैप करने पर दिखेगा)!" : "🕵️ नॉर्मल मैसेज मोड");
-                closeAllSheets();
-            }
-        }
-
-        function toggleBombFlag() {
-            isBombMsg = !isBombMsg;
-            document.getElementById('bomb-label').innerText = isBombMsg ? "💣 ON (5s)" : "5s गायब मैसेज";
-            toast(isBombMsg ? "💣 अब आपके मैसेज 5 सेकंड में गायब हो जाएंगे!" : "💣 नॉर्मल मैसेज मोड");
-            closeAllSheets();
-        }
-
-        // 🎵 Live Room DJ Beat (Plays synchronized synth beat for everyone)
-        function toggleLiveDJ() {
-            closeAllSheets();
             pubnub.publish({
                 channel: CHANNEL,
-                message: { type: 'dj', play: !isDjPlaying, by: myName }
+                message: { type: 'admin_mod', action: 'rename', target, newName }
             });
+            document.getElementById('mod-newname').value = '';
+            closeAdminModal();
         }
 
-        function syncRoomDJ(play, by) {
-            try {
-                if (Tone.context.state !== 'running') Tone.start();
-                if (djLoop) { djLoop.stop(); djLoop.dispose(); djLoop = null; }
-                isDjPlaying = play;
-                const notice = document.getElementById('top-notice');
-                if (play) {
-                    const synth = new Tone.MembraneSynth().toDestination();
-                    const notes = ["C2", "G2", "C2", "A2"];
-                    let step = 0;
-                    djLoop = new Tone.Loop(time => {
-                        synth.triggerAttackRelease(notes[step % notes.length], "8n", time);
-                        step++;
-                    }, "4n").start(0);
-                    Tone.Transport.start();
-                    notice.classList.remove('hidden');
-                    document.getElementById('top-notice-text').innerText = `🎵 Live DJ Beat चालू है (${by})!`;
-                } else {
-                    Tone.Transport.stop();
-                    notice.classList.add('hidden');
+        function handleAdminMod(m) {
+            if (m.action === 'mute') {
+                if (myName.toLowerCase().includes(m.target.toLowerCase())) {
+                    isMutedByAdmin = m.muted;
                 }
-            } catch (e) {}
-        }
-
-        // 👑 KANISQ SUPREME GOD POWERS
-        function fireGodHijack() {
-            const inp = document.getElementById('god-hijack-input');
-            const text = inp.value.trim() || "KANISQ IS KING 👑";
-            inp.value = '';
-            closeAllSheets();
-            pubnub.publish({
-                channel: CHANNEL,
-                message: { type: 'hijack', text: text }
-            });
-        }
-
-        function triggerHijackScreen(text) {
-            const ov = document.getElementById('hijack-overlay');
-            document.getElementById('hijack-text').innerText = text;
-            ov.classList.remove('hidden');
-            ov.classList.add('flex');
-            sfx('horn');
-            speakLoud(text);
-            confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
-
-            let sec = 5;
-            const tEl = document.getElementById('hijack-timer');
-            const iv = setInterval(() => {
-                sec--;
-                tEl.innerText = `Locked for ${sec}s...`;
-                if (sec <= 0) {
-                    clearInterval(iv);
-                    ov.classList.add('hidden');
-                    ov.classList.remove('flex');
-                    tEl.innerText = "Locked for 5s...";
+                showToast(m.muted ? `🔇 Admin ने ${m.target} को Mute कर दिया!` : `🔊 Admin ने ${m.target} को Unmute किया!`);
+            } else if (m.action === 'rename') {
+                if (myName.toLowerCase().includes(m.target.toLowerCase())) {
+                    myName = m.newName;
+                    updateIdentityUI();
                 }
-            }, 1000);
+                showToast(`🏷️ Admin ने ${m.target} का नाम बदलकर "${m.newName}" कर दिया!`);
+            }
         }
 
-        function firePuppetMessage() {
-            const targetName = document.getElementById('puppet-name').value.trim() || "Chiko 🥰";
-            const msgInput = document.getElementById('puppet-msg');
-            const text = msgInput.value.trim();
+        function adminSendPuppet() {
+            const who = document.getElementById('puppet-who').value.trim() || "Chiko 🥰";
+            const txtInp = document.getElementById('puppet-text');
+            const text = txtInp.value.trim();
             if (!text) return;
-            msgInput.value = '';
-            closeAllSheets();
+            txtInp.value = '';
+            closeAdminModal();
 
             pubnub.publish({
                 channel: CHANNEL,
                 message: {
                     type: 'chat',
-                    id: 'm' + Date.now(),
+                    id: 'p' + Date.now(),
                     uuid: 'puppet_' + Math.random(),
                     puppet: true,
-                    sender: targetName,
-                    avatar: targetName.includes('Chiko') ? '🐣' : (targetName.includes('Vikalp') ? '⚡' : '😎'),
-                    text: text,
+                    sender: who,
+                    avatar: who.includes('Chiko') ? '🐣' : (who.includes('Vikalp') ? '⚡' : '😎'),
+                    text,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
             });
         }
 
-        function fireRoomEffect(effect) {
-            closeAllSheets();
+        function adminFireLock() {
+            const inp = document.getElementById('lock-input');
+            const text = inp.value.trim() || "KANISQ ADMIN IS LIVE 👑";
+            inp.value = '';
+            closeAdminModal();
             pubnub.publish({
                 channel: CHANNEL,
-                message: { type: 'room_fx', effect, by: myName }
+                message: { type: 'admin_lock', text }
             });
         }
 
-        function runRoomEffect(effect, by) {
-            const shell = document.getElementById('app-shell');
-            if (effect === 'fart_attack') {
-                sfx('fart');
-                shell.classList.remove('quake-mode');
-                void shell.offsetWidth;
-                shell.classList.add('quake-mode');
-                toast(`💨 ${by} ने सबके फोन में Fart Bomb फोड़ा! 🤢😂`);
-            } else if (effect === 'hack') {
-                const hov = document.getElementById('hack-overlay');
-                document.getElementById('hack-title').innerText = `👾 HACKED BY ${by}!`;
-                document.getElementById('hack-sub').innerText = "तुम्हारे फोन का सारा सीक्रेट डेटा डाउनलोड हो रहा है... 😂";
-                hov.classList.remove('hidden');
-                hov.classList.add('flex');
-                sfx('siren');
-                setTimeout(() => {
-                    hov.classList.add('hidden');
-                    hov.classList.remove('flex');
-                }, 4200);
-            } else if (effect === 'freeze') {
-                const hov = document.getElementById('hack-overlay');
-                document.getElementById('hack-title').innerText = `🥶 ICE FREEZE BY ${by}!`;
-                document.getElementById('hack-sub').innerText = "तुम्हारी स्क्रीन 4 सेकंड के लिए बर्फ में जम गई है! ❄️";
-                hov.classList.remove('hidden');
-                hov.classList.add('flex');
-                sfx('laser');
-                setTimeout(() => {
-                    hov.classList.add('hidden');
-                    hov.classList.remove('flex');
-                }, 4000);
-            } else if (effect === 'siren_all') {
-                sfx('siren');
-                toast(`🚨 ${by} ने सबके फोन में पुलिस सायरन बजाया!`);
-            } else if (effect === 'quake') {
-                shell.classList.remove('quake-mode');
-                void shell.offsetWidth;
-                shell.classList.add('quake-mode');
-                sfx('laser');
-                toast(`🌋 ${by} ने भूकंप ला दिया!`);
-            } else if (effect === 'flip') {
-                shell.classList.toggle('flip-mode');
-                sfx('laser');
-                toast(`🙃 ${by} ने स्क्रीन पलट दी!`);
-            } else if (effect === 'party') {
-                confetti({ particleCount: 140, spread: 100, origin: { y: 0.6 } });
-                sfx('horn');
-            } else if (effect === 'wipe') {
-                document.getElementById('chat-box').innerHTML = '';
-                toast(`🧹 ${by} ने चैट साफ कर दी!`);
-            }
+        function showLockBroadcast(text) {
+            const ov = document.getElementById('lock-overlay');
+            document.getElementById('lock-msg').innerText = text;
+            ov.classList.remove('hidden');
+            ov.classList.add('flex');
+            playSfx('horn');
+            speakText(text);
+            confetti({ particleCount: 90, spread: 80, origin: { y: 0.5 } });
+
+            let s = 5;
+            const timer = document.getElementById('lock-timer');
+            const iv = setInterval(() => {
+                s--;
+                timer.innerText = `${s}s...`;
+                if (s <= 0) {
+                    clearInterval(iv);
+                    ov.classList.add('hidden');
+                    ov.classList.remove('flex');
+                    timer.innerText = '5s...';
+                }
+            }, 1000);
         }
 
-        // 🎮 Games: XO & Super Over Cricket
-        let board = ['', '', '', '', '', '', '', '', ''];
-        let turn = '❌';
-        let gameOn = true;
-        let myRuns = 0;
-
-        function switchGame(g) {
-            document.getElementById('panel-xo').classList.toggle('hidden', g !== 'xo');
-            document.getElementById('panel-cric').classList.toggle('hidden', g !== 'cric');
-            document.getElementById('tab-xo').className = `toon-pill ${g==='xo'?'bg-[#FFDE59]':'bg-white'} px-3 py-1 text-xs`;
-            document.getElementById('tab-cric').className = `toon-pill ${g==='cric'?'bg-[#FFDE59]':'bg-white'} px-3 py-1 text-xs`;
+        function adminRoomCmd(cmd) {
+            closeAdminModal();
+            pubnub.publish({ channel: CHANNEL, message: { type: 'admin_room', cmd } });
         }
 
-        function tapXO(i) {
-            if (!gameOn || board[i] !== '') return;
-            board[i] = turn;
+        // =======================================================
+        // 🎮 CLEAN TIC-TAC-TOE (XO)
+        // =======================================================
+        let xoBoard = ['', '', '', '', '', '', '', '', ''];
+        let xoTurn = '❌';
+        let xoActive = true;
+
+        function openGameModal() {
+            const m = document.getElementById('game-modal');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+        }
+        function closeGameModal() {
+            const m = document.getElementById('game-modal');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+
+        function playXO(idx) {
+            if (!xoActive || xoBoard[idx] !== '') return;
+            xoBoard[idx] = xoTurn;
             pubnub.publish({
                 channel: CHANNEL,
-                message: { type: 'xo', board, turn: turn === '❌' ? '⭕' : '❌', by: myName }
+                message: { type: 'xo', board: xoBoard, turn: xoTurn === '❌' ? '⭕' : '❌', by: myName }
             });
         }
 
-        function resetXO(sync) {
-            board = ['', '', '', '', '', '', '', '', ''];
-            turn = '❌';
-            gameOn = true;
-            if (sync) pubnub.publish({ channel: CHANNEL, message: { type: 'xo', board, turn: '❌' } });
+        function resetXOGame(sync) {
+            xoBoard = ['', '', '', '', '', '', '', '', ''];
+            xoTurn = '❌';
+            xoActive = true;
+            if (sync) pubnub.publish({ channel: CHANNEL, message: { type: 'xo', board: xoBoard, turn: '❌' } });
         }
 
-        function updateXOBoard(m) {
-            board = m.board;
-            turn = m.turn;
-            gameOn = true;
-            for (let i = 0; i < 9; i++) document.getElementById('cell-' + i).innerText = board[i];
+        function syncXOBoard(m) {
+            xoBoard = m.board;
+            xoTurn = m.turn;
+            xoActive = true;
+            for (let i = 0; i < 9; i++) document.getElementById('xo-' + i).innerText = xoBoard[i];
 
-            const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-            for (let [a,b,c] of lines) {
-                if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-                    document.getElementById('xo-turn-label').innerText = `🏆 ${board[a]} जीता! (${m.by || ''})`;
-                    gameOn = false;
+            const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            for (let [a,b,c] of wins) {
+                if (xoBoard[a] && xoBoard[a] === xoBoard[b] && xoBoard[a] === xoBoard[c]) {
+                    document.getElementById('xo-status').innerText = `🏆 ${xoBoard[a]} जीता! (${m.by || ''})`;
+                    xoActive = false;
                     confetti({ particleCount: 60, spread: 60 });
-                    sfx('horn');
+                    playSfx('horn');
                     return;
                 }
             }
-            if (!board.includes('')) {
-                document.getElementById('xo-turn-label').innerText = "🤝 मैच ड्रॉ!";
-                gameOn = false;
+            if (!xoBoard.includes('')) {
+                document.getElementById('xo-status').innerText = "🤝 ड्रॉ!";
+                xoActive = false;
                 return;
             }
-            document.getElementById('xo-turn-label').innerText = `Turn: ${turn}`;
+            document.getElementById('xo-status').innerText = `Turn: ${xoTurn}`;
         }
 
-        function batShot(r) {
-            const bowl = [1,2,3,4,6][Math.floor(Math.random() * 5)];
-            if (r === bowl) {
-                document.getElementById('cric-commentary').innerText = `💥 बोल्ड! (${myRuns} पर आउट)`;
-                myRuns = 0;
-                document.getElementById('cric-runs').innerText = "0 Runs";
-                sfx('laser');
-            } else {
-                myRuns += r;
-                document.getElementById('cric-runs').innerText = `${myRuns} Runs`;
-                document.getElementById('cric-commentary').innerText = r === 6 ? "🚀 लंबा छक्का!" : `🔥 +${r} Runs!`;
-                sfx('pop');
-            }
-        }
-
-        function postCricketScore() {
-            sendSoundSticker(`🏏 मैंने Super Over में ${myRuns} Runs ठोके! कोई तोड़ सकता है रिकॉर्ड? 🏆`, 'horn');
-        }
-
-        // 🎨 Sketch Pad
-        let sCanvas, sCtx, isDrawing = false, penCol = '#000';
-        function setupSketchPad() {
-            sCanvas = document.getElementById('sketch-pad');
-            sCtx = sCanvas.getContext('2d');
-            sCtx.lineWidth = 4;
-            sCtx.lineCap = 'round';
-
-            const pos = (e) => {
-                const r = sCanvas.getBoundingClientRect();
-                const x = e.touches ? e.touches[0].clientX : e.clientX;
-                const y = e.touches ? e.touches[0].clientY : e.clientY;
-                return { x: x - r.left, y: y - r.top };
-            };
-            const start = (e) => { isDrawing = true; sCtx.strokeStyle = penCol; const p = pos(e); sCtx.beginPath(); sCtx.moveTo(p.x, p.y); };
-            const move = (e) => { if (!isDrawing) return; e.preventDefault(); const p = pos(e); sCtx.lineTo(p.x, p.y); sCtx.stroke(); };
-            const stop = () => { isDrawing = false; };
-
-            sCanvas.addEventListener('mousedown', start);
-            sCanvas.addEventListener('mousemove', move);
-            window.addEventListener('mouseup', stop);
-            sCanvas.addEventListener('touchstart', start, { passive: false });
-            sCanvas.addEventListener('touchmove', move, { passive: false });
-            sCanvas.addEventListener('touchend', stop);
-        }
-
-        function openSketchModal() {
-            closeAllSheets();
-            document.getElementById('sketch-modal').classList.remove('hidden');
-            document.getElementById('sketch-modal').classList.add('flex');
-        }
-        function closeSketchModal() {
-            document.getElementById('sketch-modal').classList.add('hidden');
-            document.getElementById('sketch-modal').classList.remove('flex');
-        }
-        function clearSketch() {
-            sCtx.clearRect(0, 0, sCanvas.width, sCanvas.height);
-        }
-        function sendSketch() {
-            pubnub.publish({
-                channel: CHANNEL,
-                message: {
-                    type: 'sketch',
-                    id: 'sk' + Date.now(),
-                    uuid: myUUID,
-                    sender: myName,
-                    avatar: myAvatar,
-                    vip: isKanisq,
-                    img: sCanvas.toDataURL('image/png'),
-                    sfx: 'pop'
-                }
-            });
-            clearSketch();
-            closeSketchModal();
-        }
-
-        function toast(msg) {
-            const t = document.getElementById('toast-pill');
+        function showToast(msg) {
+            const t = document.getElementById('toast-box');
             t.innerText = msg;
             t.classList.remove('hidden');
-            clearTimeout(window._tTimer);
-            window._tTimer = setTimeout(() => t.classList.add('hidden'), 2400);
+            clearTimeout(window._toastT);
+            window._toastT = setTimeout(() => t.classList.add('hidden'), 2200);
         }
     </script>
 </body>
