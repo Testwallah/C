@@ -52,10 +52,42 @@
         }
         .disco-active { animation: rainbowBg 1.2s infinite; }
 
+        /* NEW POWER ANIMATIONS */
+        .flip-active { transform: rotate(180deg); transition: transform 0.5s ease; }
+        .matrix-active { background-color: #000 !important; color: #00ff41 !important; border-color: #00ff41 !important; }
+        .freeze-overlay { pointer-events: none; }
+
+        @keyframes floatUpEmoji {
+            0% { transform: translateY(0) scale(0.8) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-85vh) scale(1.6) rotate(20deg); opacity: 0; }
+        }
+        .floating-emoji {
+            position: fixed;
+            bottom: 60px;
+            z-index: 90;
+            pointer-events: none;
+            font-size: 2.2rem;
+            animation: floatUpEmoji 2.4s ease-out forwards;
+        }
+
+        .gold-vip-msg {
+            background: linear-gradient(135deg, #FFE066 0%, #FFB300 100%) !important;
+            border: 3px solid #000 !important;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.8), 3px 3px 0px #000 !important;
+        }
+
         .no-scrollbar::-webkit-scrollbar { width: 0px; background: transparent; }
     </style>
 </head>
-<body id="app-body" class="h-full w-full flex items-center justify-center p-2 sm:p-4">
+<body id="app-body" class="h-full w-full flex items-center justify-center p-2 sm:p-4 transition-all duration-300">
+
+    <!-- FREEZE OVERLAY (God Power) -->
+    <div id="freeze-screen" class="fixed inset-0 bg-cyan-400/50 backdrop-blur-[2px] z-40 hidden items-center justify-center">
+        <div class="toon-card bg-white px-6 py-4 text-center animate-bounce">
+            <div class="text-4xl mb-1">🥶❄️</div>
+            <div class="font-black text-lg text-black">SCREEN FROZEN BY ADMIN!</div>
+        </div>
+    </div>
 
     <!-- STEP 1: ONE-TIME ROLL NO ENTRY SCREEN (No Clutter, Auto Name) -->
     <div id="entry-modal" class="fixed inset-0 bg-[#FFDE59] z-50 flex items-center justify-center p-4">
@@ -77,93 +109,192 @@
     </div>
 
     <!-- MAIN APP CONTAINER -->
-    <div id="main-container" class="toon-card w-full max-w-md h-[96vh] flex flex-col overflow-hidden relative bg-white">
+    <div id="main-container" class="toon-card w-full max-w-md h-[96vh] flex flex-col overflow-hidden relative bg-white transition-transform duration-500">
         
         <!-- TOP TOON HEADER -->
-        <div class="bg-[#5CE1E6] border-b-4 border-black px-3.5 py-2.5 flex items-center justify-between shrink-0">
-            <div class="flex items-center gap-2.5">
-                <div id="my-avatar" class="w-11 h-11 bg-[#FFDE59] border-3 border-black rounded-2xl flex items-center justify-center text-2xl shadow-[3px_3px_0px_#000] border-[3px]">
+        <div id="top-header" class="bg-[#5CE1E6] border-b-4 border-black px-3 py-2 flex items-center justify-between shrink-0 transition-colors">
+            <div class="flex items-center gap-2">
+                <div id="my-avatar" onclick="cycleMyMood()" class="w-11 h-11 bg-[#FFDE59] border-black rounded-2xl flex items-center justify-center text-2xl shadow-[3px_3px_0px_#000] border-[3px] cursor-pointer active:scale-90 transition-transform" title="Tap to change avatar!">
                     😎
                 </div>
                 <div>
                     <div class="flex items-center gap-1.5">
-                        <h2 class="text-xl font-black text-black tracking-tight leading-none">AiR 1 UP</h2>
-                        <span class="w-3 h-3 bg-[#7ED957] border-2 border-black rounded-full inline-block animate-pulse"></span>
+                        <h2 class="text-lg sm:text-xl font-black text-black tracking-tight leading-none">AiR 1 UP</h2>
+                        <span class="w-2.5 h-2.5 bg-[#7ED957] border-2 border-black rounded-full inline-block animate-pulse"></span>
+                        <span id="xp-badge" class="bg-[#FFDE59] text-black text-[10px] font-black px-1.5 py-0.2 rounded-md border-2 border-black">⚡0</span>
                     </div>
-                    <div id="my-name-badge" class="text-xs font-extrabold text-black/80 bg-white/80 px-2 py-0.5 rounded-lg border-2 border-black inline-block mt-0.5">
-                        Loading...
+                    <div class="flex items-center gap-1 mt-0.5">
+                        <div id="my-name-badge" class="text-[11px] font-extrabold text-black bg-white/90 px-2 py-0.5 rounded-lg border-2 border-black inline-block">
+                            Loading...
+                        </div>
+                        <span id="typing-indicator" class="hidden text-[10px] font-black bg-black text-[#FFDE59] px-1.5 py-0.5 rounded-md animate-pulse">✍️...</span>
                     </div>
                 </div>
             </div>
 
             <!-- Action Navigation Pills -->
-            <div class="flex items-center gap-1.5">
-                <button onclick="toggleGameModal()" class="toon-btn bg-[#FF914D] text-black px-3 py-2 text-xs sm:text-sm gap-1">
-                    🎮 <span class="hidden xs:inline">XO</span>
+            <div class="flex items-center gap-1">
+                <button onclick="toggleGameModal()" class="toon-btn bg-[#FF914D] text-black px-2.5 py-1.5 text-xs gap-1" title="Games">
+                    🎮
                 </button>
-                <button onclick="openWhisperBox()" class="toon-btn bg-[#CB6CE6] text-white px-2.5 py-2 text-xs sm:text-sm" title="Secret Code">
+                <button onclick="toggleMagicHub()" class="toon-btn bg-[#7ED957] text-black px-2.5 py-1.5 text-xs" title="25+ Fun Tools">
+                    🧰
+                </button>
+                <button onclick="cycleTheme()" class="toon-btn bg-[#FFDE59] text-black px-2 py-1.5 text-xs" title="Switch Theme">
+                    🎨
+                </button>
+                <button onclick="openWhisperBox()" class="toon-btn bg-[#CB6CE6] text-white px-2 py-1.5 text-xs" title="Secret Code">
                     ⚡
                 </button>
-                <button id="god-btn" onclick="toggleAdminPanel()" class="hidden toon-btn bg-[#FF5757] text-white px-2.5 py-2 text-xs sm:text-sm animate-bounce" title="Superpowers">
+                <button id="god-btn" onclick="toggleAdminPanel()" class="hidden toon-btn bg-[#FF5757] text-white px-2 py-1.5 text-xs animate-bounce" title="Kanisq God Mode">
                     👑
                 </button>
             </div>
         </div>
 
         <!-- LIVE ADMIN BANNER (Hidden until triggered) -->
-        <div id="live-banner" class="hidden bg-[#FF5757] text-white border-b-4 border-black px-3 py-2 text-xs font-black flex items-center justify-between shrink-0">
+        <div id="live-banner" class="hidden bg-[#FF5757] text-white border-b-4 border-black px-3 py-1.5 text-xs font-black flex items-center justify-between shrink-0">
             <span id="live-banner-text" class="truncate">🔥 SUPER ANNOUNCEMENT!</span>
             <button onclick="document.getElementById('live-banner').classList.add('hidden')" class="ml-2 bg-black/30 px-2 py-0.5 rounded-lg">✕</button>
         </div>
 
-        <!-- LIVE MULTIPLAYER TIC-TAC-TOE DRAWER -->
-        <div id="game-drawer" class="hidden bg-[#FFF5CC] border-b-4 border-black p-3 shrink-0 transition-all">
-            <div class="flex items-center justify-between mb-2">
-                <span id="xo-status" class="text-xs font-black bg-white px-2.5 py-1 rounded-xl border-2 border-black">
-                    🎮 Live Tic-Tac-Toe: Turn ❌
-                </span>
-                <div class="flex gap-1.5">
-                    <button onclick="resetXO(true)" class="toon-btn bg-[#7ED957] text-black px-2.5 py-1 text-xs">🔄 Reset</button>
-                    <button onclick="toggleGameModal()" class="toon-btn bg-[#FF5757] text-white px-2.5 py-1 text-xs">✕</button>
+        <!-- PINNED MESSAGE BAR (Feature #12) -->
+        <div id="pin-bar" class="hidden bg-[#FFF5CC] text-black border-b-4 border-black px-3 py-1 text-xs font-bold flex items-center justify-between shrink-0">
+            <div class="truncate">📌 <span class="font-black" id="pin-sender">Star:</span> <span id="pin-text"></span></div>
+            <button onclick="document.getElementById('pin-bar').classList.add('hidden')" class="text-[10px] bg-black text-white px-1.5 py-0.5 rounded">✕</button>
+        </div>
+
+        <!-- 🎮 MULTI-GAME ARCADE DRAWER (XO + RPS + Hand Cricket + Math Rush) -->
+        <div id="game-drawer" class="hidden bg-[#FFF5CC] border-b-4 border-black p-2.5 shrink-0 transition-all">
+            <div class="flex items-center justify-between mb-2 gap-1">
+                <div class="flex gap-1 overflow-x-auto no-scrollbar">
+                    <button onclick="switchGameTab('xo')" id="gtab-xo" class="toon-btn bg-[#FFDE59] text-black px-2.5 py-1 text-xs">❌⭕ XO</button>
+                    <button onclick="switchGameTab('rps')" id="gtab-rps" class="toon-btn bg-white text-black px-2.5 py-1 text-xs">🪨📄✂️ RPS</button>
+                    <button onclick="switchGameTab('cricket')" id="gtab-cricket" class="toon-btn bg-white text-black px-2.5 py-1 text-xs">🏏 Cricket</button>
+                </div>
+                <button onclick="toggleGameModal()" class="toon-btn bg-[#FF5757] text-white px-2 py-1 text-xs shrink-0">✕</button>
+            </div>
+
+            <!-- GAME 1: XO -->
+            <div id="game-view-xo">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span id="xo-status" class="text-xs font-black bg-white px-2 py-0.5 rounded-lg border-2 border-black">🎮 Turn: ❌</span>
+                    <button onclick="resetXO(true)" class="toon-btn bg-[#7ED957] text-black px-2 py-0.5 text-xs">🔄 Reset</button>
+                </div>
+                <div class="grid grid-cols-3 gap-1.5 max-w-[195px] mx-auto">
+                    <button onclick="playXO(0)" id="xo-0" class="toon-btn bg-white h-12 text-xl font-black"></button>
+                    <button onclick="playXO(1)" id="xo-1" class="toon-btn bg-white h-12 text-xl font-black"></button>
+                    <button onclick="playXO(2)" id="xo-2" class="toon-btn bg-white h-12 text-xl font-black"></button>
+                    <button onclick="playXO(3)" id="xo-3" class="toon-btn bg-white h-12 text-xl font-black"></button>
+                    <button onclick="playXO(4)" id="xo-4" class="toon-btn bg-white h-12 text-xl font-black"></button>
+                    <button onclick="playXO(5)" id="xo-5" class="toon-btn bg-white h-12 text-xl font-black"></button>
+                    <button onclick="playXO(6)" id="xo-6" class="toon-btn bg-white h-12 text-xl font-black"></button>
+                    <button onclick="playXO(7)" id="xo-7" class="toon-btn bg-white h-12 text-xl font-black"></button>
+                    <button onclick="playXO(8)" id="xo-8" class="toon-btn bg-white h-12 text-xl font-black"></button>
                 </div>
             </div>
-            <div class="grid grid-cols-3 gap-2 max-w-[210px] mx-auto my-1">
-                <button onclick="playXO(0)" id="xo-0" class="toon-btn bg-white h-14 text-2xl font-black"></button>
-                <button onclick="playXO(1)" id="xo-1" class="toon-btn bg-white h-14 text-2xl font-black"></button>
-                <button onclick="playXO(2)" id="xo-2" class="toon-btn bg-white h-14 text-2xl font-black"></button>
-                <button onclick="playXO(3)" id="xo-3" class="toon-btn bg-white h-14 text-2xl font-black"></button>
-                <button onclick="playXO(4)" id="xo-4" class="toon-btn bg-white h-14 text-2xl font-black"></button>
-                <button onclick="playXO(5)" id="xo-5" class="toon-btn bg-white h-14 text-2xl font-black"></button>
-                <button onclick="playXO(6)" id="xo-6" class="toon-btn bg-white h-14 text-2xl font-black"></button>
-                <button onclick="playXO(7)" id="xo-7" class="toon-btn bg-white h-14 text-2xl font-black"></button>
-                <button onclick="playXO(8)" id="xo-8" class="toon-btn bg-white h-14 text-2xl font-black"></button>
+
+            <!-- GAME 2: LIVE ROCK PAPER SCISSORS -->
+            <div id="game-view-rps" class="hidden text-center py-2">
+                <p id="rps-status" class="text-xs font-black mb-2 bg-white inline-block px-3 py-1 rounded-xl border-2 border-black">चुनें और चैट में लाइव मुकाबला करें! 👇</p>
+                <div class="flex justify-center gap-3">
+                    <button onclick="playLiveRPS('🪨 Stone')" class="toon-btn bg-[#5CE1E6] text-black px-4 py-2 text-lg">🪨</button>
+                    <button onclick="playLiveRPS('📄 Paper')" class="toon-btn bg-[#FFDE59] text-black px-4 py-2 text-lg">📄</button>
+                    <button onclick="playLiveRPS('✂️ Scissor')" class="toon-btn bg-[#FF66C4] text-black px-4 py-2 text-lg">✂️</button>
+                </div>
+            </div>
+
+            <!-- GAME 3: HAND CRICKET -->
+            <div id="game-view-cricket" class="hidden text-center py-1">
+                <div class="flex justify-between items-center bg-white border-2 border-black rounded-xl px-3 py-1 mb-2 text-xs font-black">
+                    <span>🏏 Runs: <span id="cric-score" class="text-green-600">0</span></span>
+                    <span id="cric-last">Hit shots!</span>
+                    <button onclick="shareCricketScore()" class="bg-[#FFDE59] px-2 py-0.5 rounded border border-black">🏆 Brag</button>
+                </div>
+                <div class="grid grid-cols-6 gap-1.5">
+                    <button onclick="hitCricket(1)" class="toon-btn bg-white py-2 text-sm">1</button>
+                    <button onclick="hitCricket(2)" class="toon-btn bg-white py-2 text-sm">2</button>
+                    <button onclick="hitCricket(3)" class="toon-btn bg-white py-2 text-sm">3</button>
+                    <button onclick="hitCricket(4)" class="toon-btn bg-[#5CE1E6] py-2 text-sm">4</button>
+                    <button onclick="hitCricket(6)" class="toon-btn bg-[#FF914D] py-2 text-sm">6</button>
+                    <button onclick="hitCricket(0)" class="toon-btn bg-[#7ED957] py-2 text-xs">Def</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🧰 25+ MAGIC TOOLS & FUN HUB DRAWER -->
+        <div id="magic-drawer" class="hidden bg-[#E0F2FE] border-b-4 border-black p-2.5 shrink-0">
+            <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-black bg-white px-2.5 py-0.5 rounded-lg border-2 border-black">🧰 Super Fun Toolkit (Tap to Fire!)</span>
+                <button onclick="toggleMagicHub()" class="toon-btn bg-[#FF5757] text-white px-2 py-0.5 text-xs">✕</button>
+            </div>
+            <div class="grid grid-cols-4 gap-1.5 text-center">
+                <button onclick="sendMagicAction('dice')" class="toon-btn bg-white py-1.5 text-[11px] flex-col">🎲<span>Dice</span></button>
+                <button onclick="sendMagicAction('coin')" class="toon-btn bg-white py-1.5 text-[11px] flex-col">🪙<span>Toss</span></button>
+                <button onclick="sendMagicAction('8ball')" class="toon-btn bg-white py-1.5 text-[11px] flex-col">🎱<span>8-Ball</span></button>
+                <button onclick="sendMagicAction('truth')" class="toon-btn bg-white py-1.5 text-[11px] flex-col">🍾<span>T or D</span></button>
+                <button onclick="sendMagicAction('vibe')" class="toon-btn bg-[#FFDE59] py-1.5 text-[11px] flex-col">💯<span>Aura %</span></button>
+                <button onclick="sendMagicAction('roast')" class="toon-btn bg-[#FF914D] py-1.5 text-[11px] flex-col">🔥<span>Savage</span></button>
+                <button onclick="sendMagicAction('joke')" class="toon-btn bg-[#7ED957] py-1.5 text-[11px] flex-col">😂<span>Chutkula</span></button>
+                <button onclick="sendMagicAction('quiz')" class="toon-btn bg-[#5CE1E6] py-1.5 text-[11px] flex-col">🧠<span>Math</span></button>
+                <button onclick="openPollCreator()" class="toon-btn bg-[#CB6CE6] text-white py-1.5 text-[11px] flex-col">📊<span>Poll</span></button>
+                <button onclick="toggleBombMode()" id="bomb-btn" class="toon-btn bg-white py-1.5 text-[11px] flex-col">💣<span>5s Msg</span></button>
+                <button onclick="toggleVoiceChipmunk()" id="voice-btn" class="toon-btn bg-white py-1.5 text-[11px] flex-col">🗣️<span>TTS Talk</span></button>
+                <button onclick="triggerEmojiFountain('❤️🔥🚀')" class="toon-btn bg-[#FF66C4] py-1.5 text-[11px] flex-col">🎉<span>Fly Emoji</span></button>
+            </div>
+            <!-- Text Style Transformer Bar -->
+            <div class="flex items-center gap-1.5 mt-2 pt-2 border-t-2 border-black/20 overflow-x-auto no-scrollbar">
+                <span class="text-[10px] font-black shrink-0">Style:</span>
+                <button onclick="setTextStyle('normal')" id="st-normal" class="toon-btn bg-[#FFDE59] px-2 py-0.5 text-[10px]">Normal</button>
+                <button onclick="setTextStyle('fancy')" id="st-fancy" class="toon-btn bg-white px-2 py-0.5 text-[10px]">𝓕𝓪𝓷𝓬𝔂</button>
+                <button onclick="setTextStyle('reverse')" id="st-reverse" class="toon-btn bg-white px-2 py-0.5 text-[10px]">🔄 Reverse</button>
+                <button onclick="setTextStyle('spoiler')" id="st-spoiler" class="toon-btn bg-white px-2 py-0.5 text-[10px]">🕵️ Spoiler</button>
+                <button onclick="setTextStyle('shout')" id="st-shout" class="toon-btn bg-white px-2 py-0.5 text-[10px]">📢 BIG</button>
             </div>
         </div>
 
         <!-- SUPERPOWERS DRAWER (ONLY VISIBLE IF KANISQ UNLOCKED) -->
-        <div id="admin-drawer" class="hidden bg-[#1e1b4b] text-white border-b-4 border-black p-3 shrink-0">
-            <div class="flex items-center justify-between mb-2">
-                <span class="text-xs font-black text-[#FFDE59] flex items-center gap-1">⚡ KANISQ GOD POWERS UNLOCKED ⚡</span>
-                <button onclick="toggleAdminPanel()" class="text-xs bg-white/20 px-2 py-0.5 rounded-lg font-bold">Close</button>
+        <div id="admin-drawer" class="hidden bg-[#1e1b4b] text-white border-b-4 border-black p-2.5 shrink-0">
+            <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-black text-[#FFDE59] flex items-center gap-1">👑 KANISQ SUPREME GOD POWERS 👑</span>
+                <button onclick="toggleAdminPanel()" class="text-xs bg-white/20 px-2 py-0.5 rounded-lg font-bold">✕</button>
             </div>
             <div class="grid grid-cols-4 gap-1.5 mb-2">
-                <button onclick="sendPowerEvent('earthquake')" class="toon-btn bg-[#FF914D] text-black py-1.5 text-[11px] flex-col leading-tight">
+                <button onclick="sendPowerEvent('earthquake')" class="toon-btn bg-[#FF914D] text-black py-1 text-[10px] flex-col leading-tight">
                     🌋<span>Shake</span>
                 </button>
-                <button onclick="sendPowerEvent('confetti')" class="toon-btn bg-[#7ED957] text-black py-1.5 text-[11px] flex-col leading-tight">
+                <button onclick="sendPowerEvent('confetti')" class="toon-btn bg-[#7ED957] text-black py-1 text-[10px] flex-col leading-tight">
                     🎉<span>Party</span>
                 </button>
-                <button onclick="sendPowerEvent('disco')" class="toon-btn bg-[#FF66C4] text-black py-1.5 text-[11px] flex-col leading-tight">
+                <button onclick="sendPowerEvent('disco')" class="toon-btn bg-[#FF66C4] text-black py-1 text-[10px] flex-col leading-tight">
                     🪩<span>Disco</span>
                 </button>
-                <button onclick="sendPowerEvent('clear')" class="toon-btn bg-[#FF5757] text-white py-1.5 text-[11px] flex-col leading-tight">
-                    🧹<span>Wipe</span>
+                <button onclick="sendPowerEvent('flip')" class="toon-btn bg-[#5CE1E6] text-black py-1 text-[10px] flex-col leading-tight">
+                    🙃<span>Flip Screen</span>
+                </button>
+                <button onclick="sendPowerEvent('freeze')" class="toon-btn bg-cyan-300 text-black py-1 text-[10px] flex-col leading-tight">
+                    🥶<span>Freeze 5s</span>
+                </button>
+                <button onclick="sendPowerEvent('matrix')" class="toon-btn bg-emerald-400 text-black py-1 text-[10px] flex-col leading-tight">
+                    💻<span>Hacker</span>
+                </button>
+                <button onclick="sendPowerEvent('siren')" class="toon-btn bg-yellow-300 text-black py-1 text-[10px] flex-col leading-tight">
+                    🚨<span>VIP Alert</span>
+                </button>
+                <button onclick="sendPowerEvent('clear')" class="toon-btn bg-[#FF5757] text-white py-1 text-[10px] flex-col leading-tight">
+                    🧹<span>Wipe All</span>
                 </button>
             </div>
             <div class="flex gap-1.5">
-                <input type="text" id="admin-shout-input" class="toon-input flex-1 bg-white text-black px-3 py-1.5 text-xs" placeholder="सबकी स्क्रीन पर बैनर भेजें...">
-                <button onclick="sendAdminBanner()" class="toon-btn bg-[#FFDE59] text-black px-3 py-1.5 text-xs">📢</button>
+                <input type="text" id="admin-shout-input" class="toon-input flex-1 bg-white text-black px-2.5 py-1 text-xs" placeholder="सबकी स्क्रीन पर बैनर या 👑 नाम बदलें...">
+                <button onclick="sendAdminBanner()" class="toon-btn bg-[#FFDE59] text-black px-2.5 py-1 text-xs" title="Live Banner">📢</button>
             </div>
+        </div>
+
+        <!-- REPLY PREVIEW BAR (Feature #11) -->
+        <div id="reply-bar" class="hidden bg-slate-200 border-t-2 border-black px-3 py-1 text-xs font-bold flex items-center justify-between shrink-0">
+            <span id="reply-preview-text" class="truncate text-slate-700">↩️ Replying...</span>
+            <button onclick="cancelReply()" class="text-red-600 font-black">✕</button>
         </div>
 
         <!-- CHAT AREA -->
@@ -171,28 +302,46 @@
             <!-- Messages appear here dynamically -->
         </div>
 
-        <!-- ONE-TAP FUN BAR (Stickers, Sound, Doodle) -->
-        <div class="bg-[#FFF5CC] border-t-4 border-black px-2.5 py-1.5 flex items-center gap-2 overflow-x-auto no-scrollbar shrink-0">
+        <!-- ONE-TAP FUN BAR (Stickers, Sound, Piano, Doodle) -->
+        <div class="bg-[#FFF5CC] border-t-4 border-black px-2 py-1.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar shrink-0">
             <button onclick="toggleDoodleModal()" class="toon-btn bg-[#5CE1E6] text-black px-2.5 py-1 text-xs shrink-0">
                 🎨 Draw
             </button>
-            <button onclick="sendFunSticker('🔥 Bawaal! 🔥', 'horn')" class="toon-btn bg-[#FF914D] text-black px-2.5 py-1 text-xs shrink-0">
-                📢 Horn
+            <button onclick="togglePianoBar()" class="toon-btn bg-[#7ED957] text-black px-2.5 py-1 text-xs shrink-0">
+                🎹 Beats
             </button>
-            <button onclick="sendFunSticker('😂 Khatam Tata Bye Bye!', 'laugh')" class="toon-btn bg-[#FFDE59] text-black px-2.5 py-1 text-xs shrink-0">
+            <button onclick="triggerEmojiFountain('🔥')" class="toon-btn bg-[#FF914D] text-black px-2.5 py-1 text-xs shrink-0">
+                🔥 Fire
+            </button>
+            <button onclick="triggerEmojiFountain('😂')" class="toon-btn bg-[#FFDE59] text-black px-2.5 py-1 text-xs shrink-0">
                 😂 LOL
             </button>
             <button onclick="sendFunSticker('💎 100% Real VIP 💎', 'laser')" class="toon-btn bg-[#CB6CE6] text-white px-2.5 py-1 text-xs shrink-0">
                 ⚡ VIP
             </button>
-            <button onclick="sendFunSticker('❤️ Full Bhai-Chara ❤️', 'pop')" class="toon-btn bg-[#FF66C4] text-black px-2.5 py-1 text-xs shrink-0">
-                ❤️ Love
+            <button onclick="sendFunSticker('🚀 सिस्टम फाड़ देंगे! 🔥', 'horn')" class="toon-btn bg-[#FF66C4] text-black px-2.5 py-1 text-xs shrink-0">
+                📢 System
             </button>
         </div>
 
+        <!-- MINI LIVE PIANO BAR (Feature #15) -->
+        <div id="piano-bar" class="hidden bg-black p-1.5 flex justify-center gap-1 border-t-2 border-black shrink-0">
+            <button onclick="playLiveNote('C4','🔴 Sa')" class="toon-btn bg-[#FF5757] text-white flex-1 py-2 text-xs">Sa</button>
+            <button onclick="playLiveNote('D4','🟠 Re')" class="toon-btn bg-[#FF914D] text-black flex-1 py-2 text-xs">Re</button>
+            <button onclick="playLiveNote('E4','🟡 Ga')" class="toon-btn bg-[#FFDE59] text-black flex-1 py-2 text-xs">Ga</button>
+            <button onclick="playLiveNote('F4','🟢 Ma')" class="toon-btn bg-[#7ED957] text-black flex-1 py-2 text-xs">Ma</button>
+            <button onclick="playLiveNote('G4','🔵 Pa')" class="toon-btn bg-[#5CE1E6] text-black flex-1 py-2 text-xs">Pa</button>
+            <button onclick="playLiveNote('A4','🟣 Dha')" class="toon-btn bg-[#CB6CE6] text-white flex-1 py-2 text-xs">Dha</button>
+            <button onclick="playLiveNote('B4','🩷 Ni')" class="toon-btn bg-[#FF66C4] text-black flex-1 py-2 text-xs">Ni</button>
+            <button onclick="playLiveNote('C5','⭐ SA')" class="toon-btn bg-white text-black flex-1 py-2 text-xs">SA</button>
+        </div>
+
         <!-- CHAT INPUT BAR -->
-        <div class="bg-white border-t-4 border-black p-2.5 flex items-center gap-2 shrink-0">
-            <input type="text" id="message-input" onkeypress="if(event.key==='Enter') sendMessage()" class="toon-input flex-1 bg-slate-100 text-black px-4 py-2.5 text-sm placeholder-slate-400" placeholder="मैसेज लिखें... 🚀" autocomplete="off">
+        <div class="bg-white border-t-4 border-black p-2 flex items-center gap-1.5 shrink-0">
+            <button onclick="startVoiceDictation()" id="mic-btn" class="toon-btn bg-[#FFDE59] text-black w-10 h-11 text-base shrink-0" title="Voice Input">
+                🎙️
+            </button>
+            <input type="text" id="message-input" oninput="notifyTyping()" onkeypress="if(event.key==='Enter') sendMessage()" class="toon-input flex-1 bg-slate-100 text-black px-3.5 py-2.5 text-sm placeholder-slate-400" placeholder="मैसेज लिखें... 🚀" autocomplete="off">
             <button onclick="sendMessage()" class="toon-btn bg-[#7ED957] hover:bg-[#68c343] text-black w-12 h-11 text-xl shrink-0">
                 🚀
             </button>
@@ -249,15 +398,23 @@
         let myName = "Hero";
         let myAvatar = "😎";
         let isGodAdmin = false;
+        let myXP = 0;
+        let currentTextStyle = 'normal';
+        let bombMode = false;
+        let ttsEnabled = false;
+        let replyToData = null;
+        let lastTypingSent = 0;
+        let cricRuns = 0;
 
         // Sound Synthesizer (Zero external MP3 needed)
-        let synthReady = false;
-        function playToonSound(type) {
+        function playToonSound(type, customNote) {
             try {
                 if (Tone.context.state !== 'running') Tone.start();
                 const synth = new Tone.Synth().toDestination();
                 const now = Tone.now();
-                if (type === 'pop') {
+                if (type === 'note' && customNote) {
+                    synth.triggerAttackRelease(customNote, "8n", now);
+                } else if (type === 'pop') {
                     synth.triggerAttackRelease("C5", "16n", now);
                     synth.triggerAttackRelease("G5", "16n", now + 0.06);
                 } else if (type === 'horn') {
@@ -275,6 +432,35 @@
                     synth.triggerAttackRelease("C6", "8n", now + 0.24);
                 }
             } catch (e) {}
+        }
+
+        function addXP(pts) {
+            myXP += pts;
+            document.getElementById('xp-badge').innerText = `⚡${myXP}`;
+        }
+
+        // Cycle Avatar Mood on Tap (Feature #18)
+        const moods = ["😎", "🐣", "⚡", "👑", "🥷", "🦁", "🦊", "🤖", "👻", "🐲"];
+        function cycleMyMood() {
+            const idx = (moods.indexOf(myAvatar) + 1) % moods.length;
+            myAvatar = moods[idx];
+            document.getElementById('my-avatar').innerText = myAvatar;
+            playToonSound('pop');
+        }
+
+        // Theme Switcher (Feature #19)
+        const themes = [
+            { body: '#FFDE59', header: '#5CE1E6' },
+            { body: '#FF66C4', header: '#FFDE59' },
+            { body: '#7ED957', header: '#FF914D' },
+            { body: '#1e1b4b', header: '#CB6CE6' }
+        ];
+        let themeIdx = 0;
+        function cycleTheme() {
+            themeIdx = (themeIdx + 1) % themes.length;
+            document.getElementById('app-body').style.backgroundColor = themes[themeIdx].body;
+            document.getElementById('top-header').style.backgroundColor = themes[themeIdx].header;
+            playToonSound('pop');
         }
 
         // Resolve Identity Silently from Roll No or Code
@@ -299,7 +485,6 @@
                 showToast("👑 KANISQ SUPERPOWERS UNLOCKED!");
                 confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
             } else if (code !== "") {
-                // If user typed a roll number or name
                 if (/^\d+$/.test(code)) {
                     myName = "Star #" + code;
                     myAvatar = "🚀";
@@ -371,10 +556,14 @@
                 const msg = event.message;
                 if (!msg) return;
 
-                if (msg.type === 'chat' || msg.type === 'sticker' || msg.type === 'doodle') {
+                if (msg.type === 'chat' || msg.type === 'sticker' || msg.type === 'doodle' || msg.type === 'poll') {
                     renderChatMessage(msg);
                     if (msg.sound) playToonSound(msg.sound);
                     else if (msg.uuid !== myUUID) playToonSound('pop');
+
+                    if (ttsEnabled && msg.text && msg.type === 'chat') {
+                        speakChipmunk(msg.text);
+                    }
                 } else if (msg.type === 'xo') {
                     syncXOBoard(msg);
                 } else if (msg.type === 'power') {
@@ -384,45 +573,136 @@
                     document.getElementById('live-banner-text').innerText = "👑 " + msg.text;
                     bar.classList.remove('hidden');
                     playToonSound('horn');
+                } else if (msg.type === 'typing' && msg.uuid !== myUUID) {
+                    showTypingBadge(msg.sender);
+                } else if (msg.type === 'fountain') {
+                    spawnLocalEmojis(msg.emojis);
+                } else if (msg.type === 'piano') {
+                    playToonSound('note', msg.note);
+                    showToast(`🎹 ${msg.sender}: ${msg.label}`);
+                } else if (msg.type === 'pin') {
+                    document.getElementById('pin-bar').classList.remove('hidden');
+                    document.getElementById('pin-sender').innerText = msg.sender + ":";
+                    document.getElementById('pin-text').innerText = msg.text;
+                    playToonSound('pop');
+                } else if (msg.type === 'react') {
+                    const badge = document.getElementById('react-' + msg.msgId);
+                    if (badge) {
+                        badge.innerText = (badge.innerText + " " + msg.emoji).trim();
+                        badge.classList.remove('hidden');
+                    }
                 }
             }
         });
 
+        // Live Typing Indicator (Feature #20)
+        let typingTimer;
+        function notifyTyping() {
+            const now = Date.now();
+            if (now - lastTypingSent > 2500) {
+                lastTypingSent = now;
+                pubnub.publish({
+                    channel: CHANNEL,
+                    message: { type: 'typing', uuid: myUUID, sender: myName }
+                });
+            }
+        }
+        function showTypingBadge(who) {
+            const el = document.getElementById('typing-indicator');
+            el.innerText = `✍️ ${who}...`;
+            el.classList.remove('hidden');
+            clearTimeout(typingTimer);
+            typingTimer = setTimeout(() => el.classList.add('hidden'), 2400);
+        }
+
+        // Fancy Text Stylizer (Feature #9)
+        function setTextStyle(st) {
+            currentTextStyle = st;
+            ['normal','fancy','reverse','spoiler','shout'].forEach(k => {
+                const btn = document.getElementById('st-' + k);
+                if (btn) btn.className = `toon-btn ${k === st ? 'bg-[#FFDE59]' : 'bg-white'} px-2 py-0.5 text-[10px]`;
+            });
+            showToast(`✨ Style: ${st.toUpperCase()}`);
+        }
+
+        function transformText(txt) {
+            if (currentTextStyle === 'reverse') return txt.split('').reverse().join('');
+            if (currentTextStyle === 'shout') return "📢 " + txt.toUpperCase() + " 🔥";
+            if (currentTextStyle === 'fancy') {
+                const map = {a:'𝓪',b:'𝓫',c:'𝓬',d:'𝓭',e:'𝓮',f:'𝓯',g:'𝓰',h:'𝓱',i:'𝓲',j:'𝓳',k:'𝓴',l:'𝓵',m:'𝓶',n:'𝓷',o:'𝓸',p:'𝓹',q:'𝓺',r:'𝓻',s:'𝓼',t:'𝓽',u:'𝓾',v:'𝓿',w:'𝔀',x:'𝔁',y:'𝔂',z:'𝕫'};
+                return txt.split('').map(c => map[c.toLowerCase()] || c).join('');
+            }
+            return txt;
+        }
+
         // Send Normal Message (Also checks silently if user typed 'Kanisq' in chat)
         function sendMessage() {
             const input = document.getElementById('message-input');
-            const text = input.value.trim();
+            let text = input.value.trim();
             if (!text) return;
 
-            // Silent superpower trigger if user types Kanisq directly in chat box
             if (text.toLowerCase() === 'kanisq') {
                 resolveIdentity('Kanisq');
                 input.value = '';
                 return;
             }
 
+            const finalTxt = transformText(text);
+            addXP(5);
+
             pubnub.publish({
                 channel: CHANNEL,
                 message: {
                     type: 'chat',
+                    id: 'm_' + Date.now() + '_' + Math.floor(Math.random()*999),
                     uuid: myUUID,
                     sender: myName,
                     avatar: myAvatar,
                     vip: isGodAdmin,
-                    text: text,
+                    text: finalTxt,
+                    spoiler: currentTextStyle === 'spoiler',
+                    bomb: bombMode,
+                    replyTo: replyToData,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
             });
 
             input.value = '';
+            cancelReply();
+        }
+
+        // Reply & Pin Helpers
+        function setReply(sender, text) {
+            replyToData = { sender, text: text.substring(0, 40) };
+            document.getElementById('reply-bar').classList.remove('hidden');
+            document.getElementById('reply-preview-text').innerText = `↩️ ${sender}: ${replyToData.text}`;
+            document.getElementById('message-input').focus();
+        }
+        function cancelReply() {
+            replyToData = null;
+            document.getElementById('reply-bar').classList.add('hidden');
+        }
+        function pinMessage(sender, text) {
+            pubnub.publish({
+                channel: CHANNEL,
+                message: { type: 'pin', sender, text: text.substring(0, 60) }
+            });
+        }
+        function sendReaction(msgId, emoji) {
+            pubnub.publish({
+                channel: CHANNEL,
+                message: { type: 'react', msgId, emoji }
+            });
         }
 
         // Send One-Tap Fun Sticker with Sound
         function sendFunSticker(stickerText, soundEffect) {
+            addXP(10);
             pubnub.publish({
                 channel: CHANNEL,
                 message: {
                     type: 'sticker',
+                    id: 'm_' + Date.now(),
                     uuid: myUUID,
                     sender: myName,
                     avatar: myAvatar,
@@ -438,24 +718,34 @@
         function renderChatMessage(data) {
             const chatBox = document.getElementById('chat-box');
             const isMe = data.uuid === myUUID;
+            const msgId = data.id || ('m_' + Math.random().toString(36).substring(2));
 
             const wrapper = document.createElement('div');
-            wrapper.className = `msg-pop flex flex-col max-w-[82%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`;
+            wrapper.id = 'wrap-' + msgId;
+            wrapper.className = `msg-pop flex flex-col max-w-[85%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`;
 
             const senderTag = document.createElement('div');
-            senderTag.className = 'text-[11px] font-black text-slate-700 px-1.5 mb-0.5 flex items-center gap-1';
-            senderTag.innerText = isMe ? `आप (${data.sender})` : `${data.avatar || '😎'} ${data.sender}`;
+            senderTag.className = 'text-[10px] font-black text-slate-700 px-1.5 mb-0.5 flex items-center gap-1';
+            senderTag.innerHTML = `${isMe ? `आप (${data.sender})` : `${data.avatar || '😎'} ${data.sender}`} <span class="opacity-50">${data.time || ''}</span>`;
 
             const bubble = document.createElement('div');
             let bgClass = isMe ? 'bg-[#7ED957] text-black rounded-tr-none' : 'bg-white text-black rounded-tl-none';
             if (data.vip) {
-                bgClass = 'bg-[#FFDE59] text-black border-[#000] ring-2 ring-[#FF5757]';
+                bgClass = 'gold-vip-msg text-black';
             }
             if (data.type === 'sticker') {
-                bgClass = 'bg-[#FF66C4] text-black text-base font-black px-4 py-2';
+                bgClass = 'bg-[#FF66C4] text-black text-sm font-black px-3.5 py-2';
             }
 
-            bubble.className = `px-3.5 py-2 rounded-2xl border-[3px] border-black shadow-[3px_3px_0px_#000] text-sm font-bold break-words ${bgClass}`;
+            bubble.className = `relative px-3.5 py-2 rounded-2xl border-[3px] border-black shadow-[3px_3px_0px_#000] text-sm font-bold break-words ${bgClass}`;
+
+            // Reply Quote inside bubble
+            if (data.replyTo) {
+                const rep = document.createElement('div');
+                rep.className = 'text-[10px] bg-black/10 border-l-4 border-black px-2 py-0.5 rounded mb-1 truncate';
+                rep.innerText = `↩️ ${data.replyTo.sender}: ${data.replyTo.text}`;
+                bubble.appendChild(rep);
+            }
 
             if (data.type === 'doodle' && data.image) {
                 const img = document.createElement('img');
@@ -463,13 +753,190 @@
                 img.className = 'w-44 h-auto rounded-xl border-2 border-black bg-white';
                 bubble.appendChild(img);
             } else {
-                bubble.innerText = data.text;
+                const txtSpan = document.createElement('span');
+                txtSpan.innerText = data.text;
+                if (data.spoiler) {
+                    txtSpan.className = 'blur-sm cursor-pointer select-none transition-all';
+                    txtSpan.title = 'Tap to reveal secret';
+                    txtSpan.onclick = function() { this.classList.remove('blur-sm'); };
+                }
+                bubble.appendChild(txtSpan);
             }
+
+            // Bomb Indicator
+            if (data.bomb) {
+                const bTag = document.createElement('span');
+                bTag.className = 'ml-1.5 text-[10px] bg-red-600 text-white px-1.5 py-0.5 rounded-full animate-pulse';
+                bTag.innerText = '💣 5s';
+                bubble.appendChild(bTag);
+                setTimeout(() => {
+                    wrapper.style.transition = 'all 0.3s';
+                    wrapper.style.transform = 'scale(0)';
+                    setTimeout(() => wrapper.remove(), 300);
+                }, 5500);
+            }
+
+            // Quick Actions Row (React, Reply, Pin)
+            const actionRow = document.createElement('div');
+            actionRow.className = 'flex items-center gap-1.5 mt-1 px-1 text-[10px] font-black opacity-80';
+            actionRow.innerHTML = `
+                <button onclick="sendReaction('${msgId}','❤️')" class="hover:scale-125">❤️</button>
+                <button onclick="sendReaction('${msgId}','😂')" class="hover:scale-125">😂</button>
+                <button onclick="sendReaction('${msgId}','🔥')" class="hover:scale-125">🔥</button>
+                <button onclick="setReply('${(data.sender||'').replace(/'/g,"")}','${(data.text||'Sketch').replace(/'/g,"")}')" class="underline ml-1">Reply</button>
+                <button onclick="pinMessage('${(data.sender||'').replace(/'/g,"")}','${(data.text||'Sketch').replace(/'/g,"")}')" class="underline">📌</button>
+                <span id="react-${msgId}" class="hidden bg-white border border-black px-1.5 rounded-full shadow-sm"></span>
+            `;
 
             wrapper.appendChild(senderTag);
             wrapper.appendChild(bubble);
+            wrapper.appendChild(actionRow);
             chatBox.appendChild(wrapper);
             chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // 🧰 25+ MAGIC HUB TOOLS LOGIC
+        function toggleMagicHub() {
+            document.getElementById('magic-drawer').classList.toggle('hidden');
+            document.getElementById('game-drawer').classList.add('hidden');
+        }
+
+        function sendMagicAction(kind) {
+            let out = "";
+            if (kind === 'dice') {
+                const d = Math.floor(1 + Math.random() * 6);
+                out = `🎲 पासा फेंका और आया: [ ${d} ] !`;
+            } else if (kind === 'coin') {
+                const c = Math.random() > 0.5 ? "🪙 HEADS (चित)!" : "🪙 TAILS (पट)!";
+                out = `सिक्का उछाला: ${c}`;
+            } else if (kind === '8ball') {
+                const ans = ["100% पक्का है! 🔥", "बिल्कुल नहीं 😂", "अभी किस्मत चमकने वाली है ✨", "दोबारा पूछो भाई 🤔", "सिस्टम हैंग हो जाएगा 🚀"];
+                out = `🎱 Magic 8-Ball: "${ans[Math.floor(Math.random()*ans.length)]}"`;
+            } else if (kind === 'truth') {
+                const td = [
+                    "🍾 Truth: तुम्हारा सबसे अजीब सीक्रेट क्या है?",
+                    "🍾 Dare: अभी चैट में 3 बार 'मैं नूब हूँ' लिखो 😂",
+                    "🍾 Truth: क्लास में सबसे ज्यादा किससे डर लगता है?",
+                    "🍾 Dare: एक अजीब सा कार्टून Draw करके भेजो 🎨"
+                ];
+                out = td[Math.floor(Math.random()*td.length)];
+            } else if (kind === 'vibe') {
+                const pct = Math.floor(75 + Math.random() * 26);
+                out = `💯 Aura Check: ${myName} का स्वैग लेवल ${pct}% LEGENDARY है! 🔥✨`;
+            } else if (kind === 'roast') {
+                const roasts = [
+                    "🔥 भाई तेरा दिमाग 2G पर चल रहा है क्या? 😂",
+                    "🔥 इतना मत सोच, सिस्टम क्रैश हो जाएगा! 🚀",
+                    "🔥 जलने वालों की तो अभी और जलेगी! 😎💯",
+                    "🔥 तू तो असली हेवी ड्राइवर निकला भाई! 🏆"
+                ];
+                out = roasts[Math.floor(Math.random()*roasts.length)];
+            } else if (kind === 'joke') {
+                const jokes = [
+                    "😂 टीचर: बताओ बिजली कहाँ से आती है? पप्पू: मामा के घर से, जब भी जाती है पापा बोलते हैं सालों ने फिर काट दी!",
+                    "😂 दोस्त: भाई मेरी घड़ी बंद हो गई! पप्पू: अरे एक बार बैटरी को हिला के देख, शायद सो रही हो!",
+                    "😂 डॉक्टर: आपके दांत कैसे टूटे? पप्पू: मम्मी ने कहा था रोटी तोड़ के खाओ, मैंने पहले दांत तोड़े!"
+                ];
+                out = jokes[Math.floor(Math.random()*jokes.length)];
+            } else if (kind === 'quiz') {
+                const a = Math.floor(5 + Math.random()*20);
+                const b = Math.floor(5 + Math.random()*20);
+                out = `🧠 Fast Math Challenge: सबसे पहले बताओ ${a} + ${b} कितना होता है?! ⚡`;
+            }
+
+            if (out) {
+                sendFunSticker(out, 'pop');
+                toggleMagicHub();
+            }
+        }
+
+        function openPollCreator() {
+            const q = "📊 Quick Poll: आज का सबसे तगड़ा प्लेयर कौन है? React ❤️ या 🔥 दबाओ!";
+            sendFunSticker(q, 'horn');
+            toggleMagicHub();
+        }
+
+        function toggleBombMode() {
+            bombMode = !bombMode;
+            const btn = document.getElementById('bomb-btn');
+            btn.className = `toon-btn ${bombMode ? 'bg-[#FF5757] text-white' : 'bg-white'} py-1.5 text-[11px] flex-col`;
+            showToast(bombMode ? "💣 5s Self-Destruct ON!" : "💣 Bomb Mode OFF");
+        }
+
+        function toggleVoiceChipmunk() {
+            ttsEnabled = !ttsEnabled;
+            const btn = document.getElementById('voice-btn');
+            btn.className = `toon-btn ${ttsEnabled ? 'bg-[#7ED957]' : 'bg-white'} py-1.5 text-[11px] flex-col`;
+            showToast(ttsEnabled ? "🗣️ Voice Read-Aloud ON!" : "🗣️ Voice OFF");
+        }
+
+        function speakChipmunk(text) {
+            try {
+                if ('speechSynthesis' in window) {
+                    const u = new SpeechSynthesisUtterance(text);
+                    u.lang = 'hi-IN';
+                    u.pitch = 1.6;
+                    u.rate = 1.15;
+                    window.speechSynthesis.speak(u);
+                }
+            } catch (e) {}
+        }
+
+        // Live Emoji Fountain (Feature #14)
+        function triggerEmojiFountain(emojis) {
+            pubnub.publish({
+                channel: CHANNEL,
+                message: { type: 'fountain', emojis: emojis }
+            });
+        }
+        function spawnLocalEmojis(str) {
+            const arr = Array.from(str || '🔥❤️🚀');
+            for (let i = 0; i < 10; i++) {
+                setTimeout(() => {
+                    const el = document.createElement('div');
+                    el.className = 'floating-emoji';
+                    el.innerText = arr[i % arr.length];
+                    el.style.left = Math.floor(10 + Math.random() * 80) + 'vw';
+                    document.body.appendChild(el);
+                    setTimeout(() => el.remove(), 2400);
+                }, i * 90);
+            }
+            playToonSound('pop');
+        }
+
+        // Live Piano Bar (Feature #15)
+        function togglePianoBar() {
+            document.getElementById('piano-bar').classList.toggle('hidden');
+        }
+        function playLiveNote(note, label) {
+            pubnub.publish({
+                channel: CHANNEL,
+                message: { type: 'piano', note, label, sender: myName }
+            });
+        }
+
+        // Voice Mic Dictation (Feature #16)
+        function startVoiceDictation() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) {
+                showToast("🎙️ टाइपिंग का उपयोग करें!");
+                return;
+            }
+            try {
+                const rec = new SpeechRec();
+                rec.lang = 'hi-IN';
+                const btn = document.getElementById('mic-btn');
+                btn.classList.add('bg-[#FF5757]', 'text-white');
+                showToast("🎙️ बोलिए...");
+                rec.onresult = (e) => {
+                    const transcript = e.results[0][0].transcript;
+                    document.getElementById('message-input').value = transcript;
+                };
+                rec.onend = () => {
+                    btn.classList.remove('bg-[#FF5757]', 'text-white');
+                };
+                rec.start();
+            } catch (e) {}
         }
 
         // 👑 KANISQ SUPERPOWERS LOGIC
@@ -504,8 +971,8 @@
         }
 
         function executePowerEffect(msg) {
+            const cont = document.getElementById('main-container');
             if (msg.action === 'earthquake') {
-                const cont = document.getElementById('main-container');
                 cont.classList.remove('shake-active');
                 void cont.offsetWidth;
                 cont.classList.add('shake-active');
@@ -519,13 +986,34 @@
                 document.getElementById('app-body').classList.toggle('disco-active');
                 playToonSound('laugh');
                 showToast(`🪩 Disco Mode Toggled!`);
+            } else if (msg.action === 'flip') {
+                cont.classList.toggle('flip-active');
+                playToonSound('laser');
+                showToast(`🙃 Screen Flipped by ${msg.by}!`);
+            } else if (msg.action === 'freeze') {
+                const fr = document.getElementById('freeze-screen');
+                fr.classList.remove('hidden');
+                fr.classList.add('flex');
+                playToonSound('laser');
+                setTimeout(() => {
+                    fr.classList.add('hidden');
+                    fr.classList.remove('flex');
+                }, 5000);
+            } else if (msg.action === 'matrix') {
+                document.getElementById('chat-box').classList.toggle('matrix-active');
+                playToonSound('laser');
+                showToast(`💻 Hacker Mode by ${msg.by}!`);
+            } else if (msg.action === 'siren') {
+                playToonSound('horn');
+                spawnLocalEmojis('🚨👑⚡');
+                showToast(`🚨 VIP ALERT BY ${msg.by}!`);
             } else if (msg.action === 'clear') {
                 document.getElementById('chat-box').innerHTML = '';
                 showToast(`🧹 Chat Wiped by ${msg.by}!`);
             }
         }
 
-        // 🎮 LIVE TIC-TAC-TOE LOGIC
+        // 🎮 MULTI-GAME ARCADE LOGIC (XO + RPS + Hand Cricket)
         let xoBoard = ['', '', '', '', '', '', '', '', ''];
         let xoTurn = '❌';
         let xoActive = true;
@@ -533,6 +1021,40 @@
         function toggleGameModal() {
             const drawer = document.getElementById('game-drawer');
             drawer.classList.toggle('hidden');
+            document.getElementById('magic-drawer').classList.add('hidden');
+        }
+
+        function switchGameTab(tab) {
+            ['xo','rps','cricket'].forEach(t => {
+                document.getElementById('game-view-' + t).classList.toggle('hidden', t !== tab);
+                document.getElementById('gtab-' + t).className = `toon-btn ${t === tab ? 'bg-[#FFDE59]' : 'bg-white'} text-black px-2.5 py-1 text-xs`;
+            });
+        }
+
+        function playLiveRPS(choice) {
+            sendFunSticker(`🎮 RPS Move: मैंने चुना [ ${choice} ]! दम है तो हरा के दिखाओ! 🔥`, 'pop');
+            toggleGameModal();
+        }
+
+        function hitCricket(runs) {
+            const aiBowl = [0,1,2,3,4,6][Math.floor(Math.random()*6)];
+            if (runs !== 0 && runs === aiBowl) {
+                const finalScore = cricRuns;
+                document.getElementById('cric-last').innerText = `💥 OUT at ${finalScore}!`;
+                cricRuns = 0;
+                document.getElementById('cric-score').innerText = '0';
+                playToonSound('laser');
+            } else {
+                cricRuns += runs;
+                document.getElementById('cric-score').innerText = cricRuns;
+                document.getElementById('cric-last').innerText = runs === 6 ? '🔥 SIXER!' : `🏏 +${runs} Runs`;
+                playToonSound('pop');
+            }
+        }
+
+        function shareCricketScore() {
+            sendFunSticker(`🏏 Hand Cricket: ${myName} ने अभी नाबाद ${cricRuns} Runs ठोके हैं! 🏆🔥`, 'horn');
+            toggleGameModal();
         }
 
         function playXO(idx) {
