@@ -83,10 +83,41 @@
             filter: blur(0px);
         }
 
+        /* Wallpaper Themes */
+        .theme-default { background-color: #FFFDF7; background-image: radial-gradient(#cbd5e1 1.8px, transparent 1.8px); background-size: 20px 20px; }
+        .theme-dark { background-color: #0f172a; background-image: radial-gradient(#334155 1.8px, transparent 1.8px); background-size: 20px 20px; }
+        .theme-pink { background-color: #fff1f2; background-image: radial-gradient(#fda4af 1.8px, transparent 1.8px); background-size: 20px 20px; }
+        .theme-matrix { background-color: #022c22; background-image: radial-gradient(#10b981 1.8px, transparent 1.8px); background-size: 20px 20px; }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100dvh) scale(0.6) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.4) rotate(25deg); opacity: 0; }
+        }
+        .emoji-float {
+            position: fixed;
+            bottom: -50px;
+            z-index: 60;
+            pointer-events: none;
+            animation: floatUp 2.8s ease-out forwards;
+        }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="flex justify-center items-center">
+
+    <!-- EMOJI RAIN LAYER -->
+    <div id="emoji-rain-box" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+    <!-- FAKE HACKER / FREEZE OVERLAY -->
+    <div id="hack-overlay" class="fixed inset-0 bg-black/95 text-[#4ADE80] font-mono z-50 hidden flex-col items-center justify-center p-6 text-center">
+        <div class="text-6xl mb-3 animate-pulse">👾💻</div>
+        <h2 id="hack-title" class="text-2xl font-black mb-2">SYSTEM HACKED BY KANISQ!</h2>
+        <p id="hack-sub" class="text-xs text-emerald-300 max-w-xs mb-4">Downloading Secret Data... 99%</p>
+        <div class="w-56 h-4 border-2 border-[#4ADE80] rounded-full overflow-hidden p-0.5">
+            <div class="h-full bg-[#4ADE80] animate-pulse w-full rounded-full"></div>
+        </div>
+    </div>
 
     <!-- FULLSCREEN HIJACK OVERLAY (KANISQ REAL SUPERPOWER) -->
     <div id="hijack-overlay" class="fixed inset-0 bg-black/95 z-50 hidden flex-col items-center justify-center p-6 text-center">
@@ -125,6 +156,49 @@
             <div class="flex items-center gap-2.5 min-w-0">
                 <button id="my-avatar-btn" onclick="openIdentityPrompt()" class="w-10 h-10 bg-white border-[2.5px] border-black rounded-xl flex items-center justify-center text-xl shadow-[0_3px_0_#000] shrink-0">
                     😎
+                </button>
+                <div class="truncate">
+                    <div class="flex items-center gap-1.5">
+                        <h2 class="toon-font text-lg font-black text-black leading-none tracking-tight">AiR 1 UP</h2>
+                        <span class="inline-block w-2.5 h-2.5 bg-[#22C55E] border border-black rounded-full animate-pulse"></span>
+                    </div>
+                    <div class="flex items-center gap-1.5 mt-0.5">
+                        <span id="my-badge-name" onclick="openIdentityPrompt()" class="text-[11px] font-extrabold text-black bg-white/90 border border-black px-2 py-0.2 rounded-md cursor-pointer truncate max-w-[115px]">
+                            Star
+                        </span>
+                        <span id="typing-indicator" class="text-[10px] font-extrabold text-rose-600 hidden animate-pulse">
+                            ✍️ कोई लिख रहा है...
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 shrink-0">
+                <button onclick="cycleWallpaper()" class="toon-pill bg-white text-black px-2.5 py-1.5 text-xs" title="Theme बदलें">
+                    🎨
+                </button>
+                <button onclick="toggleSheet('game')" class="toon-pill bg-[#38BDF8] text-black px-2.5 py-1.5 text-xs gap-1">
+                    🎮 <span>Game</span>
+                </button>
+                <button id="crown-btn" onclick="toggleSheet('god')" class="hidden toon-pill bg-[#FF5757] text-white px-2.5 py-1.5 text-xs gap-1 animate-bounce">
+                    👑 <span>Power</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- PINNED / LIVE DJ NOTICE BANNER -->
+        <div id="top-notice" class="hidden bg-[#1E1B4B] text-[#FFDE59] border-b-[3px] border-black px-3.5 py-1.5 text-xs font-extrabold flex items-center justify-between shrink-0 z-10">
+            <span id="top-notice-text" class="truncate">📌 Notice</span>
+            <button onclick="document.getElementById('top-notice').classList.add('hidden')" class="bg-[#FF5757] text-white border border-black px-2 py-0.2 rounded text-[10px] ml-2">✕</button>
+        </div>
+
+        <!-- 2. MAIN CHAT AREA (85% Clean Space) -->
+        <main id="chat-box" class="flex-1 overflow-y-auto p-3.5 flex flex-col gap-3 theme-default no-scrollbar">
+            <div class="self-center bg-white border-2 border-black shadow-[0_2px_0_#000] px-3.5 py-1 rounded-full text-[11px] font-extrabold text-slate-700 text-center">
+                ⚡ <b>AiR 1 UP</b> Live Room • मैसेज दबाए रखें (Hold) = Edit/Delete
+            </div>
+        </main>
+
         <!-- REPLY BAR (Only shows when replying or editing) -->
         <div id="reply-box" class="hidden bg-[#E0F2FE] border-t-2 border-black px-3.5 py-1.5 text-xs font-bold flex items-center justify-between shrink-0">
             <span id="reply-label" class="truncate text-black">↩️ Replying...</span>
@@ -214,6 +288,22 @@
                     <button onclick="toggleBombFlag()" id="bomb-toggle-btn" class="toon-pill bg-[#FFEDD5] text-black py-2.5 flex-col gap-0.5 text-xs">
                         <span class="text-xl">💣</span><span id="bomb-label">5s गायब मैसेज</span>
                     </button>
+                    <button onclick="fireInteractiveCard('scratch')" class="toon-pill bg-[#FEF9C3] text-black py-2.5 flex-col gap-0.5 text-xs">
+                        <span class="text-xl">🎫</span><span>Scratch लॉटरी</span>
+                    </button>
+                    <button onclick="fireEmojiRain('🔥❤️😂💎🚀')" class="toon-pill bg-[#D1FAE5] text-black py-2.5 flex-col gap-0.5 text-xs">
+                        <span class="text-xl">🌧️</span><span>Emoji बारिश</span>
+                    </button>
+                    <button onclick="toggleBigTextFlag()" id="big-toggle-btn" class="toon-pill bg-[#F3E8FF] text-black py-2.5 flex-col gap-0.5 text-xs">
+                        <span class="text-xl">📢</span><span id="big-label">2x बड़ा अक्षर</span>
+                    </button>
+                </div>
+
+                <!-- Walkie-Talkie Instant Voice Broadcast Bar -->
+                <div class="bg-slate-100 border-2 border-black rounded-2xl p-2 mb-2.5 flex items-center gap-1.5">
+                    <span class="text-base">📻</span>
+                    <input type="text" id="walkie-input" class="flex-1 bg-white border-2 border-black rounded-xl px-2.5 py-1.5 text-xs font-bold text-black outline-none" placeholder="Walkie-Talkie: सबके स्पीकर में बोलें...">
+                    <button onclick="sendWalkieVoice()" class="toon-pill bg-[#38BDF8] text-black px-3 py-1.5 text-xs shrink-0">🔊 बोलो</button>
                 </div>
 
                 <!-- Quick Sound Stickers Row -->
@@ -222,6 +312,7 @@
                     <button onclick="sendSoundSticker('🔥 सिस्टम हैंग कर दिया! 🔥', 'horn')" class="toon-pill bg-[#FF914D] text-black px-3 py-1.5 text-xs shrink-0">📢 सिस्टम हैंग</button>
                     <button onclick="sendSoundSticker('😂 भाई गजब बेइज्जती है! 😂', 'laugh')" class="toon-pill bg-[#FFDE59] text-black px-3 py-1.5 text-xs shrink-0">😂 गजब बेइज्जती</button>
                     <button onclick="sendSoundSticker('💎 100% VIP ENTRY 💎', 'laser')" class="toon-pill bg-[#C084FC] text-black px-3 py-1.5 text-xs shrink-0">💎 VIP Entry</button>
+                    <button onclick="sendSoundSticker('🚨 पुलिस सायरन! भागो भाई! 🚨', 'siren')" class="toon-pill bg-[#FF5757] text-white px-3 py-1.5 text-xs shrink-0">🚨 Siren</button>
                     <button onclick="sendSoundSticker('🇮🇳 जय हिन्द! AiR 1 UP 🇮🇳', 'horn')" class="toon-pill bg-[#4ADE80] text-black px-3 py-1.5 text-xs shrink-0">🇮🇳 जय हिन्द</button>
                 </div>
             </div>
@@ -320,9 +411,18 @@
                 </div>
 
                 <!-- Instant 1-Tap Room Powers -->
-                <div class="grid grid-cols-5 gap-1.5">
+                <div class="grid grid-cols-4 gap-1.5">
                     <button onclick="fireRoomEffect('fart_attack')" class="toon-pill bg-[#BEF264] text-black py-2 flex-col text-[10px]">
                         <span class="text-lg">💨</span><span>सबमें Fart</span>
+                    </button>
+                    <button onclick="fireRoomEffect('hack')" class="toon-pill bg-[#10B981] text-black py-2 flex-col text-[10px]">
+                        <span class="text-lg">👾</span><span>Fake Hack</span>
+                    </button>
+                    <button onclick="fireRoomEffect('freeze')" class="toon-pill bg-[#BAE6FD] text-black py-2 flex-col text-[10px]">
+                        <span class="text-lg">🥶</span><span>Ice Freeze</span>
+                    </button>
+                    <button onclick="fireRoomEffect('siren_all')" class="toon-pill bg-[#F43F5E] text-white py-2 flex-col text-[10px]">
+                        <span class="text-lg">🚨</span><span>सबमें सायरन</span>
                     </button>
                     <button onclick="fireRoomEffect('quake')" class="toon-pill bg-[#FF914D] text-black py-2 flex-col text-[10px]">
                         <span class="text-lg">🌋</span><span>भूकंप</span>
@@ -396,6 +496,9 @@
         let isKanisq = false;
         let isBombMsg = false;
         let isSecretMsg = false;
+        let isBigMsg = false;
+        let currentThemeIdx = 0;
+        const themes = ['theme-default', 'theme-dark', 'theme-pink', 'theme-matrix'];
         let replyContext = null;
         let editingMsgId = null;
         let selectedMsgData = null;
@@ -409,7 +512,6 @@
                 if (Tone.context.state !== 'running') Tone.start();
                 const now = Tone.now();
                 if (type === 'fart') {
-                    // Ultra-funny realistic squelchy cartoon fart sound using FM & Pitch glide
                     const fm = new Tone.FMSynth({
                         harmonicity: 0.5,
                         modulationIndex: 18,
@@ -436,11 +538,15 @@
                     synth.triggerAttackRelease("E5", "16n", now);
                     synth.triggerAttackRelease("G5", "16n", now + 0.08);
                     synth.triggerAttackRelease("C6", "8n", now + 0.16);
+                } else if (type === 'siren') {
+                    synth.triggerAttackRelease("A5", "8n", now);
+                    synth.triggerAttackRelease("E5", "8n", now + 0.15);
+                    synth.triggerAttackRelease("A5", "8n", now + 0.3);
                 }
             } catch (e) {}
         }
 
-        // Speak Hindi/English aloud on everyone's phone (Kanisq Power)
+        // Speak Hindi/English aloud on everyone's phone (Kanisq Power & Walkie Talkie)
         function speakLoud(text) {
             try {
                 if ('speechSynthesis' in window) {
@@ -452,6 +558,17 @@
                     window.speechSynthesis.speak(u);
                 }
             } catch (e) {}
+        }
+
+        // 🎨 Cycle Chat Wallpaper Themes
+        function cycleWallpaper() {
+            const box = document.getElementById('chat-box');
+            box.classList.remove(themes[currentThemeIdx]);
+            currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+            box.classList.add(themes[currentThemeIdx]);
+            sfx('pop');
+            const names = ["☀️ Classic Cream", "🌙 Midnight Dark", "🌸 Candy Pink", "💻 Matrix Neon"];
+            toast(`🎨 Theme: ${names[currentThemeIdx]}`);
         }
 
         // 🔐 Silent Identity Resolver (99 = Chiko, 104 = Vikalp, Kanisq = Supreme Admin)
@@ -553,6 +670,48 @@
                 } else if (m.type === 'room_fx') {
                     runRoomEffect(m.effect, m.by);
                 } else if (m.type === 'xo') {
+                    updateXOBoard(m);
+                } else if (m.type === 'react') {
+                    const rEl = document.getElementById('r-' + m.id);
+                    if (rEl) {
+                        rEl.classList.remove('hidden');
+                        rEl.innerText = (rEl.innerText + ' ' + m.emoji).trim();
+                        sfx('pop');
+                    }
+                } else if (m.type === 'vote') {
+                    const vEl = document.getElementById(`poll-${m.cardId}-${m.choice}`);
+                    if (vEl) {
+                        vEl.innerText = parseInt(vEl.innerText || '0', 10) + 1;
+                        sfx('pop');
+                    }
+                } else if (m.type === 'typing') {
+                    if (m.uuid !== myUUID) {
+                        const tEl = document.getElementById('typing-indicator');
+                        tEl.innerText = `✍️ ${m.sender} लिख रहा है...`;
+                        tEl.classList.remove('hidden');
+                        clearTimeout(window._typTimer);
+                        window._typTimer = setTimeout(() => tEl.classList.add('hidden'), 2400);
+                    }
+                } else if (m.type === 'dj') {
+                    syncRoomDJ(m.play, m.by);
+                } else if (m.type === 'walkie') {
+                    drawMessage({
+                        type: 'sticker',
+                        id: 'wk' + Date.now(),
+                        uuid: m.uuid,
+                        sender: m.sender,
+                        avatar: m.avatar,
+                        vip: m.vip,
+                        text: `📻 Walkie-Talkie: "${m.text}" 🔊`,
+                        time: m.time
+                    });
+                    speakLoud(`${m.sender} बोल रहे हैं: ${m.text}`);
+                } else if (m.type === 'emoji_rain') {
+                    spawnEmojiRain(m.emojis || '🔥❤️😂💎🚀');
+                }
+            }
+        });
+
         // 💬 Send Chat Message or Save Edited Message
         function sendChat() {
             const inp = document.getElementById('msg-input');
@@ -596,6 +755,7 @@
                     text: txt,
                     bomb: isBombMsg,
                     secret: isSecretMsg,
+                    big: isBigMsg,
                     reply: replyContext,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
@@ -603,6 +763,7 @@
 
             inp.value = '';
             if (isSecretMsg) toggleSecretFlag(true);
+            if (isBigMsg) toggleBigTextFlag(true);
             clearReply();
         }
 
@@ -671,12 +832,22 @@
                         <div class="text-xs font-black mt-1">Mystery Box! टैप करके खोलें ✨</div>
                     </div>
                 `;
+            } else if (m.type === 'card' && m.cardKind === 'scratch') {
+                bubble.innerHTML = `
+                    <div onclick="revealScratchCard(this)" class="bg-slate-800 text-[#FFDE59] border-2 border-dashed border-[#FFDE59] rounded-xl p-2.5 text-center cursor-pointer select-none">
+                        <div class="text-lg">🎫 SCRATCH CARD</div>
+                        <div class="text-[10px] text-white mt-0.5">✨ घिसने (Scratch) के लिए टैप करें!</div>
+                    </div>
+                `;
             } else {
                 const span = document.createElement('span');
                 span.id = 'txt-' + id;
                 span.innerText = m.text;
+                if (m.big) {
+                    span.className = 'text-xl sm:text-2xl font-black leading-snug block py-0.5';
+                }
                 if (m.secret) {
-                    span.className = 'blur-secret';
+                    span.className = (span.className + ' blur-secret').trim();
                     span.title = 'देखने के लिए टैप करें';
                     span.onclick = function(e) {
                         e.stopPropagation();
@@ -934,6 +1105,91 @@
                         sfx: 'pop'
                     }
                 });
+            } else if (kind === 'scratch') {
+                pubnub.publish({
+                    channel: CHANNEL,
+                    message: {
+                        type: 'card',
+                        cardKind: 'scratch',
+                        id: 'sc' + Date.now(),
+                        uuid: myUUID,
+                        sender: myName,
+                        avatar: myAvatar,
+                        text: '🎫 Scratch Card',
+                        sfx: 'pop'
+                    }
+                });
+            }
+        }
+
+        function revealScratchCard(el) {
+            const rewards = [
+                { txt: "🎰 JACKPOT! ₹1,00,000 नकली कैश जीता! 🤑", s: "horn" },
+                { txt: "💨 अरे यार! खाली डब्बा और पाद बम निकला 😂", s: "fart" },
+                { txt: "👑 VIP सुपरस्टार का ताज मिला!", s: "laser" },
+                { txt: "🍫 चॉकलेट पार्टी! भेजने वाला अब चॉकलेट खिलाएगा!", s: "pop" },
+                { txt: "🤡 पोपट हो गया! अगली बार ट्राई करें 😂", s: "laugh" }
+            ];
+            const r = rewards[Math.floor(Math.random() * rewards.length)];
+            el.className = "bg-[#FEF08A] text-black border-2 border-black rounded-xl p-2.5 text-center font-black text-xs";
+            el.innerHTML = r.txt;
+            sfx(r.s);
+            if (r.s === 'horn') confetti({ particleCount: 50, spread: 60 });
+        }
+
+        function sendWalkieVoice() {
+            const inp = document.getElementById('walkie-input');
+            const txt = inp.value.trim();
+            if (!txt) {
+                toast("📻 पहले कुछ लिखें जो सबके फोन में बोलना है!");
+                return;
+            }
+            inp.value = '';
+            closeAllSheets();
+            pubnub.publish({
+                channel: CHANNEL,
+                message: {
+                    type: 'walkie',
+                    uuid: myUUID,
+                    sender: myName,
+                    avatar: myAvatar,
+                    vip: isKanisq,
+                    text: txt,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            });
+        }
+
+        function fireEmojiRain(emojis) {
+            closeAllSheets();
+            pubnub.publish({
+                channel: CHANNEL,
+                message: { type: 'emoji_rain', emojis, by: myName }
+            });
+        }
+
+        function spawnEmojiRain(emojiStr) {
+            const box = document.getElementById('emoji-rain-box');
+            const arr = Array.from(emojiStr);
+            sfx('pop');
+            for (let i = 0; i < 24; i++) {
+                setTimeout(() => {
+                    const d = document.createElement('div');
+                    d.className = 'emoji-float text-3xl';
+                    d.style.left = Math.floor(Math.random() * 90) + 'vw';
+                    d.innerText = arr[i % arr.length];
+                    box.appendChild(d);
+                    setTimeout(() => d.remove(), 3000);
+                }, i * 70);
+            }
+        }
+
+        function toggleBigTextFlag(forceOff) {
+            isBigMsg = forceOff ? false : !isBigMsg;
+            document.getElementById('big-label').innerText = isBigMsg ? "📢 2x ON" : "2x बड़ा अक्षर";
+            if (!forceOff) {
+                toast(isBigMsg ? "📢 अब अगला मैसेज 2x बड़े अक्षरों में जाएगा!" : "📢 नॉर्मल साइज");
+                closeAllSheets();
             }
         }
 
@@ -1074,6 +1330,31 @@
                 void shell.offsetWidth;
                 shell.classList.add('quake-mode');
                 toast(`💨 ${by} ने सबके फोन में Fart Bomb फोड़ा! 🤢😂`);
+            } else if (effect === 'hack') {
+                const hov = document.getElementById('hack-overlay');
+                document.getElementById('hack-title').innerText = `👾 HACKED BY ${by}!`;
+                document.getElementById('hack-sub').innerText = "तुम्हारे फोन का सारा सीक्रेट डेटा डाउनलोड हो रहा है... 😂";
+                hov.classList.remove('hidden');
+                hov.classList.add('flex');
+                sfx('siren');
+                setTimeout(() => {
+                    hov.classList.add('hidden');
+                    hov.classList.remove('flex');
+                }, 4200);
+            } else if (effect === 'freeze') {
+                const hov = document.getElementById('hack-overlay');
+                document.getElementById('hack-title').innerText = `🥶 ICE FREEZE BY ${by}!`;
+                document.getElementById('hack-sub').innerText = "तुम्हारी स्क्रीन 4 सेकंड के लिए बर्फ में जम गई है! ❄️";
+                hov.classList.remove('hidden');
+                hov.classList.add('flex');
+                sfx('laser');
+                setTimeout(() => {
+                    hov.classList.add('hidden');
+                    hov.classList.remove('flex');
+                }, 4000);
+            } else if (effect === 'siren_all') {
+                sfx('siren');
+                toast(`🚨 ${by} ने सबके फोन में पुलिस सायरन बजाया!`);
             } else if (effect === 'quake') {
                 shell.classList.remove('quake-mode');
                 void shell.offsetWidth;
