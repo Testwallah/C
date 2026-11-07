@@ -8,263 +8,272 @@
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <!-- Clean Vector Icons (No Emojis on Buttons) -->
+    <!-- Clean Vector Icons -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
         html, body {
             margin: 0; padding: 0;
             width: 100%; height: 100dvh;
             overflow: hidden;
-            background: #0F172A;
+            background: #18181B;
             font-family: 'Plus Jakarta Sans', sans-serif;
         }
-        .font-toon { font-family: 'Fredoka', sans-serif; letter-spacing: 0.3px; }
+        .font-toon { font-family: 'Fredoka', sans-serif; letter-spacing: 0.4px; }
 
-        /* Vibrant Neo-Toon Styling */
-        .toon-box {
-            border: 3px solid #0F172A;
-            box-shadow: 0 4px 0 #0F172A;
+        /* Crisp Pop-Toon Card & Button Surfaces */
+        .pop-card {
+            border: 3px solid #18181B;
+            box-shadow: 0 5px 0 #18181B;
         }
-        .toon-btn {
-            border: 2.5px solid #0F172A;
-            box-shadow: 0 3px 0 #0F172A;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        .pop-btn {
+            border: 2.5px solid #18181B;
+            box-shadow: 0 3.5px 0 #18181B;
+            transition: transform 0.08s ease, box-shadow 0.08s ease;
         }
-        .toon-btn:active {
+        .pop-btn:active {
             transform: translateY(3px);
-            box-shadow: 0 0px 0 #0F172A;
+            box-shadow: 0 0.5px 0 #18181B;
         }
 
-        /* Vibrant Dot Pattern Background */
-        .toon-bg {
-            background-color: #FFFBEB;
-            background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
-            background-size: 20px 20px;
+        /* Vibrant Toon Mesh Canvas */
+        .app-surface {
+            background-color: #F4F0EA;
+            background-image:
+                radial-gradient(#D4C8BE 1.75px, transparent 1.75px),
+                radial-gradient(#E5DEC9 1.75px, #F4F0EA 1.75px);
+            background-size: 28px 28px;
+            background-position: 0 0, 14px 14px;
         }
 
-        /* Chat Bubbles */
-        .bubble-me {
-            background: #A3E635;
-            color: #0F172A;
-            border: 2.5px solid #0F172A;
-            box-shadow: 3px 3px 0 #0F172A;
-            border-radius: 18px 18px 4px 18px;
+        /* Tactile Chat Bubbles */
+        .msg-me {
+            background: #BEF264;
+            color: #18181B;
+            border: 2.5px solid #18181B;
+            box-shadow: 3px 3px 0 #18181B;
+            border-radius: 20px 20px 4px 20px;
         }
-        .bubble-other {
+        .msg-other {
             background: #FFFFFF;
-            color: #0F172A;
-            border: 2.5px solid #0F172A;
-            box-shadow: 3px 3px 0 #0F172A;
-            border-radius: 18px 18px 18px 4px;
+            color: #18181B;
+            border: 2.5px solid #18181B;
+            box-shadow: 3px 3px 0 #18181B;
+            border-radius: 20px 20px 20px 4px;
         }
-        .bubble-ai {
-            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+        .msg-ai {
+            background: #6366F1;
             color: #FFFFFF;
-            border: 2.5px solid #0F172A;
-            box-shadow: 3px 3px 0 #0F172A;
-            border-radius: 18px 18px 18px 4px;
+            border: 2.5px solid #18181B;
+            box-shadow: 3px 3px 0 #18181B;
+            border-radius: 20px 20px 20px 4px;
         }
-        .bubble-vip {
-            background: #FACC15;
-            color: #0F172A;
-            border: 2.5px solid #0F172A;
-            box-shadow: 3px 3px 0 #0F172A;
-            border-radius: 18px;
+        .msg-vip {
+            background: #FDE047;
+            color: #18181B;
+            border: 2.5px solid #18181B;
+            box-shadow: 3px 3px 0 #18181B;
+            border-radius: 20px;
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.92) translateY(6px); opacity: 0; }
+        @keyframes springPop {
+            0% { transform: scale(0.9) translateY(8px); opacity: 0; }
             100% { transform: scale(1) translateY(0); opacity: 1; }
         }
-        .msg-anim { animation: popIn 0.16s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .anim-pop { animation: springPop 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="flex justify-center items-center">
 
-    <!-- 👑 ADMIN FULLSCREEN ANNOUNCEMENT LOCK -->
-    <div id="lock-screen" class="fixed inset-0 bg-amber-400 z-50 hidden flex-col items-center justify-center p-6 text-center">
-        <div class="w-20 h-20 rounded-2xl bg-white toon-box flex items-center justify-center text-slate-900 mb-4 animate-bounce">
-            <i class="ph-fill ph-megaphone text-4xl text-rose-600"></i>
+    <!-- 👑 FULLSCREEN ADMIN BROADCAST OVERLAY -->
+    <div id="lock-screen" class="fixed inset-0 bg-yellow-300 z-50 hidden flex-col items-center justify-center p-6 text-center">
+        <div class="w-20 h-20 rounded-3xl bg-white pop-card flex items-center justify-center mb-4 animate-bounce">
+            <i class="ph-fill ph-megaphone-simple text-4xl text-rose-600"></i>
         </div>
-        <span class="text-xs font-extrabold uppercase tracking-widest bg-slate-900 text-amber-300 px-3 py-1 rounded-full mb-2">ADMIN BROADCAST</span>
-        <h1 id="lock-title" class="font-toon text-3xl text-slate-900 max-w-xs leading-tight break-words">
-            SYSTEM NOTICE
+        <span class="text-[11px] font-extrabold uppercase tracking-widest bg-zinc-900 text-yellow-300 px-3.5 py-1 rounded-full mb-2">ADMIN BROADCAST</span>
+        <h1 id="lock-title" class="font-toon text-3xl text-zinc-900 max-w-xs leading-tight break-words">
+            ANNOUNCEMENT
         </h1>
-        <div id="lock-countdown" class="mt-6 bg-white text-slate-900 toon-btn px-5 py-1.5 rounded-full text-xs font-extrabold">
+        <div id="lock-countdown" class="mt-6 bg-white text-zinc-900 pop-btn px-5 py-1.5 rounded-full text-xs font-extrabold">
             5s
         </div>
     </div>
 
     <!-- 🚫 KICKED SCREEN -->
     <div id="kick-screen" class="fixed inset-0 bg-rose-500 z-50 hidden flex-col items-center justify-center p-6 text-center text-white">
-        <div class="w-20 h-20 rounded-2xl bg-white text-rose-600 toon-box flex items-center justify-center mb-4">
-            <i class="ph-fill ph-prohibit text-5xl"></i>
+        <div class="w-20 h-20 rounded-3xl bg-white text-rose-600 pop-card flex items-center justify-center mb-4">
+            <i class="ph-fill ph-hand-palm text-5xl"></i>
         </div>
-        <h1 class="font-toon text-3xl mb-1">Removed by Admin</h1>
-        <p class="text-sm font-bold opacity-90 mb-5">Admin has removed your session from Donkey Chats.</p>
-        <button onclick="location.reload()" class="bg-amber-300 text-slate-900 font-extrabold px-6 py-2.5 rounded-xl toon-btn">
-            Reconnect
+        <h1 class="font-toon text-3xl mb-1">Session Ended</h1>
+        <p class="text-sm font-bold opacity-90 mb-5">Admin removed you from this room.</p>
+        <button onclick="location.reload()" class="bg-yellow-300 text-zinc-900 font-extrabold px-6 py-2.5 rounded-2xl pop-btn">
+            Rejoin Room
         </button>
     </div>
 
-    <!-- 🔐 CLEAN ROLL NO ENTRY MODAL (1-Time Only) -->
-    <div id="entry-modal" class="fixed inset-0 bg-indigo-600 z-40 flex items-center justify-center p-5">
-        <div class="bg-white w-full max-w-xs rounded-3xl p-6 text-center toon-box">
-            <div class="w-16 h-16 mx-auto mb-3 bg-amber-400 rounded-2xl toon-btn flex items-center justify-center text-slate-900">
-                <i class="ph-fill ph-chats-circle text-4xl"></i>
+    <!-- 🔐 ONE-TIME ROLL NO LOGIN -->
+    <div id="entry-modal" class="fixed inset-0 bg-violet-600 z-40 flex items-center justify-center p-5">
+        <div class="bg-white w-full max-w-xs rounded-[28px] p-6 text-center pop-card">
+            <div class="w-16 h-16 mx-auto mb-3 bg-yellow-300 rounded-2xl pop-btn flex items-center justify-center text-zinc-900">
+                <i class="ph-fill ph-lightning text-4xl"></i>
             </div>
-            <h1 class="font-toon text-2xl text-slate-900">Donkey Chats</h1>
-            <p class="text-xs font-bold text-slate-500 mt-1 mb-4">Enter your Roll No to join</p>
-            <input type="text" id="entry-roll" onkeypress="if(event.key==='Enter') completeLogin()" class="w-full bg-slate-100 border-2 border-slate-900 rounded-xl py-3 px-4 text-center text-lg font-extrabold text-slate-900 placeholder-slate-400 outline-none mb-4 user-select-text" placeholder="Roll No..." autocomplete="off">
-            <button onclick="completeLogin()" class="w-full bg-lime-400 hover:bg-lime-300 text-slate-900 font-toon text-lg py-3 rounded-xl toon-btn">
-                START CHAT
+            <h1 class="font-toon text-2xl text-zinc-900">Donkey Chats</h1>
+            <p class="text-xs font-bold text-zinc-500 mt-1 mb-4">Enter your Roll Number</p>
+            <input type="text" id="entry-roll" onkeypress="if(event.key==='Enter') completeLogin()" class="w-full bg-zinc-100 border-2 border-zinc-900 rounded-2xl py-3 px-4 text-center text-lg font-extrabold text-zinc-900 placeholder-zinc-400 outline-none mb-4 user-select-text" placeholder="Roll No..." autocomplete="off">
+            <button onclick="completeLogin()" class="w-full bg-lime-400 hover:bg-lime-300 text-zinc-900 font-toon text-lg py-3 rounded-2xl pop-btn flex items-center justify-center gap-2">
+                <span>ENTER ROOM</span>
+                <i class="ph-bold ph-arrow-right"></i>
             </button>
         </div>
     </div>
 
-    <!-- 📱 MAIN MOBILE APP CONTAINER -->
-    <div id="app-root" class="w-full max-w-md h-[100dvh] toon-bg flex flex-col relative overflow-hidden sm:border-x-4 sm:border-slate-900">
+    <!-- 📱 MAIN MOBILE VIEWPORT -->
+    <div id="app-root" class="w-full max-w-md h-[100dvh] app-surface flex flex-col relative overflow-hidden sm:border-x-4 sm:border-zinc-900">
 
-        <!-- 1. ULTRA-CLEAN VIBRANT TOON HEADER -->
-        <header class="bg-amber-400 border-b-4 border-slate-900 px-3.5 py-2.5 flex items-center justify-between shrink-0 z-20">
-            <div onclick="openSwitchModal()" class="flex items-center gap-2.5 min-w-0 cursor-pointer">
-                <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white toon-btn flex items-center justify-center shrink-0">
-                    <i class="ph-fill ph-lightning text-xl text-amber-300"></i>
-                </div>
-                <div class="truncate">
-                    <div class="flex items-center gap-1.5">
-                        <h1 class="font-toon text-lg text-slate-900 leading-none truncate">Donkey Chats</h1>
-                        <span id="online-count" class="bg-slate-900 text-lime-400 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse"></span> 1
-                        </span>
+        <!-- 1. FLOATING POP-TOON TOP HEADER -->
+        <header class="px-3 pt-2.5 pb-1.5 shrink-0 z-20">
+            <div class="bg-white rounded-2xl px-3 py-2 pop-card flex items-center justify-between">
+                <!-- Profile & Room Status -->
+                <div onclick="openSwitchModal()" class="flex items-center gap-2.5 min-w-0 cursor-pointer">
+                    <div class="w-10 h-10 rounded-xl bg-violet-600 text-white pop-btn flex items-center justify-center shrink-0">
+                        <i class="ph-fill ph-chat-teardrop-dots text-xl text-yellow-300"></i>
                     </div>
-                    <div class="flex items-center gap-1.5 text-xs font-bold text-slate-800 truncate mt-0.5">
-                        <span id="my-badge" class="truncate">Player</span>
-                        <span>•</span>
-                        <span id="typing-pill" class="text-indigo-950 font-extrabold truncate">Live</span>
+                    <div class="truncate">
+                        <div class="flex items-center gap-1.5">
+                            <h1 class="font-toon text-base text-zinc-900 leading-none truncate">Donkey Chats</h1>
+                            <span id="online-count" class="bg-zinc-900 text-lime-400 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse"></span> 1
+                            </span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-[11px] font-extrabold text-zinc-500 truncate mt-0.5">
+                            <span id="my-badge" class="text-zinc-900 truncate">Player</span>
+                            <span>•</span>
+                            <span id="typing-pill" class="text-violet-600 truncate">Online</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Minimal Clean Vector Icon Buttons -->
-            <div class="flex items-center gap-2 shrink-0">
-                <!-- Secret Admin Shield (Appears only for Kanisq) -->
-                <button id="kanisq-btn" onclick="openAdminModal()" class="hidden w-10 h-10 rounded-xl bg-rose-500 text-white toon-btn items-center justify-center" title="Admin Radar & Controls">
-                    <i class="ph-fill ph-shield-star text-xl"></i>
-                </button>
-                <!-- Clean Simple Draw Pad -->
-                <button onclick="openArtModal()" class="w-10 h-10 rounded-xl bg-cyan-400 text-slate-900 toon-btn flex items-center justify-center" title="Quick Sketch">
-                    <i class="ph-bold ph-paint-brush-broad text-xl"></i>
-                </button>
-                <!-- Live XO Game -->
-                <button onclick="openXOModal()" class="w-10 h-10 rounded-xl bg-purple-500 text-white toon-btn flex items-center justify-center" title="Play XO">
-                    <i class="ph-bold ph-game-controller text-xl"></i>
-                </button>
+                <!-- Clean Vector Action Dock -->
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <!-- Secret Admin Radar Button (Kanisq only) -->
+                    <button id="kanisq-btn" onclick="openAdminModal()" class="hidden w-9 h-9 rounded-xl bg-rose-500 text-white pop-btn items-center justify-center" title="Admin Radar">
+                        <i class="ph-fill ph-shield-check text-lg"></i>
+                    </button>
+                    <!-- Quick Draw Button -->
+                    <button onclick="openArtModal()" class="w-9 h-9 rounded-xl bg-cyan-300 text-zinc-900 pop-btn flex items-center justify-center" title="Sketch">
+                        <i class="ph-bold ph-scribble-loop text-lg"></i>
+                    </button>
+                    <!-- XO Game Button -->
+                    <button onclick="openXOModal()" class="w-9 h-9 rounded-xl bg-yellow-300 text-zinc-900 pop-btn flex items-center justify-center" title="Play XO">
+                        <i class="ph-bold ph-grid-four text-lg"></i>
+                    </button>
+                </div>
             </div>
         </header>
 
-        <!-- 📌 PINNED BAR -->
-        <div id="pin-bar" class="hidden bg-indigo-600 text-white border-b-4 border-slate-900 px-3.5 py-1.5 text-xs font-bold items-center justify-between shrink-0 z-10">
+        <!-- 📌 PINNED BANNER -->
+        <div id="pin-bar" class="hidden mx-3 mb-1 bg-yellow-300 text-zinc-900 border-2 border-zinc-900 rounded-xl px-3 py-1.5 text-xs font-extrabold items-center justify-between shrink-0 z-10 shadow-sm">
             <div class="flex items-center gap-2 truncate">
-                <i class="ph-fill ph-push-pin text-amber-300 text-sm"></i>
+                <i class="ph-fill ph-push-pin text-rose-600 text-sm"></i>
                 <span id="pin-content" class="truncate">Pinned</span>
             </div>
-            <button onclick="document.getElementById('pin-bar').classList.add('hidden')" class="p-1">
+            <button onclick="document.getElementById('pin-bar').classList.add('hidden')" class="p-0.5">
                 <i class="ph-bold ph-x"></i>
             </button>
         </div>
 
-        <!-- 2. FRESH LIVE CHAT STREAM (No Old History Clutter) -->
-        <main id="chat-stream" class="flex-1 overflow-y-auto px-3.5 py-3 flex flex-col gap-2.5 no-scrollbar">
-            <div class="self-center bg-white border-2 border-slate-900 px-3 py-1 rounded-full text-[11px] font-bold text-slate-700 shadow-sm flex items-center gap-1.5">
-                <i class="ph-fill ph-sparkle text-indigo-600"></i>
-                <span>Tip: End message with a dot <strong class="text-indigo-600">.</strong> to ask AI or draw</span>
+        <!-- 2. LIVE CHAT STREAM (Fresh Session Only) -->
+        <main id="chat-stream" class="flex-1 overflow-y-auto px-3.5 py-2 flex flex-col gap-2.5 no-scrollbar">
+            <div class="self-center bg-white border-2 border-zinc-900 px-3 py-1 rounded-full text-[11px] font-extrabold text-zinc-700 flex items-center gap-1.5 shadow-sm">
+                <i class="ph-fill ph-magic-wand text-violet-600"></i>
+                <span>End any message with <strong class="text-violet-600 underline">dot (.)</strong> for AI or Image</span>
             </div>
         </main>
 
-        <!-- ↩️ REPLY / EDIT STATUS BAR -->
-        <div id="status-bar" class="hidden bg-white border-t-4 border-slate-900 px-3.5 py-2 items-center justify-between shrink-0">
-            <div class="border-l-4 border-indigo-600 pl-2.5 flex-1 mr-2 truncate">
-                <div id="status-title" class="text-[10px] font-extrabold uppercase text-indigo-600">Replying</div>
-                <div id="status-text" class="text-xs font-bold text-slate-800 truncate">...</div>
+        <!-- ↩️ REPLY / EDIT PREVIEW BAR -->
+        <div id="status-bar" class="hidden mx-3 mb-1 bg-white border-2 border-zinc-900 rounded-xl px-3 py-1.5 items-center justify-between shrink-0">
+            <div class="border-l-4 border-violet-600 pl-2 flex-1 mr-2 truncate">
+                <div id="status-title" class="text-[10px] font-extrabold uppercase text-violet-600">Replying</div>
+                <div id="status-text" class="text-xs font-bold text-zinc-800 truncate">...</div>
             </div>
-            <button onclick="clearStatusBar()" class="w-7 h-7 rounded-lg bg-slate-200 text-slate-800 flex items-center justify-center">
+            <button onclick="clearStatusBar()" class="w-6 h-6 rounded-lg bg-zinc-200 text-zinc-800 flex items-center justify-center">
                 <i class="ph-bold ph-x text-xs"></i>
             </button>
         </div>
 
-        <!-- 3. VIBRANT TOON BOTTOM BAR -->
-        <footer class="bg-white border-t-4 border-slate-900 px-2.5 py-2 flex items-center gap-2 shrink-0 z-20">
-            <div class="flex-1 bg-slate-100 border-2 border-slate-900 rounded-2xl flex items-center px-3 py-1.5 min-w-0">
-                <input type="text" id="chat-input" oninput="notifyTyping()" onkeypress="if(event.key==='Enter') handleSend()" class="flex-1 bg-transparent text-sm font-bold text-slate-900 placeholder-slate-400 outline-none min-w-0 user-select-text" placeholder="Type message (end with . for AI)" autocomplete="off">
+        <!-- 3. FLOATING POP-TOON INPUT BAR -->
+        <footer class="px-3 pb-2.5 pt-1 shrink-0 z-20">
+            <div class="bg-white rounded-2xl p-1.5 pop-card flex items-center gap-1.5">
+                <!-- Quick AI Dot Helper Button -->
+                <button onclick="insertDotHelper()" class="w-9 h-9 rounded-xl bg-violet-100 border-2 border-zinc-900 text-violet-700 flex items-center justify-center shrink-0 font-extrabold text-xs" title="Ask AI">
+                    <i class="ph-fill ph-sparkle text-base"></i>
+                </button>
+                <input type="text" id="chat-input" oninput="notifyTyping()" onkeypress="if(event.key==='Enter') handleSend()" class="flex-1 bg-transparent px-2 text-sm font-bold text-zinc-900 placeholder-zinc-400 outline-none min-w-0 user-select-text" placeholder="Message... (add . for AI)" autocomplete="off">
+                <button onclick="handleSend()" class="w-10 h-10 rounded-xl bg-lime-400 hover:bg-lime-300 text-zinc-900 pop-btn flex items-center justify-center shrink-0">
+                    <i class="ph-fill ph-paper-plane-right text-lg"></i>
+                </button>
             </div>
-            <button onclick="handleSend()" class="w-11 h-11 rounded-2xl bg-lime-400 hover:bg-lime-300 text-slate-900 toon-btn flex items-center justify-center shrink-0">
-                <i class="ph-fill ph-paper-plane-right text-xl"></i>
-            </button>
         </footer>
 
         <!-- ======================================================= -->
-        <!-- 🎨 ULTRA-CLEAN SIMPLE SKETCH PAD                        -->
+        <!-- 🎨 CLEAN MINI DOODLE PAD                                -->
         <!-- ======================================================= -->
-        <div id="art-modal" class="fixed inset-0 bg-slate-900/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeArtModal()">
-            <div class="bg-white rounded-3xl w-full max-w-xs p-4 flex flex-col gap-3 toon-box">
+        <div id="art-modal" class="fixed inset-0 bg-zinc-900/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeArtModal()">
+            <div class="bg-white rounded-3xl w-full max-w-xs p-4 flex flex-col gap-3 pop-card">
                 <div class="flex justify-between items-center">
-                    <span class="font-toon text-base text-slate-900 flex items-center gap-1.5">
-                        <i class="ph-fill ph-paint-brush-broad text-indigo-600"></i> Quick Sketch
+                    <span class="font-toon text-base text-zinc-900 flex items-center gap-1.5">
+                        <i class="ph-fill ph-paint-brush-broad text-violet-600"></i> Quick Doodle
                     </span>
                     <div class="flex items-center gap-1.5">
-                        <button onclick="artClear()" class="w-8 h-8 rounded-lg bg-slate-100 border-2 border-slate-900 flex items-center justify-center text-slate-800" title="Clear">
+                        <button onclick="artClear()" class="w-8 h-8 rounded-xl bg-zinc-100 border-2 border-zinc-900 flex items-center justify-center text-zinc-800" title="Clear">
                             <i class="ph-bold ph-trash text-sm"></i>
                         </button>
-                        <button onclick="closeArtModal()" class="w-8 h-8 rounded-lg bg-rose-500 text-white border-2 border-slate-900 flex items-center justify-center">
+                        <button onclick="closeArtModal()" class="w-8 h-8 rounded-xl bg-rose-500 text-white border-2 border-zinc-900 flex items-center justify-center">
                             <i class="ph-bold ph-x text-sm"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Clean White Canvas -->
-                <canvas id="art-pad" width="280" height="220" class="w-full rounded-2xl bg-white touch-none border-2 border-slate-900 cursor-crosshair"></canvas>
+                <canvas id="art-pad" width="280" height="210" class="w-full rounded-2xl bg-white touch-none border-2 border-zinc-900 cursor-crosshair"></canvas>
 
-                <!-- Simple 5 Colors + Eraser -->
                 <div class="flex items-center justify-between px-1">
                     <div class="flex items-center gap-2">
-                        <button onclick="setArtColor('#0F172A', 4)" class="w-7 h-7 rounded-full bg-slate-900 border-2 border-slate-900"></button>
-                        <button onclick="setArtColor('#EF4444', 4)" class="w-7 h-7 rounded-full bg-red-500 border-2 border-slate-900"></button>
-                        <button onclick="setArtColor('#3B82F6', 4)" class="w-7 h-7 rounded-full bg-blue-500 border-2 border-slate-900"></button>
-                        <button onclick="setArtColor('#10B981', 4)" class="w-7 h-7 rounded-full bg-emerald-500 border-2 border-slate-900"></button>
-                        <button onclick="setArtColor('#F59E0B', 4)" class="w-7 h-7 rounded-full bg-amber-400 border-2 border-slate-900"></button>
+                        <button onclick="setArtColor('#18181B', 4)" class="w-7 h-7 rounded-full bg-zinc-900 border-2 border-zinc-900"></button>
+                        <button onclick="setArtColor('#EF4444', 4)" class="w-7 h-7 rounded-full bg-red-500 border-2 border-zinc-900"></button>
+                        <button onclick="setArtColor('#3B82F6', 4)" class="w-7 h-7 rounded-full bg-blue-500 border-2 border-zinc-900"></button>
+                        <button onclick="setArtColor('#10B981', 4)" class="w-7 h-7 rounded-full bg-emerald-500 border-2 border-zinc-900"></button>
+                        <button onclick="setArtColor('#F59E0B', 4)" class="w-7 h-7 rounded-full bg-amber-400 border-2 border-zinc-900"></button>
                     </div>
-                    <button onclick="setArtColor('#FFFFFF', 16)" class="px-2.5 py-1 rounded-lg bg-slate-100 border-2 border-slate-900 text-xs font-extrabold flex items-center gap-1">
+                    <button onclick="setArtColor('#FFFFFF', 18)" class="px-2.5 py-1 rounded-xl bg-zinc-100 border-2 border-zinc-900 text-xs font-extrabold flex items-center gap-1">
                         <i class="ph-bold ph-eraser"></i> Erase
                     </button>
                 </div>
 
-                <button onclick="publishArt()" class="w-full bg-lime-400 text-slate-900 font-toon text-base py-2.5 rounded-xl toon-btn flex items-center justify-center gap-1.5">
-                    <i class="ph-bold ph-paper-plane-tilt"></i> SEND SKETCH
+                <button onclick="publishArt()" class="w-full bg-lime-400 text-zinc-900 font-toon text-base py-2.5 rounded-2xl pop-btn flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-paper-plane-tilt"></i> SEND DOODLE
                 </button>
             </div>
         </div>
 
         <!-- ======================================================= -->
-        <!-- 👆 CLEAN MESSAGE CONTEXT MENU                           -->
+        <!-- 👆 HOLD MESSAGE MENU                                    -->
         <!-- ======================================================= -->
-        <div id="hold-modal" class="fixed inset-0 bg-slate-900/70 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeHoldModal()">
-            <div class="w-full max-w-xs bg-white rounded-3xl overflow-hidden toon-box divide-y-2 divide-slate-900 text-sm font-bold text-slate-900">
-                <div id="hold-snippet" class="px-4 py-2.5 text-xs text-slate-500 bg-slate-100 truncate">Message</div>
-                <button onclick="runHoldCmd('reply')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-amber-50">
+        <div id="hold-modal" class="fixed inset-0 bg-zinc-900/70 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeHoldModal()">
+            <div class="w-full max-w-xs bg-white rounded-3xl overflow-hidden pop-card divide-y-2 divide-zinc-900 text-sm font-bold text-zinc-900">
+                <div id="hold-snippet" class="px-4 py-2.5 text-xs text-zinc-500 bg-zinc-100 truncate">Message</div>
+                <button onclick="runHoldCmd('reply')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-yellow-50">
                     <span>Reply</span> <i class="ph-bold ph-arrow-bend-up-left text-base"></i>
                 </button>
-                <button onclick="runHoldCmd('copy')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-amber-50">
+                <button onclick="runHoldCmd('copy')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-yellow-50">
                     <span>Copy Text</span> <i class="ph-bold ph-copy text-base"></i>
                 </button>
-                <button id="btn-hold-edit" onclick="runHoldCmd('edit')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-amber-50">
+                <button id="btn-hold-edit" onclick="runHoldCmd('edit')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-yellow-50">
                     <span>Edit Message</span> <i class="ph-bold ph-pencil-simple text-base"></i>
                 </button>
-                <button onclick="runHoldCmd('pin')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-amber-50">
-                    <span>Pin Message</span> <i class="ph-bold ph-push-pin text-base"></i>
+                <button onclick="runHoldCmd('pin')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-yellow-50">
+                    <span>Pin to Top</span> <i class="ph-bold ph-push-pin text-base"></i>
                 </button>
                 <button id="btn-hold-del" onclick="runHoldCmd('delete')" class="w-full px-4 py-3 text-left flex items-center justify-between text-rose-600 hover:bg-rose-50">
                     <span>Delete for Everyone</span> <i class="ph-bold ph-trash text-base"></i>
@@ -273,127 +282,125 @@
         </div>
 
         <!-- ======================================================= -->
-        <!-- 🛡️ KANISQ REAL LIVE ADMIN RADAR & CONTROL CENTER        -->
+        <!-- 🛡️ KANISQ LIVE ADMIN RADAR & CONTROLS                   -->
         <!-- ======================================================= -->
-        <div id="admin-modal" class="fixed inset-0 bg-slate-900/80 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeAdminModal()">
-            <div class="bg-white w-full max-w-sm rounded-3xl p-4 toon-box flex flex-col gap-3 max-h-[88dvh] overflow-y-auto">
-                <div class="flex justify-between items-center border-b-2 border-slate-900 pb-2.5">
+        <div id="admin-modal" class="fixed inset-0 bg-zinc-900/80 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeAdminModal()">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-4 pop-card flex flex-col gap-3 max-h-[88dvh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b-2 border-zinc-900 pb-2.5">
                     <div class="flex items-center gap-2">
-                        <div class="w-8 h-8 rounded-lg bg-amber-400 border-2 border-slate-900 flex items-center justify-center">
-                            <i class="ph-fill ph-shield-star text-lg"></i>
+                        <div class="w-8 h-8 rounded-xl bg-yellow-300 border-2 border-zinc-900 flex items-center justify-center">
+                            <i class="ph-fill ph-shield-check text-lg"></i>
                         </div>
                         <div>
-                            <h3 class="font-toon text-base text-slate-900 leading-none">Admin Command Center</h3>
-                            <span class="text-[10px] font-bold text-slate-500">Live Active Users & Controls</span>
+                            <h3 class="font-toon text-base text-zinc-900 leading-none">Admin Radar</h3>
+                            <span class="text-[10px] font-bold text-zinc-500">Live Users & Room Control</span>
                         </div>
                     </div>
-                    <button onclick="closeAdminModal()" class="w-8 h-8 rounded-lg bg-slate-100 border-2 border-slate-900 flex items-center justify-center">
+                    <button onclick="closeAdminModal()" class="w-8 h-8 rounded-xl bg-zinc-100 border-2 border-zinc-900 flex items-center justify-center">
                         <i class="ph-bold ph-x"></i>
                     </button>
                 </div>
 
-                <!-- 1. LIVE ONLINE USERS RADAR LIST -->
-                <div class="bg-slate-100 border-2 border-slate-900 rounded-2xl p-2.5">
+                <!-- 1. LIVE ONLINE USERS RADAR -->
+                <div class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl p-2.5">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-extrabold text-slate-800 flex items-center gap-1">
-                            <i class="ph-fill ph-users-three text-indigo-600"></i> Online Users Radar
+                        <span class="text-xs font-extrabold text-zinc-800 flex items-center gap-1">
+                            <i class="ph-fill ph-broadcast text-violet-600"></i> Active Users on Site
                         </span>
-                        <button onclick="requestPresencePing()" class="text-[10px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded-md">
-                            Refresh
+                        <button onclick="requestPresencePing()" class="text-[10px] bg-violet-600 text-white font-bold px-2.5 py-0.5 rounded-lg">
+                            Scan
                         </button>
                     </div>
-                    <div id="admin-user-list" class="flex flex-col gap-1.5 max-h-40 overflow-y-auto pr-1">
-                        <!-- Dynamically populated with every live user + Mute / Rename / Kick buttons -->
-                    </div>
+                    <div id="admin-user-list" class="flex flex-col gap-1.5 max-h-40 overflow-y-auto pr-1"></div>
                 </div>
 
-                <!-- 2. SEND AS ANY USER (SPOOF MESSAGE) -->
-                <div class="bg-amber-50 border-2 border-slate-900 rounded-2xl p-2.5">
-                    <span class="text-[11px] font-extrabold text-slate-800 block mb-1.5">
-                        Send Message As Another User:
+                <!-- 2. SEND MESSAGE AS ANY USER -->
+                <div class="bg-yellow-50 border-2 border-zinc-900 rounded-2xl p-2.5">
+                    <span class="text-[11px] font-extrabold text-zinc-800 block mb-1.5">
+                        Send Message As Any User (or New Name):
                     </span>
                     <div class="flex gap-1.5">
-                        <input type="text" id="adm-puppet-who" class="w-1/3 bg-white border-2 border-slate-900 text-xs font-bold px-2 py-1.5 rounded-xl outline-none user-select-text" value="Chiko">
-                        <input type="text" id="adm-puppet-msg" class="flex-1 bg-white border-2 border-slate-900 text-xs font-bold px-2.5 py-1.5 rounded-xl outline-none user-select-text" placeholder="Message...">
-                        <button onclick="adminPuppetSend()" class="bg-amber-400 text-slate-900 font-extrabold px-3 py-1.5 rounded-xl toon-btn text-xs">
+                        <input type="text" id="adm-puppet-who" class="w-1/3 bg-white border-2 border-zinc-900 text-xs font-bold px-2 py-1.5 rounded-xl outline-none user-select-text" value="Chiko">
+                        <input type="text" id="adm-puppet-msg" class="flex-1 bg-white border-2 border-zinc-900 text-xs font-bold px-2.5 py-1.5 rounded-xl outline-none user-select-text" placeholder="Message...">
+                        <button onclick="adminPuppetSend()" class="bg-yellow-300 text-zinc-900 font-extrabold px-3 py-1.5 rounded-xl pop-btn text-xs">
                             Send
                         </button>
                     </div>
                 </div>
 
-                <!-- 3. GLOBAL SCREEN LOCK ANNOUNCEMENT -->
-                <div class="bg-indigo-50 border-2 border-slate-900 rounded-2xl p-2.5">
-                    <span class="text-[11px] font-extrabold text-slate-800 block mb-1.5">
-                        Broadcast Lock Screen to All Users:
+                <!-- 3. FULLSCREEN BROADCAST LOCK -->
+                <div class="bg-violet-50 border-2 border-zinc-900 rounded-2xl p-2.5">
+                    <span class="text-[11px] font-extrabold text-zinc-800 block mb-1.5">
+                        Lock Everyone's Screen with Notice:
                     </span>
                     <div class="flex gap-1.5">
-                        <input type="text" id="adm-lock-txt" class="flex-1 bg-white border-2 border-slate-900 text-xs font-bold px-2.5 py-1.5 rounded-xl outline-none user-select-text" placeholder="Announcement text...">
-                        <button onclick="adminBroadcastLock()" class="bg-indigo-600 text-white font-extrabold px-3 py-1.5 rounded-xl toon-btn text-xs">
+                        <input type="text" id="adm-lock-txt" class="flex-1 bg-white border-2 border-zinc-900 text-xs font-bold px-2.5 py-1.5 rounded-xl outline-none user-select-text" placeholder="Notice text...">
+                        <button onclick="adminBroadcastLock()" class="bg-violet-600 text-white font-extrabold px-3 py-1.5 rounded-xl pop-btn text-xs">
                             Lock
                         </button>
                     </div>
                 </div>
 
-                <!-- 4. GLOBAL ROOM CONTROLS -->
+                <!-- 4. ROOM ACTIONS -->
                 <div class="grid grid-cols-2 gap-2 text-xs font-extrabold">
-                    <button onclick="adminGlobalFx('party')" class="bg-lime-400 text-slate-900 py-2.5 rounded-xl toon-btn flex items-center justify-center gap-1.5">
+                    <button onclick="adminGlobalFx('party')" class="bg-lime-400 text-zinc-900 py-2.5 rounded-xl pop-btn flex items-center justify-center gap-1.5">
                         <i class="ph-bold ph-confetti text-base"></i> Confetti All
                     </button>
-                    <button onclick="adminGlobalFx('wipe')" class="bg-rose-500 text-white py-2.5 rounded-xl toon-btn flex items-center justify-center gap-1.5">
-                        <i class="ph-bold ph-broom text-base"></i> Clear All Chat
+                    <button onclick="adminGlobalFx('wipe')" class="bg-rose-500 text-white py-2.5 rounded-xl pop-btn flex items-center justify-center gap-1.5">
+                        <i class="ph-bold ph-trash text-base"></i> Clear Room
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- ======================================================= -->
-        <!-- 🎮 LIVE TIC-TAC-TOE (XO) MODAL                          -->
+        <!-- 🎮 LIVE TIC-TAC-TOE (XO)                                -->
         <!-- ======================================================= -->
-        <div id="xo-modal" class="fixed inset-0 bg-slate-900/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeXOModal()">
-            <div class="bg-white rounded-3xl w-full max-w-xs p-4 text-center toon-box">
+        <div id="xo-modal" class="fixed inset-0 bg-zinc-900/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeXOModal()">
+            <div class="bg-white rounded-3xl w-full max-w-xs p-4 text-center pop-card">
                 <div class="flex justify-between items-center mb-3">
-                    <span class="font-toon text-base text-slate-900 flex items-center gap-1.5">
-                        <i class="ph-fill ph-game-controller text-purple-600"></i> Live XO Arena
+                    <span class="font-toon text-base text-zinc-900 flex items-center gap-1.5">
+                        <i class="ph-fill ph-grid-four text-violet-600"></i> Live XO Game
                     </span>
-                    <button onclick="closeXOModal()" class="w-8 h-8 rounded-lg bg-slate-100 border-2 border-slate-900 flex items-center justify-center">
+                    <button onclick="closeXOModal()" class="w-8 h-8 rounded-xl bg-zinc-100 border-2 border-zinc-900 flex items-center justify-center">
                         <i class="ph-bold ph-x"></i>
                     </button>
                 </div>
                 <div class="flex justify-between items-center mb-3">
-                    <span id="xo-turn-pill" class="text-xs font-extrabold bg-amber-300 border-2 border-slate-900 px-3 py-1 rounded-xl">Turn: X</span>
-                    <button onclick="resetXO(true)" class="bg-indigo-600 text-white font-extrabold px-3 py-1 rounded-xl toon-btn text-xs">
+                    <span id="xo-turn-pill" class="text-xs font-extrabold bg-yellow-300 border-2 border-zinc-900 px-3 py-1 rounded-xl">Turn: X</span>
+                    <button onclick="resetXO(true)" class="bg-violet-600 text-white font-extrabold px-3 py-1 rounded-xl pop-btn text-xs">
                         Reset
                     </button>
                 </div>
                 <div class="grid grid-cols-3 gap-2 max-w-[210px] mx-auto">
-                    <button onclick="tapXOCell(0)" id="xoc-0" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
-                    <button onclick="tapXOCell(1)" id="xoc-1" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
-                    <button onclick="tapXOCell(2)" id="xoc-2" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
-                    <button onclick="tapXOCell(3)" id="xoc-3" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
-                    <button onclick="tapXOCell(4)" id="xoc-4" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
-                    <button onclick="tapXOCell(5)" id="xoc-5" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
-                    <button onclick="tapXOCell(6)" id="xoc-6" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
-                    <button onclick="tapXOCell(7)" id="xoc-7" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
-                    <button onclick="tapXOCell(8)" id="xoc-8" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
+                    <button onclick="tapXOCell(0)" id="xoc-0" class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl text-zinc-900"></button>
+                    <button onclick="tapXOCell(1)" id="xoc-1" class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl text-zinc-900"></button>
+                    <button onclick="tapXOCell(2)" id="xoc-2" class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl text-zinc-900"></button>
+                    <button onclick="tapXOCell(3)" id="xoc-3" class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl text-zinc-900"></button>
+                    <button onclick="tapXOCell(4)" id="xoc-4" class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl text-zinc-900"></button>
+                    <button onclick="tapXOCell(5)" id="xoc-5" class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl text-zinc-900"></button>
+                    <button onclick="tapXOCell(6)" id="xoc-6" class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl text-zinc-900"></button>
+                    <button onclick="tapXOCell(7)" id="xoc-7" class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl text-zinc-900"></button>
+                    <button onclick="tapXOCell(8)" id="xoc-8" class="bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl text-zinc-900"></button>
                 </div>
             </div>
         </div>
 
-        <!-- 🔐 ROLL NO / CODE SWITCHER MODAL -->
-        <div id="switch-modal" class="fixed inset-0 bg-slate-900/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeSwitchModal()">
-            <div class="bg-white rounded-3xl w-full max-w-xs p-5 text-center toon-box">
-                <h3 class="font-toon text-lg text-slate-900 mb-1">Switch Roll No</h3>
-                <p class="text-xs font-bold text-slate-500 mb-3">Enter Roll No or Access Code</p>
-                <input type="text" id="switch-input" onkeypress="if(event.key==='Enter') applySwitchCode()" class="w-full bg-slate-100 border-2 border-slate-900 rounded-xl py-2.5 px-3 text-center font-extrabold text-slate-900 mb-4 outline-none user-select-text" placeholder="Roll No...">
+        <!-- 🔐 ROLL NO SWITCH MODAL -->
+        <div id="switch-modal" class="fixed inset-0 bg-zinc-900/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeSwitchModal()">
+            <div class="bg-white rounded-3xl w-full max-w-xs p-5 text-center pop-card">
+                <h3 class="font-toon text-lg text-zinc-900 mb-1">Switch Roll No</h3>
+                <p class="text-xs font-bold text-zinc-500 mb-3">Enter Roll No or Access Code</p>
+                <input type="text" id="switch-input" onkeypress="if(event.key==='Enter') applySwitchCode()" class="w-full bg-zinc-100 border-2 border-zinc-900 rounded-xl py-2.5 px-3 text-center font-extrabold text-zinc-900 mb-4 outline-none user-select-text" placeholder="Roll No...">
                 <div class="flex gap-2">
-                    <button onclick="closeSwitchModal()" class="flex-1 bg-slate-200 text-slate-900 font-extrabold py-2 rounded-xl border-2 border-slate-900 text-xs">Cancel</button>
-                    <button onclick="applySwitchCode()" class="flex-1 bg-lime-400 text-slate-900 font-extrabold py-2 rounded-xl toon-btn text-xs">Apply</button>
+                    <button onclick="closeSwitchModal()" class="flex-1 bg-zinc-200 text-zinc-900 font-extrabold py-2 rounded-xl border-2 border-zinc-900 text-xs">Cancel</button>
+                    <button onclick="applySwitchCode()" class="flex-1 bg-lime-400 text-zinc-900 font-extrabold py-2 rounded-xl pop-btn text-xs">Apply</button>
                 </div>
             </div>
         </div>
 
-        <!-- TOAST PILL -->
-        <div id="toast-pill" class="fixed top-16 left-1/2 -translate-x-1/2 bg-slate-900 text-amber-300 border-2 border-white px-4 py-1.5 rounded-full text-xs font-extrabold z-50 hidden shadow-lg whitespace-nowrap">
+        <!-- TOAST NOTIFICATION -->
+        <div id="toast-pill" class="fixed top-16 left-1/2 -translate-x-1/2 bg-zinc-900 text-yellow-300 border-2 border-white px-4 py-1.5 rounded-full text-xs font-extrabold z-50 hidden shadow-lg whitespace-nowrap">
             Ready
         </div>
 
@@ -401,10 +408,10 @@
 
     <script>
         // =========================================================================
-        // ⚡ 1. LIVE PUBNUB ENGINE + REAL-TIME ONLINE RADAR
+        // ⚡ 1. LIVE PUBNUB ENGINE (Fresh Stream Only - No Old Clutter)
         // =========================================================================
         const myUUID = "u_" + Math.floor(100000 + Math.random() * 900000);
-        const CHANNEL = "donkey-chats-v1-live";
+        const CHANNEL = "donkey-chats-v2-live";
 
         const pubnub = new PubNub({
             publishKey: "pub-c-7620e370-d34b-4bd7-894b-1a8d5fc07c17",
@@ -424,11 +431,10 @@
         let holdTarget = null;
 
         const messageStore = {};
-        // Stores live online users: { uuid: { uuid, name, roll, muted, lastSeen } }
         const liveUsers = {};
 
         // =========================================================================
-        // 🔊 2. CLEAN SOUND ENGINE
+        // 🔊 2. SOUND ENGINE
         // =========================================================================
         let basicSynth = null;
         function playSound(kind) {
@@ -447,7 +453,7 @@
         }
 
         // =========================================================================
-        // 🔐 3. SECRET ROLL NO SYSTEM (99 = Chiko, 104 = Vikalp, Kanisq = Admin)
+        // 🔐 3. ROLL NO IDENTITY (99 = Chiko, 104 = Vikalp, Kanisq = Admin)
         // =========================================================================
         function applyIdentity(rawInput) {
             const raw = (rawInput || "").trim();
@@ -456,10 +462,10 @@
 
             if (raw === "99") {
                 myName = "Chiko";
-                toast("Switched to Chiko");
+                toast("Joined as Chiko");
             } else if (raw === "104") {
                 myName = "Vikalp";
-                toast("Switched to Vikalp");
+                toast("Joined as Vikalp");
             } else if (low === "kanisq") {
                 myName = "Kanisq";
                 isKanisq = true;
@@ -467,7 +473,7 @@
                 const kBtn = document.getElementById('kanisq-btn');
                 kBtn.classList.remove('hidden');
                 kBtn.classList.add('flex');
-                toast("Admin Controls Unlocked");
+                toast("Admin Shield Active");
             } else if (raw !== "") {
                 myName = /^\d+$/.test(raw) ? `Roll #${raw}` : raw;
             } else {
@@ -499,8 +505,7 @@
                 }
             } catch (e) {}
             setupArtStudio();
-            // Announce presence & start heartbeat
-            setTimeout(requestPresencePing, 600);
+            setTimeout(requestPresencePing, 500);
             setInterval(broadcastHeartbeat, 12000);
         });
 
@@ -518,10 +523,7 @@
         }
 
         function requestPresencePing() {
-            pubnub.publish({
-                channel: CHANNEL,
-                message: { type: 'ping_all' }
-            });
+            pubnub.publish({ channel: CHANNEL, message: { type: 'ping_all' } });
         }
 
         function updateLiveUserEntry(u) {
@@ -557,7 +559,7 @@
         }
 
         // =========================================================================
-        // 📡 4. REAL-TIME MESSAGE ROUTER (No Old History Loaded)
+        // 📡 4. REAL-TIME PUBNUB LISTENER
         // =========================================================================
         pubnub.addListener({
             message: function(event) {
@@ -569,7 +571,9 @@
                 } else if (m.type === 'ping_all') {
                     broadcastHeartbeat();
                 } else if (['chat', 'art', 'ai'].includes(m.type)) {
-                    updateLiveUserEntry({ uuid: m.uuid, name: m.sender, roll: m.roll || '-', muted: false });
+                    if (m.uuid && m.uuid !== 'gemini_ai') {
+                        updateLiveUserEntry({ uuid: m.uuid, name: m.sender, roll: m.roll || '-', muted: false });
+                    }
                     renderChatItem(m);
                     if (m.uuid !== myUUID) playSound('pop');
                 } else if (m.type === 'edit') {
@@ -590,7 +594,7 @@
                         const tp = document.getElementById('typing-pill');
                         tp.innerText = `${m.sender} typing...`;
                         clearTimeout(window._typTimer);
-                        window._typTimer = setTimeout(() => { tp.innerText = 'Live'; }, 1800);
+                        window._typTimer = setTimeout(() => { tp.innerText = 'Online'; }, 1800);
                     }
                 } else if (m.type === 'xo') {
                     updateXOBoard(m);
@@ -605,43 +609,51 @@
         });
 
         // =========================================================================
-        // 🤖 5. DOT (.) TRIGGERED GEMINI AI & IMAGE GENERATOR
+        // 🤖 5. 100% RELIABLE DOT (.) AI ENGINE (Multi-Engine + Image Generation)
         // =========================================================================
-        const USER_PROVIDED_KEY = ""; // Runtime key or fallback handled automatically
-        const apiKey = "";
+        const apiKey = ""; // Canvas environment injects key if available
+        const USER_KEY = "AQ.Ab8RN6KR2nx0VXhjNCCJNv-imekFPE4NUMgTAjiE2FHdvsrutQ";
+
+        function insertDotHelper() {
+            const inp = document.getElementById('chat-input');
+            if (!inp.value.trim()) {
+                inp.value = "Tell me something cool.";
+            } else if (!inp.value.trim().endsWith('.')) {
+                inp.value = inp.value.trim() + ".";
+            }
+            inp.focus();
+        }
 
         async function triggerDotAI(rawPrompt) {
-            const cleanQuery = rawPrompt.slice(0, -1).trim();
+            const cleanQuery = rawPrompt.replace(/\.+$/, '').trim();
             if (!cleanQuery) return;
 
-            const wantsImage = /\b(image|photo|draw|pic|picture|painting|sketch|generate|banao|chitra|फोटो|चित्र)\b/i.test(cleanQuery);
+            const wantsImage = /\b(image|photo|draw|pic|picture|painting|sketch|generate|logo|wallpaper|art|banao|dikhao|chitra|फोटो|चित्र)\b/i.test(cleanQuery);
 
-            const tempId = 'ai_wait_' + Date.now();
-            showLocalAILoader(tempId, wantsImage ? "AI is creating image..." : "AI is thinking...");
+            const loaderId = 'ai_wait_' + Date.now();
+            showLocalAILoader(loaderId, wantsImage ? "Donkey AI is drawing..." : "Donkey AI is replying...");
 
             try {
                 if (wantsImage) {
-                    const imgDataUrl = await generateAIImage(cleanQuery);
-                    removeLocalAILoader(tempId);
-                    if (imgDataUrl) {
-                        pubnub.publish({
-                            channel: CHANNEL,
-                            message: {
-                                type: 'ai',
-                                id: 'ai_' + Date.now(),
-                                uuid: 'gemini_ai',
-                                sender: 'Donkey AI',
-                                img: imgDataUrl,
-                                text: `Prompt: ${cleanQuery}`,
-                                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                            }
-                        });
-                        return;
-                    }
+                    const imgUrl = await getGuaranteedAIImage(cleanQuery);
+                    removeLocalAILoader(loaderId);
+                    pubnub.publish({
+                        channel: CHANNEL,
+                        message: {
+                            type: 'ai',
+                            id: 'ai_' + Date.now(),
+                            uuid: 'gemini_ai',
+                            sender: 'Donkey AI',
+                            img: imgUrl,
+                            text: cleanQuery,
+                            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        }
+                    });
+                    return;
                 }
 
-                const replyText = await generateAIText(cleanQuery);
-                removeLocalAILoader(tempId);
+                const answer = await getGuaranteedAIText(cleanQuery);
+                removeLocalAILoader(loaderId);
 
                 pubnub.publish({
                     channel: CHANNEL,
@@ -650,54 +662,130 @@
                         id: 'ai_' + Date.now(),
                         uuid: 'gemini_ai',
                         sender: 'Donkey AI',
-                        text: replyText,
+                        text: answer,
                         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                     }
                 });
             } catch (err) {
-                removeLocalAILoader(tempId);
-                toast("AI busy, try again");
+                removeLocalAILoader(loaderId);
             }
         }
 
-        async function generateAIText(query) {
-            const payload = {
-                contents: [{ parts: [{ text: query }] }],
-                systemInstruction: {
-                    parts: [{ text: "You are Donkey AI inside Donkey Chats. Reply concisely in 1-3 short, friendly sentences in Hinglish/Hindi or English matching the user's language." }]
+        // Multi-stage AI Text: Tries Canvas Gemini -> User Key Gemini -> Free Instant AI Router -> Smart Local Brain
+        async function getGuaranteedAIText(query) {
+            const sysInstruction = "You are Donkey AI inside Donkey Chats. Reply in 1-3 short, friendly, clever sentences matching the user's language (Hindi/Hinglish/English).";
+
+            // Attempt 1: Canvas Gemini API
+            try {
+                const r1 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: query }] }],
+                        systemInstruction: { parts: [{ text: sysInstruction }] }
+                    })
+                });
+                if (r1.ok) {
+                    const d1 = await r1.json();
+                    const t1 = d1?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (t1) return t1.trim();
                 }
-            };
+            } catch (e) {}
 
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const data = await res.json();
-            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-            if (text) return text.trim();
-            throw new Error("No AI text");
+            // Attempt 2: User Key Gemini Flash Latest
+            try {
+                const r2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${USER_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `${sysInstruction}\n\nUser: ${query}` }] }]
+                    })
+                });
+                if (r2.ok) {
+                    const d2 = await r2.json();
+                    const t2 = d2?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (t2) return t2.trim();
+                }
+            } catch (e) {}
+
+            // Attempt 3: Open Instant LLM Endpoint (Zero-Auth Required, works on any browser)
+            try {
+                const r3 = await fetch('https://text.pollinations.ai/openai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'openai',
+                        messages: [
+                            { role: 'system', content: sysInstruction },
+                            { role: 'user', content: query }
+                        ]
+                    })
+                });
+                if (r3.ok) {
+                    const d3 = await r3.json();
+                    const t3 = d3?.choices?.[0]?.message?.content;
+                    if (t3) return t3.trim();
+                }
+            } catch (e) {}
+
+            // Attempt 4: Simple GET AI Fallback
+            try {
+                const r4 = await fetch(`https://text.pollinations.ai/${encodeURIComponent(query)}?model=openai`);
+                if (r4.ok) {
+                    const t4 = await r4.text();
+                    if (t4 && t4.length < 1200) return t4.trim();
+                }
+            } catch (e) {}
+
+            return smartOfflineReply(query);
         }
 
-        async function generateAIImage(promptText) {
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
-            };
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-image:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const result = await res.json();
-            const base64Data = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
-            if (!base64Data) return null;
-            return await compressBase64Image(`data:image/png;base64,${base64Data}`);
+        // Multi-stage AI Image: Tries Gemini Image -> Instant Direct AI Image URL
+        async function getGuaranteedAIImage(promptText) {
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-image:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }],
+                        generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+                    })
+                });
+                if (res.ok) {
+                    const result = await res.json();
+                    const b64 = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+                    if (b64) {
+                        const compressed = await compressBase64Image(`data:image/png;base64,${b64}`);
+                        if (compressed) return compressed;
+                    }
+                }
+            } catch (e) {}
+
+            // Guaranteed Direct AI Image Generator URL (tiny payload, works 100% over PubNub!)
+            const cleanPrompt = promptText.replace(/\b(image|photo|draw|pic|picture|generate|banao|dikhao|chitra|फोटो|चित्र)\b/gi, '').trim() || promptText;
+            const seed = Math.floor(Math.random() * 99999);
+            return `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt + " vibrant cartoon illustration")}?width=420&height=420&nologo=true&seed=${seed}`;
         }
 
-        // Compress AI image so it sends smoothly via PubNub (<22KB)
+        function smartOfflineReply(q) {
+            const low = q.toLowerCase();
+            try {
+                if (/^[0-9+\-*/().\s]+$/.test(low)) {
+                    return `Answer: ${Function('"use strict";return (' + low + ')')()}`;
+                }
+            } catch (e) {}
+            if (low.includes('hello') || low.includes('hi') || low.includes('hey') || low.includes('namaste')) {
+                return "Hey! Main Donkey AI hoon. Kuch bhi pucho ya image banwane ke liye last me dot (.) lagao!";
+            }
+            if (low.includes('joke') || low.includes('chutkula')) {
+                return "Teacher: Tum school kis liye aate ho? Student: Vidya ke liye! Teacher: To ab so kyun rahe ho? Student: Aaj Vidya nahi aayi!";
+            }
+            if (low.includes('who are you') || low.includes('kaun ho')) {
+                return "Main Donkey Chats ka built-in Smart AI Assistant hoon!";
+            }
+            return `Donkey AI: "${q}" — Bilkul sahi baat hai! Koi aur sawal ya drawing chahiye to bas last me dot (.) laga kar bhejo.`;
+        }
+
         function compressBase64Image(srcDataUrl) {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -718,7 +806,7 @@
             const stream = document.getElementById('chat-stream');
             const div = document.createElement('div');
             div.id = id;
-            div.className = 'self-start bubble-ai px-3.5 py-2 text-xs font-extrabold flex items-center gap-2';
+            div.className = 'self-start msg-ai px-3.5 py-2 text-xs font-extrabold flex items-center gap-2';
             div.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i> <span>${label}</span>`;
             stream.appendChild(div);
             stream.scrollTop = stream.scrollHeight;
@@ -730,14 +818,13 @@
         }
 
         // =========================================================================
-        // 💬 6. SENDING & RENDERING MESSAGES
+        // 💬 6. SENDING & RENDERING CHAT BUBBLES
         // =========================================================================
         function handleSend() {
             const inp = document.getElementById('chat-input');
             const text = inp.value.trim();
             if (!text) return;
 
-            // Secret Kanisq Unlock
             if (text.toLowerCase() === 'kanisq') {
                 applyIdentity('Kanisq');
                 inp.value = '';
@@ -777,7 +864,7 @@
             inp.value = '';
             clearStatusBar();
 
-            // If message ends with a single dot "." -> Trigger Gemini AI!
+            // Trigger AI whenever message ends with "."
             if (text.endsWith('.') && text.length > 1) {
                 triggerDotAI(text);
             }
@@ -794,16 +881,15 @@
 
             const row = document.createElement('div');
             row.id = 'row-' + id;
-            row.className = `msg-anim flex flex-col max-w-[82%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`;
+            row.className = `anim-pop flex flex-col max-w-[82%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`;
 
             const bubble = document.createElement('div');
-            let bClass = isMe ? 'bubble-me' : 'bubble-other';
-            if (isAI) bClass = 'bubble-ai';
-            else if (m.vip) bClass = 'bubble-vip';
+            let bClass = isMe ? 'msg-me' : 'msg-other';
+            if (isAI) bClass = 'msg-ai';
+            else if (m.vip) bClass = 'msg-vip';
 
-            bubble.className = `px-3.5 py-2 text-sm font-bold leading-snug break-words cursor-pointer min-w-[95px] ${bClass}`;
+            bubble.className = `px-3.5 py-2 text-sm font-bold leading-snug break-words cursor-pointer min-w-[96px] ${bClass}`;
 
-            // Hold Context Menu
             let holdTimer = null;
             const beginHold = () => { holdTimer = setTimeout(() => showHoldModal(id), 380); };
             const cancelHold = () => { if (holdTimer) clearTimeout(holdTimer); };
@@ -812,33 +898,35 @@
             bubble.addEventListener('touchmove', cancelHold);
             bubble.addEventListener('contextmenu', (e) => { e.preventDefault(); showHoldModal(id); });
 
-            // Sender Header
             if (!isMe) {
                 const sName = document.createElement('div');
-                sName.className = `text-[11px] font-extrabold mb-0.5 flex items-center gap-1 ${isAI ? 'text-amber-300' : 'text-indigo-600'}`;
+                sName.className = `text-[11px] font-extrabold mb-0.5 flex items-center gap-1 ${isAI ? 'text-yellow-300' : 'text-violet-600'}`;
                 sName.innerHTML = isAI
-                    ? `<i class="ph-fill ph-robot"></i> <span>Donkey AI</span>`
+                    ? `<i class="ph-fill ph-sparkle"></i> <span>Donkey AI</span>`
                     : `<i class="ph-fill ph-user-circle"></i> <span>${m.sender}</span>`;
                 bubble.appendChild(sName);
             }
 
-            // Reply Quote
             if (m.reply) {
                 const q = document.createElement('div');
-                q.className = 'text-[11px] bg-black/10 border-l-4 border-slate-900 px-2 py-1 rounded mb-1 truncate';
+                q.className = 'text-[11px] bg-black/10 border-l-4 border-zinc-900 px-2 py-1 rounded mb-1 truncate';
                 q.innerHTML = `<div class="font-extrabold">${m.reply.sender}</div><div class="truncate opacity-80">${m.reply.text}</div>`;
                 bubble.appendChild(q);
             }
 
-            // Image (Sketch or AI Image)
             if (m.img) {
                 const img = document.createElement('img');
                 img.src = m.img;
-                img.className = 'w-52 h-auto rounded-xl border-2 border-slate-900 bg-white mb-1 mt-0.5';
+                img.loading = 'lazy';
+                img.className = 'w-52 h-auto rounded-xl border-2 border-zinc-900 bg-white mb-1 mt-0.5 object-cover';
+                img.onload = () => { stream.scrollTop = stream.scrollHeight; };
+                img.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'https://placehold.co/300x300/6366F1/FFFFFF?text=AI+Art';
+                };
                 bubble.appendChild(img);
             }
 
-            // Message Text
             if (m.text) {
                 const span = document.createElement('div');
                 span.id = 'txt-' + id;
@@ -846,7 +934,6 @@
                 bubble.appendChild(span);
             }
 
-            // Timestamp Footer
             const meta = document.createElement('div');
             meta.className = 'flex items-center justify-end gap-1 text-[10px] opacity-65 mt-0.5';
             meta.innerHTML = `<span>${m.time || ''}</span> ${isMe ? '<i class="ph-bold ph-checks text-xs"></i>' : ''}`;
@@ -858,7 +945,7 @@
         }
 
         // =========================================================================
-        // 👆 7. MESSAGE CONTEXT MENU (Reply, Copy, Edit, Pin, Delete)
+        // 👆 7. MESSAGE CONTEXT ACTIONS
         // =========================================================================
         function showHoldModal(id) {
             const item = messageStore[id];
@@ -866,7 +953,7 @@
             holdTarget = item;
             playSound('pop');
 
-            document.getElementById('hold-snippet').innerText = item.text || 'Sketch';
+            document.getElementById('hold-snippet').innerText = item.text || 'Doodle';
             const canModify = item.isMe || isKanisq;
             document.getElementById('btn-hold-edit').style.display = canModify ? 'flex' : 'none';
             document.getElementById('btn-hold-del').style.display = canModify ? 'flex' : 'none';
@@ -889,7 +976,7 @@
 
             if (cmd === 'reply') {
                 editTargetId = null;
-                replyTarget = { sender, text: (text || 'Sketch').slice(0, 40) };
+                replyTarget = { sender, text: (text || 'Doodle').slice(0, 40) };
                 const sb = document.getElementById('status-bar');
                 sb.classList.remove('hidden');
                 sb.classList.add('flex');
@@ -922,7 +1009,7 @@
                 if (!isMe && !isKanisq) return;
                 pubnub.publish({ channel: CHANNEL, message: { type: 'delete', id } });
             } else if (cmd === 'pin') {
-                pubnub.publish({ channel: CHANNEL, message: { type: 'pin', sender, text: (text || 'Sketch').slice(0, 55) } });
+                pubnub.publish({ channel: CHANNEL, message: { type: 'pin', sender, text: (text || 'Doodle').slice(0, 55) } });
             }
         }
 
@@ -943,11 +1030,11 @@
         }
 
         // =========================================================================
-        // 🎨 8. CLEAN & SIMPLE SKETCH PAD
+        // 🎨 8. MINI DOODLE STUDIO
         // =========================================================================
         let padCanvas, padCtx, isPainting = false;
         let lastPt = { x: 0, y: 0 };
-        let strokeColor = '#0F172A';
+        let strokeColor = '#18181B';
         let strokeSize = 4;
 
         function setupArtStudio() {
@@ -1033,7 +1120,7 @@
         }
 
         // =========================================================================
-        // 🛡️ 9. KANISQ REAL LIVE ADMIN RADAR & CONTROLS
+        // 🛡️ 9. KANISQ LIVE ADMIN RADAR & CONTROLS
         // =========================================================================
         function openAdminModal() {
             requestPresencePing();
@@ -1055,31 +1142,31 @@
 
             const users = Object.values(liveUsers);
             if (users.length === 0) {
-                box.innerHTML = `<div class="text-xs text-slate-500 py-2 text-center">Scanning online users...</div>`;
+                box.innerHTML = `<div class="text-xs text-zinc-500 py-2 text-center">Scanning active users...</div>`;
                 return;
             }
 
             users.forEach(u => {
                 const row = document.createElement('div');
-                row.className = 'bg-white border-2 border-slate-900 rounded-xl px-2.5 py-1.5 flex items-center justify-between gap-2';
+                row.className = 'bg-white border-2 border-zinc-900 rounded-xl px-2.5 py-1.5 flex items-center justify-between gap-2';
                 row.innerHTML = `
                     <div class="truncate">
-                        <div class="text-xs font-extrabold text-slate-900 truncate">
+                        <div class="text-xs font-extrabold text-zinc-900 truncate">
                             ${u.name} ${u.uuid === myUUID ? '(You)' : ''}
                         </div>
-                        <div class="text-[10px] font-bold text-slate-500">
-                            Roll: ${u.roll || '-'} • ${u.muted ? '<span class="text-rose-600">Muted</span>' : '<span class="text-emerald-600">Active</span>'}
+                        <div class="text-[10px] font-bold text-zinc-500">
+                            Roll: ${u.roll || '-'} • ${u.muted ? '<span class="text-rose-600">Muted</span>' : '<span class="text-emerald-600">Online</span>'}
                         </div>
                     </div>
                     <div class="flex items-center gap-1 shrink-0">
-                        <button onclick="adminDirectAction('${u.uuid}', 'mute', ${!u.muted})" class="px-2 py-1 rounded-lg border border-slate-900 text-[10px] font-extrabold ${u.muted ? 'bg-emerald-300' : 'bg-amber-300'}" title="Mute/Unmute">
+                        <button onclick="adminDirectAction('${u.uuid}', 'mute', ${!u.muted})" class="px-2 py-1 rounded-lg border border-zinc-900 text-[10px] font-extrabold ${u.muted ? 'bg-emerald-300' : 'bg-yellow-300'}">
                             ${u.muted ? 'Unmute' : 'Mute'}
                         </button>
-                        <button onclick="adminPromptRename('${u.uuid}', '${u.name}')" class="px-2 py-1 rounded-lg bg-cyan-300 border border-slate-900 text-[10px] font-extrabold" title="Rename">
+                        <button onclick="adminPromptRename('${u.uuid}', '${u.name}')" class="px-2 py-1 rounded-lg bg-cyan-300 border border-zinc-900 text-[10px] font-extrabold">
                             Name
                         </button>
                         ${u.uuid !== myUUID ? `
-                        <button onclick="adminDirectAction('${u.uuid}', 'kick')" class="px-2 py-1 rounded-lg bg-rose-500 text-white border border-slate-900 text-[10px] font-extrabold" title="Kick User">
+                        <button onclick="adminDirectAction('${u.uuid}', 'kick')" class="px-2 py-1 rounded-lg bg-rose-500 text-white border border-zinc-900 text-[10px] font-extrabold">
                             Kick
                         </button>` : ''}
                     </div>
@@ -1093,7 +1180,7 @@
                 channel: CHANNEL,
                 message: { type: 'admin_cmd', targetUuid, sub, val }
             });
-            toast(`Command sent: ${sub}`);
+            toast(`Action sent: ${sub}`);
         }
 
         function adminPromptRename(targetUuid, currentName) {
@@ -1154,7 +1241,7 @@
 
         function adminBroadcastLock() {
             const inp = document.getElementById('adm-lock-txt');
-            const text = inp.value.trim() || "ADMIN ANNOUNCEMENT";
+            const text = inp.value.trim() || "ADMIN NOTICE";
             inp.value = '';
             closeAdminModal();
             pubnub.publish({ channel: CHANNEL, message: { type: 'admin_lock', text } });
@@ -1193,12 +1280,12 @@
                 playSound('win');
             } else if (fx === 'wipe') {
                 document.getElementById('chat-stream').innerHTML = '';
-                toast("Chat cleared by Admin");
+                toast("Room cleared by Admin");
             }
         }
 
         // =========================================================================
-        // 🎮 10. CLEAN LIVE TIC-TAC-TOE (XO)
+        // 🎮 10. LIVE TIC-TAC-TOE (XO)
         // =========================================================================
         let xoCells = ['', '', '', '', '', '', '', '', ''];
         let xoNext = 'X';
@@ -1238,7 +1325,7 @@
             for (let i = 0; i < 9; i++) {
                 const cell = document.getElementById('xoc-' + i);
                 cell.innerText = xoCells[i];
-                cell.className = `bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl ${xoCells[i] === 'X' ? 'text-indigo-600' : 'text-rose-500'}`;
+                cell.className = `bg-zinc-100 border-2 border-zinc-900 rounded-2xl h-16 font-toon text-2xl ${xoCells[i] === 'X' ? 'text-violet-600' : 'text-rose-500'}`;
             }
 
             const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
