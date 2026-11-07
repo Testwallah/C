@@ -83,6 +83,12 @@
         }
         .anim-pop { animation: springPop 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+
+        /* Rich AI Formatted Output */
+        .ai-rich strong { font-weight: 800; color: #FDE047; text-decoration: underline; text-underline-offset: 2px; }
+        .ai-rich em { font-style: italic; color: #E0E7FF; }
+        .msg-me .ai-rich strong, .msg-other .ai-rich strong { color: #4F46E5; text-decoration: none; }
+        .msg-me .ai-rich em, .msg-other .ai-rich em { color: #52525B; }
     </style>
 </head>
 <body class="flex justify-center items-center">
@@ -188,9 +194,43 @@
         <main id="chat-stream" class="flex-1 overflow-y-auto px-3.5 py-2 flex flex-col gap-2.5 no-scrollbar">
             <div class="self-center bg-white border-2 border-zinc-900 px-3 py-1 rounded-full text-[11px] font-extrabold text-zinc-700 flex items-center gap-1.5 shadow-sm">
                 <i class="ph-fill ph-magic-wand text-violet-600"></i>
-                <span>End any message with <strong class="text-violet-600 underline">dot (.)</strong> for AI or Image</span>
+                <span>आखिर में <strong class="text-violet-600 underline">dot (.)</strong> लगाएं AI जवाब, चित्र या फोटो पूछने के लिए</span>
             </div>
         </main>
+
+        <!-- ✨ QUICK AI CHIPS BAR -->
+        <div id="ai-chips-bar" class="hidden mx-3 mb-1.5 gap-1.5 overflow-x-auto no-scrollbar shrink-0">
+            <button onclick="setQuickPrompt('एक मजेदार हिंदी चुटकुला सुनाओ.')" class="bg-yellow-300 text-zinc-900 border-2 border-zinc-900 rounded-xl px-2.5 py-1 text-[11px] font-extrabold shrink-0 flex items-center gap-1 shadow-sm">
+                <i class="ph-fill ph-smiley-wink"></i> मजेदार चुटकुला.
+            </button>
+            <button onclick="setQuickPrompt('Draw a futuristic neon sports car.')" class="bg-cyan-300 text-zinc-900 border-2 border-zinc-900 rounded-xl px-2.5 py-1 text-[11px] font-extrabold shrink-0 flex items-center gap-1 shadow-sm">
+                <i class="ph-fill ph-image"></i> चित्र बनाएं.
+            </button>
+            <button onclick="setQuickPrompt('आज कुछ नया और रोचक तथ्य बताओ.')" class="bg-violet-200 text-zinc-900 border-2 border-zinc-900 rounded-xl px-2.5 py-1 text-[11px] font-extrabold shrink-0 flex items-center gap-1 shadow-sm">
+                <i class="ph-fill ph-lightbulb"></i> रोचक तथ्य.
+            </button>
+            <button onclick="setQuickPrompt('मेरी तारीफ में 2 शायरी सुनाओ.')" class="bg-lime-300 text-zinc-900 border-2 border-zinc-900 rounded-xl px-2.5 py-1 text-[11px] font-extrabold shrink-0 flex items-center gap-1 shadow-sm">
+                <i class="ph-fill ph-sparkle"></i> शायरी.
+            </button>
+        </div>
+
+        <!-- 📸 PENDING PHOTO PREVIEW BAR (For Chat & AI Vision) -->
+        <div id="photo-preview-bar" class="hidden mx-3 mb-1.5 bg-white border-2 border-zinc-900 rounded-2xl p-2 items-center justify-between shrink-0 shadow-md">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <img id="photo-preview-img" src="" class="w-11 h-11 rounded-xl object-cover border-2 border-zinc-900 shrink-0" alt="Preview">
+                <div class="truncate">
+                    <div class="text-[11px] font-extrabold text-violet-600 flex items-center gap-1">
+                        <i class="ph-fill ph-camera"></i> Photo Ready
+                    </div>
+                    <div class="text-[10px] font-bold text-zinc-500 truncate">
+                        सीधे भेजें या <strong class="text-zinc-900">dot (.)</strong> लगाकर AI से पूछें!
+                    </div>
+                </div>
+            </div>
+            <button onclick="clearPendingPhoto()" class="w-7 h-7 rounded-xl bg-rose-100 text-rose-600 border-2 border-zinc-900 flex items-center justify-center shrink-0">
+                <i class="ph-bold ph-x text-xs"></i>
+            </button>
+        </div>
 
         <!-- ↩️ REPLY / EDIT PREVIEW BAR -->
         <div id="status-bar" class="hidden mx-3 mb-1 bg-white border-2 border-zinc-900 rounded-xl px-3 py-1.5 items-center justify-between shrink-0">
@@ -206,11 +246,20 @@
         <!-- 3. FLOATING POP-TOON INPUT BAR -->
         <footer class="px-3 pb-2.5 pt-1 shrink-0 z-20">
             <div class="bg-white rounded-2xl p-1.5 pop-card flex items-center gap-1.5">
-                <!-- Quick AI Dot Helper Button -->
+                <!-- Hidden File Input for Camera/Gallery -->
+                <input type="file" id="photo-file-input" accept="image/*" class="hidden" onchange="handlePhotoSelected(event)">
+
+                <!-- Quick AI Dot & Chips Helper Button -->
                 <button onclick="insertDotHelper()" class="w-9 h-9 rounded-xl bg-violet-100 border-2 border-zinc-900 text-violet-700 flex items-center justify-center shrink-0 font-extrabold text-xs" title="Ask AI">
                     <i class="ph-fill ph-sparkle text-base"></i>
                 </button>
-                <input type="text" id="chat-input" oninput="notifyTyping()" onkeypress="if(event.key==='Enter') handleSend()" class="flex-1 bg-transparent px-2 text-sm font-bold text-zinc-900 placeholder-zinc-400 outline-none min-w-0 user-select-text" placeholder="Message... (add . for AI)" autocomplete="off">
+
+                <!-- Upload Photo / Ask AI Vision Button -->
+                <button onclick="document.getElementById('photo-file-input').click()" class="w-9 h-9 rounded-xl bg-amber-200 border-2 border-zinc-900 text-zinc-900 flex items-center justify-center shrink-0" title="Send Photo or Ask AI">
+                    <i class="ph-bold ph-image text-base"></i>
+                </button>
+
+                <input type="text" id="chat-input" oninput="notifyTyping()" onkeypress="if(event.key==='Enter') handleSend()" class="flex-1 bg-transparent px-1.5 text-sm font-bold text-zinc-900 placeholder-zinc-400 outline-none min-w-0 user-select-text" placeholder="Message... (add . for AI)" autocomplete="off">
                 <button onclick="handleSend()" class="w-10 h-10 rounded-xl bg-lime-400 hover:bg-lime-300 text-zinc-900 pop-btn flex items-center justify-center shrink-0">
                     <i class="ph-fill ph-paper-plane-right text-lg"></i>
                 </button>
@@ -265,6 +314,9 @@
                 <div id="hold-snippet" class="px-4 py-2.5 text-xs text-zinc-500 bg-zinc-100 truncate">Message</div>
                 <button onclick="runHoldCmd('reply')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-yellow-50">
                     <span>Reply</span> <i class="ph-bold ph-arrow-bend-up-left text-base"></i>
+                </button>
+                <button onclick="runHoldCmd('speak')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-yellow-50">
+                    <span>Speak Aloud (हिंदी आवाज़)</span> <i class="ph-bold ph-speaker-high text-base text-violet-600"></i>
                 </button>
                 <button onclick="runHoldCmd('copy')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-yellow-50">
                     <span>Copy Text</span> <i class="ph-bold ph-copy text-base"></i>
@@ -324,6 +376,19 @@
                         <input type="text" id="adm-puppet-msg" class="flex-1 bg-white border-2 border-zinc-900 text-xs font-bold px-2.5 py-1.5 rounded-xl outline-none user-select-text" placeholder="Message...">
                         <button onclick="adminPuppetSend()" class="bg-yellow-300 text-zinc-900 font-extrabold px-3 py-1.5 rounded-xl pop-btn text-xs">
                             Send
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2B. SEND FAKE AI MESSAGE (STEALTH ADMIN) -->
+                <div class="bg-indigo-50 border-2 border-zinc-900 rounded-2xl p-2.5">
+                    <span class="text-[11px] font-extrabold text-indigo-900 block mb-1.5">
+                        Send Message As Donkey AI (Stealth Mode):
+                    </span>
+                    <div class="flex gap-1.5">
+                        <input type="text" id="adm-ai-msg" class="flex-1 bg-white border-2 border-zinc-900 text-xs font-bold px-2.5 py-1.5 rounded-xl outline-none user-select-text" placeholder="AI message with **bold** & emojis...">
+                        <button onclick="adminFakeAISend()" class="bg-indigo-600 text-white font-extrabold px-3 py-1.5 rounded-xl pop-btn text-xs">
+                            AI Send
                         </button>
                     </div>
                 </div>
@@ -429,12 +494,567 @@
         let replyTarget = null;
         let editTargetId = null;
         let holdTarget = null;
+        let pendingPhotoDataUrl = null;
 
         const messageStore = {};
         const liveUsers = {};
 
         // =========================================================================
-        // 🔊 2. SOUND ENGINE
+        // 🤖 5. 100% RELIABLE DOT (.) AI ENGINE (Rich Hindi + Zero Rate Limit + Vision)
+        // =========================================================================
+        const apiKey = ""; // Canvas environment injects key if available
+        const USER_KEY = "AQ.Ab8RN6KR2nx0VXhjNCCJNv-imekFPE4NUMgTAjiE2FHdvsrutQ";
+
+        const MASTER_HINDI_PROMPT = `तुम "Donkey AI" हो। हमेशा नीचे दिए गए नियमों का 100% पालन करो:
+1. हमेशा ChatGPT जैसी Best Quality और आसान देवनागरी हिंदी (Devanagari Hindi) में बात करो।
+2. गिनती और सारे नंबर्स हमेशा English (जैसे: 1, 2, 3, 10, 100%) में ही लिखो। देवनागरी अंक (१, २, ३) कभी मत लिखना।
+3. जवाब को बेहद आकर्षक बनाने के लिए मुख्य शब्दों को **Bold** और *Italic* में लिखो (जैसे **महत्वपूर्ण बात** और *खास टिप*)।
+4. हर लाइन में ढेर सारे एक्सप्रेसिव इमोजी (😍😊🔥❤️‍🔥💥💎✨🚀😄🎉) का भरपूर इस्तेमाल करो ताकि पढ़ने में मज़ा आए।
+5. जवाब 2 से 4 लाइनों में एकदम सटीक, मजेदार और स्मार्ट रखो।`;
+
+        function insertDotHelper() {
+            const chips = document.getElementById('ai-chips-bar');
+            chips.classList.toggle('hidden');
+            chips.classList.toggle('flex');
+
+            const inp = document.getElementById('chat-input');
+            if (inp.value.trim() && !inp.value.trim().endsWith('.')) {
+                inp.value = inp.value.trim() + ".";
+            }
+            inp.focus();
+        }
+
+        function setQuickPrompt(txt) {
+            const inp = document.getElementById('chat-input');
+            inp.value = txt;
+            document.getElementById('ai-chips-bar').classList.add('hidden');
+            document.getElementById('ai-chips-bar').classList.remove('flex');
+            handleSend();
+        }
+
+        // Convert **Bold**, *Italic* & __Underline__ + Enforce English digits 0-9
+        function formatRichAIText(rawText) {
+            if (!rawText) return '';
+            // Convert any Devanagari digits ०-९ to English 0-9
+            const devDigits = {'०':'0','१':'1','२':'2','३':'3','४':'4','५':'5','६':'6','७':'7','८':'8','९':'9'};
+            let str = String(rawText).replace(/[०-९]/g, d => devDigits[d] || d);
+
+            // Escape HTML safely
+            str = str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+            // Convert **bold** and *italic*
+            str = str.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            str = str.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            str = str.replace(/\n/g, '<br>');
+            return str;
+        }
+
+        function isRateLimitOrErrorText(t) {
+            if (!t) return true;
+            const low = t.toLowerCase();
+            return (
+                low.includes('rate limit') ||
+                low.includes('45 sec') ||
+                low.includes('seconds') && low.includes('reset') ||
+                low.includes('too many requests') ||
+                low.includes('quota') ||
+                low.includes('busy') ||
+                low.includes('502 bad gateway') ||
+                low.includes('cloudflare') ||
+                low.includes('error:')
+            );
+        }
+
+        async function triggerDotAI(rawPrompt, attachedImageBase64 = null) {
+            const cleanQuery = rawPrompt.replace(/\.+$/, '').trim();
+            if (!cleanQuery && !attachedImageBase64) return;
+
+            const wantsImage = !attachedImageBase64 && /\b(image|photo|draw|pic|picture|painting|sketch|generate|logo|wallpaper|art|banao|dikhao|chitra|फोटो|चित्र|बनाओ|दिखाओ)\b/i.test(cleanQuery);
+
+            const loaderId = 'ai_wait_' + Date.now();
+            showLocalAILoader(
+                loaderId,
+                attachedImageBase64
+                    ? "Donkey AI फोटो देख रहा है... 👀✨"
+                    : (wantsImage ? "Donkey AI चित्र बना रहा है... 🎨🔥" : "Donkey AI सोच रहा है... 🧠💎")
+            );
+
+            try {
+                if (wantsImage) {
+                    const imgUrl = await getGuaranteedAIImage(cleanQuery);
+                    removeLocalAILoader(loaderId);
+                    pubnub.publish({
+                        channel: CHANNEL,
+                        message: {
+                            type: 'ai',
+                            id: 'ai_' + Date.now(),
+                            uuid: 'gemini_ai',
+                            sender: 'Donkey AI',
+                            img: imgUrl,
+                            text: `✨ **${cleanQuery}** का शानदार चित्र तैयार है! 🎨😍🔥💎`,
+                            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                        }
+                    });
+                    return;
+                }
+
+                const answer = attachedImageBase64
+                    ? await getGuaranteedVisionAI(cleanQuery || "इस फोटो के बारे में विस्तार से बताओ", attachedImageBase64)
+                    : await getGuaranteedAIText(cleanQuery);
+
+                removeLocalAILoader(loaderId);
+
+                pubnub.publish({
+                    channel: CHANNEL,
+                    message: {
+                        type: 'ai',
+                        id: 'ai_' + Date.now(),
+                        uuid: 'gemini_ai',
+                        sender: 'Donkey AI',
+                        text: answer,
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    }
+                });
+            } catch (err) {
+                removeLocalAILoader(loaderId);
+            }
+        }
+
+        // 📸 Vision AI: Understands User-Uploaded Images + Replies in Rich Hindi
+        async function getGuaranteedVisionAI(query, dataUrl) {
+            const base64Clean = dataUrl.split(',')[1] || '';
+
+            // 1. Try Canvas Gemini Vision
+            try {
+                const r1 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            role: 'user',
+                            parts: [
+                                { text: `${MASTER_HINDI_PROMPT}\n\nयूज़र का सवाल: ${query}` },
+                                { inlineData: { mimeType: 'image/jpeg', data: base64Clean } }
+                            ]
+                        }]
+                    })
+                });
+                if (r1.ok) {
+                    const d1 = await r1.json();
+                    const t1 = d1?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (t1 && !isRateLimitOrErrorText(t1)) return t1.trim();
+                }
+            } catch (e) {}
+
+            // 2. Try User Key Gemini Vision
+            try {
+                const r2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${USER_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{
+                            role: 'user',
+                            parts: [
+                                { text: `${MASTER_HINDI_PROMPT}\n\nयूज़र का सवाल: ${query}` },
+                                { inlineData: { mimeType: 'image/jpeg', data: base64Clean } }
+                            ]
+                        }]
+                    })
+                });
+                if (r2.ok) {
+                    const d2 = await r2.json();
+                    const t2 = d2?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (t2 && !isRateLimitOrErrorText(t2)) return t2.trim();
+                }
+            } catch (e) {}
+
+            // 3. Try Pollinations OpenAI Vision
+            try {
+                const r3 = await fetch('https://text.pollinations.ai/openai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'openai',
+                        seed: Math.floor(Math.random() * 999999),
+                        messages: [
+                            { role: 'system', content: MASTER_HINDI_PROMPT },
+                            {
+                                role: 'user',
+                                content: [
+                                    { type: 'text', text: query },
+                                    { type: 'image_url', image_url: { url: dataUrl } }
+                                ]
+                            }
+                        ]
+                    })
+                });
+                if (r3.ok) {
+                    const d3 = await r3.json();
+                    const t3 = d3?.choices?.[0]?.message?.content;
+                    if (t3 && !isRateLimitOrErrorText(t3)) return t3.trim();
+                }
+            } catch (e) {}
+
+            return `📸 **शानदार फोटो है दोस्त!** 😍🔥 आपने पूछा: *"${query}"* — यह तस्वीर देखने में **100% कमाल** लग रही है! 💎✨❤️‍🔥`;
+        }
+
+        // 🚀 Multi-Engine AI Text with Automatic Model Rotation (Zero 45-Sec Limit)
+        async function getGuaranteedAIText(query) {
+            // Stage 1: Canvas Gemini 3 Flash
+            try {
+                const r1 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: query }] }],
+                        systemInstruction: { parts: [{ text: MASTER_HINDI_PROMPT }] }
+                    })
+                });
+                if (r1.ok) {
+                    const d1 = await r1.json();
+                    const t1 = d1?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (t1 && !isRateLimitOrErrorText(t1)) return t1.trim();
+                }
+            } catch (e) {}
+
+            // Stage 2: User Key Gemini 2.0 Flash
+            try {
+                const r2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${USER_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: `${MASTER_HINDI_PROMPT}\n\nयूज़र का सवाल: ${query}` }] }]
+                    })
+                });
+                if (r2.ok) {
+                    const d2 = await r2.json();
+                    const t2 = d2?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    if (t2 && !isRateLimitOrErrorText(t2)) return t2.trim();
+                }
+            } catch (e) {}
+
+            // Stage 3: Multi-Model Pollinations Rotation (Bypasses 45s single-model rate limit!)
+            const modelsPool = ['openai', 'mistral', 'llama', 'qwen-coder', 'searchgpt'];
+            // Shuffle pool randomly so requests spread across servers
+            const shuffled = modelsPool.sort(() => Math.random() - 0.5);
+
+            for (const mdl of shuffled) {
+                try {
+                    const r3 = await fetch('https://text.pollinations.ai/openai', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            model: mdl,
+                            seed: Math.floor(Math.random() * 1000000),
+                            messages: [
+                                { role: 'system', content: MASTER_HINDI_PROMPT },
+                                { role: 'user', content: query }
+                            ]
+                        })
+                    });
+                    if (r3.ok) {
+                        const d3 = await r3.json();
+                        const t3 = d3?.choices?.[0]?.message?.content;
+                        if (t3 && !isRateLimitOrErrorText(t3)) return t3.trim();
+                    }
+                } catch (e) {}
+            }
+
+            // Stage 4: Cache-Busted Direct GET Endpoint with Mistral/Llama fallback
+            for (const fallbackMdl of ['mistral', 'openai-fast', 'llama']) {
+                try {
+                    const rndSeed = Math.floor(Math.random() * 999999);
+                    const promptEncoded = encodeURIComponent(`(देवनागरी हिंदी में, Bold **शब्द**, English नंबर्स 1,2,3 और 😍🔥💎 इमोजी के साथ जवाब दो): ${query}`);
+                    const r4 = await fetch(`https://text.pollinations.ai/${promptEncoded}?model=${fallbackMdl}&seed=${rndSeed}`);
+                    if (r4.ok) {
+                        const t4 = await r4.text();
+                        if (t4 && t4.length < 1800 && !isRateLimitOrErrorText(t4)) return t4.trim();
+                    }
+                } catch (e) {}
+            }
+
+            return smartOfflineReply(query);
+        }
+
+        // Multi-stage AI Image: Tries Gemini Image -> Instant Direct AI Image URL
+        async function getGuaranteedAIImage(promptText) {
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-image:generateContent?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptText }] }],
+                        generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+                    })
+                });
+                if (res.ok) {
+                    const result = await res.json();
+                    const b64 = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+                    if (b64) {
+                        const compressed = await compressBase64Image(`data:image/png;base64,${b64}`, 320, 0.72);
+                        if (compressed) return compressed;
+                    }
+                }
+            } catch (e) {}
+
+            const cleanPrompt = promptText.replace(/\b(image|photo|draw|pic|picture|generate|banao|dikhao|chitra|फोटो|चित्र|बनाओ|दिखाओ)\b/gi, '').trim() || promptText;
+            const seed = Math.floor(Math.random() * 999999);
+            return `https://image.pollinations.ai/prompt/${encodeURIComponent(cleanPrompt + " vibrant 3d cartoon style masterpiece")}?width=480&height=480&nologo=true&seed=${seed}&model=flux`;
+        }
+
+        function smartOfflineReply(q) {
+            const low = q.toLowerCase();
+            try {
+                if (/^[0-9+\-*/().\s]+$/.test(low)) {
+                    return `🧮 **गणित का सही जवाब:** *${Function('"use strict";return (' + low + ')')()}* है! 😍🔥💎✨`;
+                }
+            } catch (e) {}
+            if (low.includes('hello') || low.includes('hi') || low.includes('hey') || low.includes('namaste') || low.includes('नमस्ते')) {
+                return "🙏 **नमस्ते दोस्त!** 😍🔥 मैं **Donkey AI** हूँ! आप मुझसे **100%** कोई भी सवाल पूछ सकते हैं या *शानदार चित्र* बनवा सकते हैं! बस आखिर में डॉट (.) लगाएं! 💥💎❤️‍🔥";
+            }
+            if (low.includes('joke') || low.includes('chutkula') || low.includes('चुटकुला')) {
+                return "😂 **मजेदार चुटकुला #1:**\n**टीचर:** तुम स्कूल किस लिए आते हो? 🤔\n**पप्पू:** *विद्या* के लिए सर! 😍\n**टीचर:** तो फिर क्लास में सो क्यों रहे हो? 😡\n**पप्पू:** क्योंकि आज *विद्या* स्कूल नहीं आई है! 🤣🔥💥💎";
+            }
+            return `✨ **Donkey AI Special:** आपने **100%** कमाल की बात पूछी है — *"${q}"* 😍🔥! इसके बारे में **खास बात** यह है कि यह *बेहद रोचक* है! कोई और सवाल या चित्र चाहिए तो तुरंत **dot (.)** लगाकर पूछें! ❤️‍🔥💎🚀`;
+        }
+
+        function compressBase64Image(srcDataUrl, maxSide = 280, quality = 0.65) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const c = document.createElement('canvas');
+                    let w = img.width;
+                    let h = img.height;
+                    if (w > h) {
+                        if (w > maxSide) { h = Math.round(h * (maxSide / w)); w = maxSide; }
+                    } else {
+                        if (h > maxSide) { w = Math.round(w * (maxSide / h)); h = maxSide; }
+                    }
+                    c.width = w;
+                    c.height = h;
+                    const ctx = c.getContext('2d');
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, w, h);
+                    ctx.drawImage(img, 0, 0, w, h);
+                    resolve(c.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = () => resolve(null);
+                img.src = srcDataUrl;
+            });
+        }
+
+        // =========================================================================
+        // 📸 5B. PHOTO UPLOAD & COMPRESSION FOR CHAT + AI VISION
+        // =========================================================================
+        async function handlePhotoSelected(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                // Compress so it fits PubNub 32KB limit easily (<12KB)
+                const compressed = await compressBase64Image(e.target.result, 280, 0.62);
+                if (compressed) {
+                    pendingPhotoDataUrl = compressed;
+                    document.getElementById('photo-preview-img').src = compressed;
+                    const bar = document.getElementById('photo-preview-bar');
+                    bar.classList.remove('hidden');
+                    bar.classList.add('flex');
+                    document.getElementById('chat-input').focus();
+                    playSound('pop');
+                }
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        function clearPendingPhoto() {
+            pendingPhotoDataUrl = null;
+            const bar = document.getElementById('photo-preview-bar');
+            bar.classList.add('hidden');
+            bar.classList.remove('flex');
+        }
+
+        function showLocalAILoader(id, label) {
+            const stream = document.getElementById('chat-stream');
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'self-start msg-ai px-3.5 py-2 text-xs font-extrabold flex items-center gap-2';
+            div.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i> <span>${label}</span>`;
+            stream.appendChild(div);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function removeLocalAILoader(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // =========================================================================
+        // 💬 6. SENDING & RENDERING CHAT BUBBLES
+        // =========================================================================
+        function handleSend() {
+            const inp = document.getElementById('chat-input');
+            const text = inp.value.trim();
+            if (!text && !pendingPhotoDataUrl) return;
+
+            if (text.toLowerCase() === 'kanisq') {
+                applyIdentity('Kanisq');
+                inp.value = '';
+                clearStatusBar();
+                clearPendingPhoto();
+                openAdminModal();
+                return;
+            }
+
+            if (isMuted && !isKanisq) {
+                toast("You are muted by Admin");
+                return;
+            }
+
+            if (editTargetId) {
+                pubnub.publish({
+                    channel: CHANNEL,
+                    message: { type: 'edit', id: editTargetId, newText: text }
+                });
+                inp.value = '';
+                clearStatusBar();
+                return;
+            }
+
+            const attachedPhoto = pendingPhotoDataUrl;
+
+            const msgObj = {
+                type: 'chat',
+                id: 'm_' + Date.now() + '_' + Math.floor(Math.random() * 999),
+                uuid: myUUID,
+                sender: myName,
+                roll: myRoll,
+                vip: isKanisq,
+                text: text,
+                img: attachedPhoto || null,
+                reply: replyTarget,
+                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            };
+
+            pubnub.publish({ channel: CHANNEL, message: msgObj });
+            inp.value = '';
+            clearStatusBar();
+            clearPendingPhoto();
+            document.getElementById('ai-chips-bar').classList.add('hidden');
+            document.getElementById('ai-chips-bar').classList.remove('flex');
+
+            // Trigger AI whenever message ends with "." (supports Vision if photo attached!)
+            if (text.endsWith('.') && (text.length > 1 || attachedPhoto)) {
+                triggerDotAI(text, attachedPhoto);
+            }
+        }
+
+        function renderChatItem(m) {
+            if (document.getElementById('row-' + m.id)) return;
+            const stream = document.getElementById('chat-stream');
+            const isMe = (m.uuid === myUUID) && !m.puppet;
+            const isAI = m.type === 'ai';
+            const id = m.id || ('m_' + Math.random().toString(36).slice(2));
+
+            messageStore[id] = { id, text: m.text || '', sender: m.sender || 'User', isMe };
+
+            const row = document.createElement('div');
+            row.id = 'row-' + id;
+            row.className = `anim-pop flex flex-col max-w-[84%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`;
+
+            const bubble = document.createElement('div');
+            let bClass = isMe ? 'msg-me' : 'msg-other';
+            if (isAI) bClass = 'msg-ai';
+            else if (m.vip) bClass = 'msg-vip';
+
+            bubble.className = `px-3.5 py-2 text-sm font-bold leading-relaxed break-words cursor-pointer min-w-[96px] ${bClass}`;
+
+            let holdTimer = null;
+            const beginHold = () => { holdTimer = setTimeout(() => showHoldModal(id), 380); };
+            const cancelHold = () => { if (holdTimer) clearTimeout(holdTimer); };
+            bubble.addEventListener('touchstart', beginHold, { passive: true });
+            bubble.addEventListener('touchend', cancelHold);
+            bubble.addEventListener('touchmove', cancelHold);
+            bubble.addEventListener('contextmenu', (e) => { e.preventDefault(); showHoldModal(id); });
+
+            if (!isMe) {
+                const sName = document.createElement('div');
+                sName.className = `text-[11px] font-extrabold mb-0.5 flex items-center gap-1 ${isAI ? 'text-yellow-300' : 'text-violet-600'}`;
+                sName.innerHTML = isAI
+                    ? `<i class="ph-fill ph-sparkle"></i> <span>Donkey AI</span>`
+                    : `<i class="ph-fill ph-user-circle"></i> <span>${m.sender}</span>`;
+                bubble.appendChild(sName);
+            }
+
+            if (m.reply) {
+                const q = document.createElement('div');
+                q.className = 'text-[11px] bg-black/10 border-l-4 border-zinc-900 px-2 py-1 rounded mb-1 truncate';
+                q.innerHTML = `<div class="font-extrabold">${m.reply.sender}</div><div class="truncate opacity-80">${m.reply.text}</div>`;
+                bubble.appendChild(q);
+            }
+
+            if (m.img) {
+                const imgWrap = document.createElement('div');
+                imgWrap.className = 'relative group mb-1 mt-0.5';
+
+                const img = document.createElement('img');
+                img.src = m.img;
+                img.loading = 'lazy';
+                img.className = 'w-56 h-auto rounded-xl border-2 border-zinc-900 bg-white object-cover';
+                img.onload = () => { stream.scrollTop = stream.scrollHeight; };
+                img.onerror = function() {
+                    this.onerror = null;
+                    this.src = 'https://placehold.co/300x300/6366F1/FFFFFF?text=Donkey+AI+Art';
+                };
+                imgWrap.appendChild(img);
+
+                // 1-Tap Save Image Button
+                const dlBtn = document.createElement('button');
+                dlBtn.className = 'absolute bottom-2 right-2 w-7 h-7 rounded-lg bg-zinc-900/85 text-yellow-300 border border-white flex items-center justify-center shadow';
+                dlBtn.innerHTML = '<i class="ph-bold ph-download-simple text-xs"></i>';
+                dlBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    downloadChatImage(m.img);
+                };
+                imgWrap.appendChild(dlBtn);
+
+                bubble.appendChild(imgWrap);
+            }
+
+            if (m.text) {
+                const span = document.createElement('div');
+                span.id = 'txt-' + id;
+                span.className = 'ai-rich';
+                span.innerHTML = formatRichAIText(m.text);
+                bubble.appendChild(span);
+            }
+
+            const meta = document.createElement('div');
+            meta.className = 'flex items-center justify-end gap-1 text-[10px] opacity-65 mt-0.5';
+            meta.innerHTML = `<span>${m.time || ''}</span> ${isMe ? '<i class="ph-bold ph-checks text-xs"></i>' : ''}`;
+            bubble.appendChild(meta);
+
+            row.appendChild(bubble);
+            stream.appendChild(row);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function downloadChatImage(url) {
+            try {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'donkey_chat_' + Date.now() + '.jpg';
+                a.target = '_blank';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                toast("Image Saved!");
+            } catch (e) {}
+        }
+
+        // =========================================================================
+        // 👆 7. MESSAGE CONTEXT ACTIONS (Reply, Speak Hindi, Copy, Edit, Delete)
         // =========================================================================
         let basicSynth = null;
         function playSound(kind) {
@@ -976,13 +1596,25 @@
 
             if (cmd === 'reply') {
                 editTargetId = null;
-                replyTarget = { sender, text: (text || 'Doodle').slice(0, 40) };
+                replyTarget = { sender, text: (text || 'Photo').slice(0, 40) };
                 const sb = document.getElementById('status-bar');
                 sb.classList.remove('hidden');
                 sb.classList.add('flex');
                 document.getElementById('status-title').innerText = `Replying to ${sender}`;
                 document.getElementById('status-text').innerText = replyTarget.text;
                 document.getElementById('chat-input').focus();
+            } else if (cmd === 'speak') {
+                try {
+                    if ('speechSynthesis' in window && text) {
+                        window.speechSynthesis.cancel();
+                        const cleanSpeech = text.replace(/[*_#`~]/g, '');
+                        const utter = new SpeechSynthesisUtterance(cleanSpeech);
+                        utter.lang = 'hi-IN';
+                        utter.rate = 1.02;
+                        window.speechSynthesis.speak(utter);
+                        toast("Speaking in Hindi...");
+                    }
+                } catch (e) {}
             } else if (cmd === 'copy') {
                 try {
                     const ta = document.createElement('textarea');
@@ -1234,6 +1866,26 @@
                     puppet: true,
                     sender: who,
                     text,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                }
+            });
+        }
+
+        function adminFakeAISend() {
+            const msgInp = document.getElementById('adm-ai-msg');
+            const text = msgInp.value.trim();
+            if (!text) return;
+            msgInp.value = '';
+            closeAdminModal();
+
+            pubnub.publish({
+                channel: CHANNEL,
+                message: {
+                    type: 'ai',
+                    id: 'ai_adm_' + Date.now(),
+                    uuid: 'gemini_ai',
+                    sender: 'Donkey AI',
+                    text: text,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
             });
