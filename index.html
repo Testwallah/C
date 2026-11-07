@@ -3,411 +3,345 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>फर्जी WhatsApp ⚡ Live</title>
+    <title>Donkey Chats</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.7.2.2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Hind:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Clean Vector Icons (No Emojis on Buttons) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
         html, body {
             margin: 0; padding: 0;
             width: 100%; height: 100dvh;
             overflow: hidden;
-            background: #0b141a;
-            font-family: 'Plus Jakarta Sans', 'Hind', sans-serif;
+            background: #0F172A;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .font-toon { font-family: 'Fredoka', sans-serif; letter-spacing: 0.3px; }
+
+        /* Vibrant Neo-Toon Styling */
+        .toon-box {
+            border: 3px solid #0F172A;
+            box-shadow: 0 4px 0 #0F172A;
+        }
+        .toon-btn {
+            border: 2.5px solid #0F172A;
+            box-shadow: 0 3px 0 #0F172A;
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+        }
+        .toon-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 0px 0 #0F172A;
         }
 
-        /* Authentic WhatsApp Dark & Light Chat Wallpaper */
-        .wa-bg-dark {
-            background-color: #0b141a;
-            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1.2px, transparent 1.2px),
-                              radial-gradient(rgba(0, 168, 132, 0.06) 1.2px, #0b141a 1.2px);
-            background-size: 28px 28px;
-            background-position: 0 0, 14px 14px;
-        }
-        .wa-bg-light {
-            background-color: #efeae2;
-            background-image: radial-gradient(rgba(0, 0, 0, 0.06) 1.2px, transparent 1.2px);
-            background-size: 24px 24px;
+        /* Vibrant Dot Pattern Background */
+        .toon-bg {
+            background-color: #FFFBEB;
+            background-image: radial-gradient(#CBD5E1 1.5px, transparent 1.5px);
+            background-size: 20px 20px;
         }
 
-        /* WhatsApp Bubble Tails & Shadows */
-        .wa-bubble-sent {
-            background: #005c4b;
-            color: #e9edef;
-            border-radius: 12px 0px 12px 12px;
-            box-shadow: 0 1px 1.5px rgba(0,0,0,0.35);
-            position: relative;
+        /* Chat Bubbles */
+        .bubble-me {
+            background: #A3E635;
+            color: #0F172A;
+            border: 2.5px solid #0F172A;
+            box-shadow: 3px 3px 0 #0F172A;
+            border-radius: 18px 18px 4px 18px;
         }
-        .wa-bg-light .wa-bubble-sent {
-            background: #d9fdd3;
-            color: #111b21;
+        .bubble-other {
+            background: #FFFFFF;
+            color: #0F172A;
+            border: 2.5px solid #0F172A;
+            box-shadow: 3px 3px 0 #0F172A;
+            border-radius: 18px 18px 18px 4px;
         }
-        .wa-bubble-recv {
-            background: #202c33;
-            color: #e9edef;
-            border-radius: 0px 12px 12px 12px;
-            box-shadow: 0 1px 1.5px rgba(0,0,0,0.35);
-            position: relative;
+        .bubble-ai {
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            color: #FFFFFF;
+            border: 2.5px solid #0F172A;
+            box-shadow: 3px 3px 0 #0F172A;
+            border-radius: 18px 18px 18px 4px;
         }
-        .wa-bg-light .wa-bubble-recv {
-            background: #ffffff;
-            color: #111b21;
+        .bubble-vip {
+            background: #FACC15;
+            color: #0F172A;
+            border: 2.5px solid #0F172A;
+            box-shadow: 3px 3px 0 #0F172A;
+            border-radius: 18px;
         }
 
-        /* VIP Kanisq Golden WhatsApp Bubble */
-        .wa-bubble-vip {
-            background: linear-gradient(135deg, #064e3b 0%, #047857 100%) !important;
-            border: 1.5px solid #fbbf24 !important;
-            color: #ffffff !important;
-        }
-
-        @keyframes msgPop {
-            0% { transform: scale(0.95) translateY(6px); opacity: 0; }
+        @keyframes popIn {
+            0% { transform: scale(0.92) translateY(6px); opacity: 0; }
             100% { transform: scale(1) translateY(0); opacity: 1; }
         }
-        .msg-anim { animation: msgPop 0.14s ease-out forwards; }
-
-        @keyframes quake {
-            0%, 100% { transform: translate(0, 0); }
-            20% { transform: translate(-8px, 5px); }
-            40% { transform: translate(8px, -5px); }
-            60% { transform: translate(-6px, -4px); }
-            80% { transform: translate(6px, 4px); }
-        }
-        .shake-fx { animation: quake 0.45s ease-in-out 2; }
-
+        .msg-anim { animation: popIn 0.16s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="flex justify-center items-center">
 
-    <!-- FULLSCREEN ADMIN VOICE BROADCAST LOCK -->
-    <div id="lock-screen" class="fixed inset-0 bg-[#0b141a]/95 z-50 hidden flex-col items-center justify-center p-6 text-center backdrop-blur-md">
-        <div class="w-20 h-20 rounded-full bg-[#00a884] flex items-center justify-center text-4xl mb-4 animate-bounce shadow-[0_0_30px_#00a884]">
-            👑
+    <!-- 👑 ADMIN FULLSCREEN ANNOUNCEMENT LOCK -->
+    <div id="lock-screen" class="fixed inset-0 bg-amber-400 z-50 hidden flex-col items-center justify-center p-6 text-center">
+        <div class="w-20 h-20 rounded-2xl bg-white toon-box flex items-center justify-center text-slate-900 mb-4 animate-bounce">
+            <i class="ph-fill ph-megaphone text-4xl text-rose-600"></i>
         </div>
-        <span class="text-xs font-bold uppercase tracking-widest text-[#00a884] mb-1">फर्जी WhatsApp • ADMIN BROADCAST</span>
-        <h1 id="lock-title" class="text-2xl font-extrabold text-white max-w-xs leading-snug break-words">
-            SYSTEM LOCKED
+        <span class="text-xs font-extrabold uppercase tracking-widest bg-slate-900 text-amber-300 px-3 py-1 rounded-full mb-2">ADMIN BROADCAST</span>
+        <h1 id="lock-title" class="font-toon text-3xl text-slate-900 max-w-xs leading-tight break-words">
+            SYSTEM NOTICE
         </h1>
-        <div id="lock-countdown" class="mt-6 bg-[#ef4444] text-white px-5 py-1.5 rounded-full text-xs font-bold">
-            5s...
+        <div id="lock-countdown" class="mt-6 bg-white text-slate-900 toon-btn px-5 py-1.5 rounded-full text-xs font-extrabold">
+            5s
         </div>
     </div>
 
-    <!-- ONE-TIME WHATSAPP STYLE ROLL NO LOGIN -->
-    <div id="entry-modal" class="fixed inset-0 bg-[#111b21] z-40 flex items-center justify-center p-5">
-        <div class="bg-[#202c33] border border-[#2a3942] rounded-2xl w-full max-w-xs p-6 text-center shadow-2xl">
-            <div class="w-16 h-16 mx-auto mb-3 bg-[#00a884] rounded-full flex items-center justify-center text-3xl shadow-lg">
-                💬
+    <!-- 🚫 KICKED SCREEN -->
+    <div id="kick-screen" class="fixed inset-0 bg-rose-500 z-50 hidden flex-col items-center justify-center p-6 text-center text-white">
+        <div class="w-20 h-20 rounded-2xl bg-white text-rose-600 toon-box flex items-center justify-center mb-4">
+            <i class="ph-fill ph-prohibit text-5xl"></i>
+        </div>
+        <h1 class="font-toon text-3xl mb-1">Removed by Admin</h1>
+        <p class="text-sm font-bold opacity-90 mb-5">Admin has removed your session from Donkey Chats.</p>
+        <button onclick="location.reload()" class="bg-amber-300 text-slate-900 font-extrabold px-6 py-2.5 rounded-xl toon-btn">
+            Reconnect
+        </button>
+    </div>
+
+    <!-- 🔐 CLEAN ROLL NO ENTRY MODAL (1-Time Only) -->
+    <div id="entry-modal" class="fixed inset-0 bg-indigo-600 z-40 flex items-center justify-center p-5">
+        <div class="bg-white w-full max-w-xs rounded-3xl p-6 text-center toon-box">
+            <div class="w-16 h-16 mx-auto mb-3 bg-amber-400 rounded-2xl toon-btn flex items-center justify-center text-slate-900">
+                <i class="ph-fill ph-chats-circle text-4xl"></i>
             </div>
-            <h1 class="text-2xl font-extrabold text-[#e9edef] tracking-tight">
-                फर्जी <span class="text-[#00a884]">WhatsApp</span>
-            </h1>
-            <p class="text-xs text-[#8696a0] mt-1 mb-5">बस एक बार अपना Roll No डालें 👇</p>
-            <input type="text" id="entry-roll" onkeypress="if(event.key==='Enter') completeLogin()" class="w-full bg-[#2a3942] border border-[#00a884] rounded-xl py-3 px-4 text-center text-lg font-bold text-white placeholder-[#8696a0] outline-none mb-4 user-select-text" placeholder="Roll No..." autocomplete="off">
-            <button onclick="completeLogin()" class="w-full bg-[#00a884] hover:bg-[#06cf9c] active:scale-95 transition text-[#111b21] font-extrabold text-base py-3 rounded-xl shadow-md">
-                चैट शुरू करें 🚀
+            <h1 class="font-toon text-2xl text-slate-900">Donkey Chats</h1>
+            <p class="text-xs font-bold text-slate-500 mt-1 mb-4">Enter your Roll No to join</p>
+            <input type="text" id="entry-roll" onkeypress="if(event.key==='Enter') completeLogin()" class="w-full bg-slate-100 border-2 border-slate-900 rounded-xl py-3 px-4 text-center text-lg font-extrabold text-slate-900 placeholder-slate-400 outline-none mb-4 user-select-text" placeholder="Roll No..." autocomplete="off">
+            <button onclick="completeLogin()" class="w-full bg-lime-400 hover:bg-lime-300 text-slate-900 font-toon text-lg py-3 rounded-xl toon-btn">
+                START CHAT
             </button>
-            <p class="text-[10px] text-[#8696a0] mt-4">🔒 End-to-End सुपरफास्ट लाइव चैट</p>
         </div>
     </div>
 
-    <!-- MAIN WHATSAPP SHELL -->
-    <div id="app-root" class="w-full max-w-md h-[100dvh] bg-[#0b141a] flex flex-col relative overflow-hidden sm:border-x sm:border-[#222e35]">
+    <!-- 📱 MAIN MOBILE APP CONTAINER -->
+    <div id="app-root" class="w-full max-w-md h-[100dvh] toon-bg flex flex-col relative overflow-hidden sm:border-x-4 sm:border-slate-900">
 
-        <!-- 1. AUTHENTIC WHATSAPP HEADER -->
-        <header class="bg-[#202c33] px-3 py-2 flex items-center justify-between shrink-0 z-20 border-b border-[#2a3942] shadow-sm">
-            <div class="flex items-center gap-2.5 min-w-0 cursor-pointer" onclick="openSwitchModal()">
-                <div class="relative shrink-0">
-                    <div id="my-avatar" class="w-10 h-10 rounded-full bg-[#00a884] flex items-center justify-center text-xl shadow-inner">
-                        😎
-                    </div>
-                    <span class="w-2.5 h-2.5 bg-[#00e676] rounded-full absolute bottom-0 right-0 border-2 border-[#202c33]"></span>
+        <!-- 1. ULTRA-CLEAN VIBRANT TOON HEADER -->
+        <header class="bg-amber-400 border-b-4 border-slate-900 px-3.5 py-2.5 flex items-center justify-between shrink-0 z-20">
+            <div onclick="openSwitchModal()" class="flex items-center gap-2.5 min-w-0 cursor-pointer">
+                <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white toon-btn flex items-center justify-center shrink-0">
+                    <i class="ph-fill ph-lightning text-xl text-amber-300"></i>
                 </div>
                 <div class="truncate">
                     <div class="flex items-center gap-1.5">
-                        <h2 class="text-[16px] font-extrabold text-[#e9edef] leading-tight truncate">
-                            फर्जी <span class="text-[#00a884]">WhatsApp</span>
-                        </h2>
-                        <span class="bg-[#00a884]/20 text-[#00a884] text-[9px] font-extrabold px-1.5 py-0.5 rounded">LIVE</span>
+                        <h1 class="font-toon text-lg text-slate-900 leading-none truncate">Donkey Chats</h1>
+                        <span id="online-count" class="bg-slate-900 text-lime-400 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse"></span> 1
+                        </span>
                     </div>
-                    <div class="flex items-center gap-1 text-[11px] text-[#8696a0] truncate">
-                        <span id="my-badge" class="font-semibold text-[#00a884] truncate">आप: Star</span>
+                    <div class="flex items-center gap-1.5 text-xs font-bold text-slate-800 truncate mt-0.5">
+                        <span id="my-badge" class="truncate">Player</span>
                         <span>•</span>
-                        <span id="typing-pill" class="text-[#00e676] font-semibold truncate">online</span>
+                        <span id="typing-pill" class="text-indigo-950 font-extrabold truncate">Live</span>
                     </div>
                 </div>
             </div>
 
-            <!-- WhatsApp Top Right Icons -->
-            <div class="flex items-center gap-1 shrink-0 text-[#aebac1]">
-                <button onclick="openArtModal()" class="w-9 h-9 rounded-full hover:bg-white/10 flex items-center justify-center text-base" title="Draw Status / Art">
-                    🎨
+            <!-- Minimal Clean Vector Icon Buttons -->
+            <div class="flex items-center gap-2 shrink-0">
+                <!-- Secret Admin Shield (Appears only for Kanisq) -->
+                <button id="kanisq-btn" onclick="openAdminModal()" class="hidden w-10 h-10 rounded-xl bg-rose-500 text-white toon-btn items-center justify-center" title="Admin Radar & Controls">
+                    <i class="ph-fill ph-shield-star text-xl"></i>
                 </button>
-                <button onclick="openXOModal()" class="w-9 h-9 rounded-full hover:bg-white/10 flex items-center justify-center text-base" title="Live XO Game">
-                    🎮
+                <!-- Clean Simple Draw Pad -->
+                <button onclick="openArtModal()" class="w-10 h-10 rounded-xl bg-cyan-400 text-slate-900 toon-btn flex items-center justify-center" title="Quick Sketch">
+                    <i class="ph-bold ph-paint-brush-broad text-xl"></i>
                 </button>
-                <button onclick="toggleWaTheme()" class="w-9 h-9 rounded-full hover:bg-white/10 flex items-center justify-center text-base" title="Dark/Light Wallpaper">
-                    🌗
-                </button>
-                <button id="kanisq-btn" onclick="openAdminModal()" class="hidden w-9 h-9 rounded-full bg-[#00a884]/20 text-[#fbbf24] flex items-center justify-center text-base animate-pulse" title="Kanisq Admin">
-                    👑
+                <!-- Live XO Game -->
+                <button onclick="openXOModal()" class="w-10 h-10 rounded-xl bg-purple-500 text-white toon-btn flex items-center justify-center" title="Play XO">
+                    <i class="ph-bold ph-game-controller text-xl"></i>
                 </button>
             </div>
         </header>
 
-        <!-- WHATSAPP PINNED MESSAGE BAR -->
-        <div id="pin-bar" class="hidden bg-[#182229] text-[#e9edef] border-b border-[#2a3942] px-3.5 py-1.5 text-xs flex items-center justify-between shrink-0 z-10">
+        <!-- 📌 PINNED BAR -->
+        <div id="pin-bar" class="hidden bg-indigo-600 text-white border-b-4 border-slate-900 px-3.5 py-1.5 text-xs font-bold items-center justify-between shrink-0 z-10">
             <div class="flex items-center gap-2 truncate">
-                <span class="text-[#00a884]">📌</span>
-                <span id="pin-content" class="truncate text-[#d1d7db]">Pinned message</span>
+                <i class="ph-fill ph-push-pin text-amber-300 text-sm"></i>
+                <span id="pin-content" class="truncate">Pinned</span>
             </div>
-            <button onclick="document.getElementById('pin-bar').classList.add('hidden')" class="text-[#8696a0] hover:text-white px-1.5 text-xs">✕</button>
+            <button onclick="document.getElementById('pin-bar').classList.add('hidden')" class="p-1">
+                <i class="ph-bold ph-x"></i>
+            </button>
         </div>
 
-        <!-- 2. WHATSAPP CHAT STREAM -->
-        <main id="chat-stream" class="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-2 wa-bg-dark no-scrollbar">
-            <!-- WhatsApp Encryption Banner -->
-            <div class="self-center bg-[#182229] text-[#ffd279] border border-[#2a3942] px-3 py-1.5 rounded-lg text-[11px] text-center max-w-[90%] shadow-sm my-1">
-                🔒 <b>फर्जी WhatsApp</b> में आपका स्वागत है! किसी भी मैसेज को दबाए रखें (Hold) = <b>Edit, Delete, Copy, React</b> करने के लिए।
+        <!-- 2. FRESH LIVE CHAT STREAM (No Old History Clutter) -->
+        <main id="chat-stream" class="flex-1 overflow-y-auto px-3.5 py-3 flex flex-col gap-2.5 no-scrollbar">
+            <div class="self-center bg-white border-2 border-slate-900 px-3 py-1 rounded-full text-[11px] font-bold text-slate-700 shadow-sm flex items-center gap-1.5">
+                <i class="ph-fill ph-sparkle text-indigo-600"></i>
+                <span>Tip: End message with a dot <strong class="text-indigo-600">.</strong> to ask AI or draw</span>
             </div>
         </main>
 
-        <!-- REPLY / EDIT / VIEW-ONCE PREVIEW BAR -->
-        <div id="status-bar" class="hidden bg-[#182229] border-t border-[#2a3942] px-3.5 py-2 text-xs flex items-center justify-between shrink-0">
-            <div class="border-l-4 border-[#00a884] pl-2.5 truncate">
-                <div id="status-title" class="text-[#00a884] font-bold text-[11px]">Replying</div>
-                <div id="status-text" class="truncate text-[#d1d7db] text-xs">Message</div>
+        <!-- ↩️ REPLY / EDIT STATUS BAR -->
+        <div id="status-bar" class="hidden bg-white border-t-4 border-slate-900 px-3.5 py-2 items-center justify-between shrink-0">
+            <div class="border-l-4 border-indigo-600 pl-2.5 flex-1 mr-2 truncate">
+                <div id="status-title" class="text-[10px] font-extrabold uppercase text-indigo-600">Replying</div>
+                <div id="status-text" class="text-xs font-bold text-slate-800 truncate">...</div>
             </div>
-            <button onclick="clearStatusBar()" class="text-[#8696a0] hover:text-white p-1 text-sm">✕</button>
-        </div>
-
-        <!-- WHATSAPP ATTACHMENT SHEET (📎 Menu) -->
-        <div id="attach-sheet" class="hidden bg-[#233138] border-t border-[#2a3942] p-4 grid grid-cols-4 gap-3 shrink-0 z-20 rounded-t-2xl shadow-2xl">
-            <button onclick="openArtModal(); toggleAttachSheet();" class="flex flex-col items-center gap-1">
-                <div class="w-12 h-12 rounded-full bg-pink-600 text-white flex items-center justify-center text-xl shadow-md">🎨</div>
-                <span class="text-[11px] text-[#d1d7db] font-medium">Draw Art</span>
-            </button>
-            <button onclick="fireAudioCard('💨 पाद बम Voice Note 😂', 'fart')" class="flex flex-col items-center gap-1">
-                <div class="w-12 h-12 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xl shadow-md">💨</div>
-                <span class="text-[11px] text-[#d1d7db] font-medium">Fart ऑडियो</span>
-            </button>
-            <button onclick="promptLivePoll()" class="flex flex-col items-center gap-1">
-                <div class="w-12 h-12 rounded-full bg-amber-500 text-white flex items-center justify-center text-xl shadow-md">📊</div>
-                <span class="text-[11px] text-[#d1d7db] font-medium">Poll वोट</span>
-            </button>
-            <button onclick="toggleViewOnceMode()" class="flex flex-col items-center gap-1">
-                <div id="vo-icon" class="w-12 h-12 rounded-full bg-teal-600 text-white flex items-center justify-center text-xl shadow-md">①</div>
-                <span class="text-[11px] text-[#d1d7db] font-medium">View Once</span>
-            </button>
-            <button onclick="sendScratchCard()" class="flex flex-col items-center gap-1">
-                <div class="w-12 h-12 rounded-full bg-purple-600 text-white flex items-center justify-center text-xl shadow-md">🎫</div>
-                <span class="text-[11px] text-[#d1d7db] font-medium">Scratch कार्ड</span>
-            </button>
-            <button onclick="openXOModal(); toggleAttachSheet();" class="flex flex-col items-center gap-1">
-                <div class="w-12 h-12 rounded-full bg-sky-600 text-white flex items-center justify-center text-xl shadow-md">🎮</div>
-                <span class="text-[11px] text-[#d1d7db] font-medium">XO गेम</span>
-            </button>
-            <button onclick="fireDiceRoll()" class="flex flex-col items-center gap-1">
-                <div class="w-12 h-12 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xl shadow-md">🎲</div>
-                <span class="text-[11px] text-[#d1d7db] font-medium">लूडो पासा</span>
-            </button>
-            <button onclick="startVoiceTyping()" class="flex flex-col items-center gap-1">
-                <div class="w-12 h-12 rounded-full bg-rose-600 text-white flex items-center justify-center text-xl shadow-md">🎙️</div>
-                <span class="text-[11px] text-[#d1d7db] font-medium">Voice टाइप</span>
+            <button onclick="clearStatusBar()" class="w-7 h-7 rounded-lg bg-slate-200 text-slate-800 flex items-center justify-center">
+                <i class="ph-bold ph-x text-xs"></i>
             </button>
         </div>
 
-        <!-- 3. AUTHENTIC WHATSAPP BOTTOM INPUT BAR -->
-        <footer class="bg-[#0b141a] px-2 py-1.5 flex items-center gap-1.5 shrink-0 z-20">
-            <div class="flex-1 bg-[#202c33] rounded-full flex items-center px-2 py-1 border border-[#2a3942]">
-                <button onclick="openArtModal()" class="w-8 h-8 rounded-full text-[#8696a0] hover:text-[#00a884] flex items-center justify-center text-lg shrink-0" title="Quick Draw">
-                    🎨
-                </button>
-                <input type="text" id="chat-input" oninput="notifyTyping()" onkeypress="if(event.key==='Enter') handleSend()" class="flex-1 min-w-0 bg-transparent px-2 py-1.5 text-[15px] text-[#e9edef] placeholder-[#8696a0] outline-none user-select-text" placeholder="Message" autocomplete="off">
-                <button onclick="toggleViewOnceMode()" id="vo-pill" class="w-7 h-7 rounded-full text-[#8696a0] hover:text-[#00a884] flex items-center justify-center text-xs font-extrabold border border-current mr-1 shrink-0" title="View Once (1-Time Message)">
-                    1
-                </button>
-                <button onclick="toggleAttachSheet()" class="w-8 h-8 rounded-full text-[#8696a0] hover:text-[#e9edef] flex items-center justify-center text-lg shrink-0" title="Attach">
-                    📎
-                </button>
+        <!-- 3. VIBRANT TOON BOTTOM BAR -->
+        <footer class="bg-white border-t-4 border-slate-900 px-2.5 py-2 flex items-center gap-2 shrink-0 z-20">
+            <div class="flex-1 bg-slate-100 border-2 border-slate-900 rounded-2xl flex items-center px-3 py-1.5 min-w-0">
+                <input type="text" id="chat-input" oninput="notifyTyping()" onkeypress="if(event.key==='Enter') handleSend()" class="flex-1 bg-transparent text-sm font-bold text-slate-900 placeholder-slate-400 outline-none min-w-0 user-select-text" placeholder="Type message (end with . for AI)" autocomplete="off">
             </div>
-            <button onclick="handleSend()" class="w-11 h-11 rounded-full bg-[#00a884] hover:bg-[#06cf9c] active:scale-90 transition text-[#111b21] flex items-center justify-center text-lg shadow-md shrink-0">
-                ➤
+            <button onclick="handleSend()" class="w-11 h-11 rounded-2xl bg-lime-400 hover:bg-lime-300 text-slate-900 toon-btn flex items-center justify-center shrink-0">
+                <i class="ph-fill ph-paper-plane-right text-xl"></i>
             </button>
         </footer>
 
         <!-- ======================================================= -->
-        <!-- 🎨 WHATSAPP PRO ART STUDIO (Mirror, Neon, Rainbow, JPEG)-->
+        <!-- 🎨 ULTRA-CLEAN SIMPLE SKETCH PAD                        -->
         <!-- ======================================================= -->
-        <div id="art-modal" class="fixed inset-0 bg-black/80 z-40 hidden items-center justify-center p-3">
-            <div class="bg-[#202c33] border border-[#2a3942] rounded-2xl w-full max-w-sm p-3.5 flex flex-col gap-2.5 shadow-2xl">
+        <div id="art-modal" class="fixed inset-0 bg-slate-900/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeArtModal()">
+            <div class="bg-white rounded-3xl w-full max-w-xs p-4 flex flex-col gap-3 toon-box">
                 <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-sm text-[#e9edef]">🎨 WhatsApp Scribble Studio</span>
-                        <span id="art-tool-badge" class="text-[10px] font-bold bg-[#00a884] text-[#111b21] px-2 py-0.5 rounded-full">Pen</span>
-                    </div>
-                    <div class="flex items-center gap-1">
-                        <button onclick="artUndo()" class="bg-[#2a3942] text-white px-2.5 py-1 rounded-lg text-xs">↩️</button>
-                        <button onclick="artClear()" class="bg-[#2a3942] text-white px-2.5 py-1 rounded-lg text-xs">🗑️</button>
-                        <button onclick="closeArtModal()" class="bg-rose-600 text-white px-2.5 py-1 rounded-lg text-xs">✕</button>
-                    </div>
-                </div>
-
-                <!-- Canvas -->
-                <div class="relative mx-auto w-full flex justify-center">
-                    <canvas id="art-pad" width="300" height="230" class="rounded-xl bg-white touch-none shadow-inner cursor-crosshair border border-[#2a3942]"></canvas>
-                </div>
-
-                <!-- 5 Modes -->
-                <div class="grid grid-cols-5 gap-1 text-[11px] font-bold">
-                    <button onclick="selectArtMode('pen')" id="am-pen" class="bg-[#00a884] text-[#111b21] py-1.5 rounded-lg">✏️ Pen</button>
-                    <button onclick="selectArtMode('neon')" id="am-neon" class="bg-[#2a3942] text-[#d1d7db] py-1.5 rounded-lg">✨ Neon</button>
-                    <button onclick="selectArtMode('rainbow')" id="am-rainbow" class="bg-[#2a3942] text-[#d1d7db] py-1.5 rounded-lg">🌈 Magic</button>
-                    <button onclick="selectArtMode('mirror')" id="am-mirror" class="bg-[#2a3942] text-[#d1d7db] py-1.5 rounded-lg">🦋 Mirror</button>
-                    <button onclick="selectArtMode('eraser')" id="am-eraser" class="bg-[#2a3942] text-[#d1d7db] py-1.5 rounded-lg">🧽 मिटाएं</button>
-                </div>
-
-                <!-- Colors + Size -->
-                <div class="flex items-center justify-between gap-2 bg-[#111b21] rounded-xl px-3 py-1.5">
+                    <span class="font-toon text-base text-slate-900 flex items-center gap-1.5">
+                        <i class="ph-fill ph-paint-brush-broad text-indigo-600"></i> Quick Sketch
+                    </span>
                     <div class="flex items-center gap-1.5">
-                        <button onclick="setArtColor('#000000')" class="w-5 h-5 rounded-full bg-black border border-white"></button>
-                        <button onclick="setArtColor('#ef4444')" class="w-5 h-5 rounded-full bg-red-500"></button>
-                        <button onclick="setArtColor('#3b82f6')" class="w-5 h-5 rounded-full bg-blue-500"></button>
-                        <button onclick="setArtColor('#00a884')" class="w-5 h-5 rounded-full bg-[#00a884]"></button>
-                        <button onclick="setArtColor('#f59e0b')" class="w-5 h-5 rounded-full bg-amber-400"></button>
-                        <button onclick="setArtColor('#ec4899')" class="w-5 h-5 rounded-full bg-pink-500"></button>
-                        <button onclick="flipArtBoard()" class="text-[10px] bg-[#2a3942] text-white px-2 py-0.5 rounded font-bold">🌗 Bg</button>
+                        <button onclick="artClear()" class="w-8 h-8 rounded-lg bg-slate-100 border-2 border-slate-900 flex items-center justify-center text-slate-800" title="Clear">
+                            <i class="ph-bold ph-trash text-sm"></i>
+                        </button>
+                        <button onclick="closeArtModal()" class="w-8 h-8 rounded-lg bg-rose-500 text-white border-2 border-slate-900 flex items-center justify-center">
+                            <i class="ph-bold ph-x text-sm"></i>
+                        </button>
                     </div>
-                    <input type="range" id="art-size" min="2" max="16" value="4" class="w-16 accent-[#00a884]">
                 </div>
 
-                <!-- Stickers -->
-                <div class="flex items-center justify-between bg-[#111b21] rounded-xl px-3 py-1 text-base">
-                    <span class="text-[10px] font-bold text-[#8696a0]">Stickers:</span>
-                    <button onclick="stampArt('😂')" class="active:scale-125 transition">😂</button>
-                    <button onclick="stampArt('🔥')" class="active:scale-125 transition">🔥</button>
-                    <button onclick="stampArt('❤️')" class="active:scale-125 transition">❤️</button>
-                    <button onclick="stampArt('👑')" class="active:scale-125 transition">👑</button>
-                    <button onclick="stampArt('💨')" class="active:scale-125 transition">💨</button>
-                    <button onclick="stampArt('💯')" class="active:scale-125 transition">💯</button>
-                </div>
+                <!-- Clean White Canvas -->
+                <canvas id="art-pad" width="280" height="220" class="w-full rounded-2xl bg-white touch-none border-2 border-slate-900 cursor-crosshair"></canvas>
 
-                <!-- Caption + Send -->
-                <div class="flex gap-2">
-                    <input type="text" id="art-caption" class="flex-1 bg-[#2a3942] rounded-full px-3.5 py-2 text-xs text-white placeholder-[#8696a0] outline-none user-select-text" placeholder="Add a caption...">
-                    <button onclick="publishArt()" class="bg-[#00a884] text-[#111b21] font-extrabold px-4 py-2 rounded-full text-xs shrink-0">
-                        Send ➤
+                <!-- Simple 5 Colors + Eraser -->
+                <div class="flex items-center justify-between px-1">
+                    <div class="flex items-center gap-2">
+                        <button onclick="setArtColor('#0F172A', 4)" class="w-7 h-7 rounded-full bg-slate-900 border-2 border-slate-900"></button>
+                        <button onclick="setArtColor('#EF4444', 4)" class="w-7 h-7 rounded-full bg-red-500 border-2 border-slate-900"></button>
+                        <button onclick="setArtColor('#3B82F6', 4)" class="w-7 h-7 rounded-full bg-blue-500 border-2 border-slate-900"></button>
+                        <button onclick="setArtColor('#10B981', 4)" class="w-7 h-7 rounded-full bg-emerald-500 border-2 border-slate-900"></button>
+                        <button onclick="setArtColor('#F59E0B', 4)" class="w-7 h-7 rounded-full bg-amber-400 border-2 border-slate-900"></button>
+                    </div>
+                    <button onclick="setArtColor('#FFFFFF', 16)" class="px-2.5 py-1 rounded-lg bg-slate-100 border-2 border-slate-900 text-xs font-extrabold flex items-center gap-1">
+                        <i class="ph-bold ph-eraser"></i> Erase
                     </button>
                 </div>
+
+                <button onclick="publishArt()" class="w-full bg-lime-400 text-slate-900 font-toon text-base py-2.5 rounded-xl toon-btn flex items-center justify-center gap-1.5">
+                    <i class="ph-bold ph-paper-plane-tilt"></i> SEND SKETCH
+                </button>
             </div>
         </div>
 
         <!-- ======================================================= -->
-        <!-- 👆 WHATSAPP MESSAGE HOLD MENU (Reactions + Edit/Delete) -->
+        <!-- 👆 CLEAN MESSAGE CONTEXT MENU                           -->
         <!-- ======================================================= -->
-        <div id="hold-modal" class="fixed inset-0 bg-black/65 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeHoldModal()">
-            <div class="w-full max-w-xs flex flex-col gap-2 animate-[msgPop_0.12s_ease-out]">
-                <!-- Floating WhatsApp Emoji Reaction Pill -->
-                <div class="bg-[#233138] border border-[#2a3942] rounded-full py-2 px-4 flex justify-between items-center text-xl shadow-2xl">
-                    <button onclick="sendReaction('👍')" class="hover:scale-125 transition">👍</button>
-                    <button onclick="sendReaction('❤️')" class="hover:scale-125 transition">❤️</button>
-                    <button onclick="sendReaction('😂')" class="hover:scale-125 transition">😂</button>
-                    <button onclick="sendReaction('😮')" class="hover:scale-125 transition">😮</button>
-                    <button onclick="sendReaction('😢')" class="hover:scale-125 transition">😢</button>
-                    <button onclick="sendReaction('🙏')" class="hover:scale-125 transition">🙏</button>
-                    <button onclick="sendReaction('💨')" class="hover:scale-125 transition">💨</button>
-                </div>
-
-                <!-- Context Action List -->
-                <div class="bg-[#233138] border border-[#2a3942] rounded-2xl overflow-hidden text-[#e9edef] text-sm shadow-2xl">
-                    <div id="hold-snippet" class="px-4 py-2 text-xs text-[#8696a0] bg-[#182229] truncate border-b border-[#2a3942]">
-                        Message
-                    </div>
-                    <button onclick="runHoldCmd('reply')" class="w-full px-4 py-2.5 text-left hover:bg-white/5 flex items-center justify-between border-b border-[#2a3942]/60">
-                        <span>Reply (जवाब दें)</span> <span>↩️</span>
-                    </button>
-                    <button onclick="runHoldCmd('copy')" class="w-full px-4 py-2.5 text-left hover:bg-white/5 flex items-center justify-between border-b border-[#2a3942]/60">
-                        <span>Copy (कॉपी करें)</span> <span>📋</span>
-                    </button>
-                    <button id="btn-hold-edit" onclick="runHoldCmd('edit')" class="w-full px-4 py-2.5 text-left hover:bg-white/5 flex items-center justify-between border-b border-[#2a3942]/60">
-                        <span>Edit (बदलें)</span> <span>✏️</span>
-                    </button>
-                    <button onclick="runHoldCmd('pin')" class="w-full px-4 py-2.5 text-left hover:bg-white/5 flex items-center justify-between border-b border-[#2a3942]/60">
-                        <span>Pin (ऊपर पिन करें)</span> <span>📌</span>
-                    </button>
-                    <button onclick="runHoldCmd('speak')" class="w-full px-4 py-2.5 text-left hover:bg-white/5 flex items-center justify-between border-b border-[#2a3942]/60">
-                        <span>Speak (आवाज में सुनें)</span> <span>🔊</span>
-                    </button>
-                    <button id="btn-hold-del" onclick="runHoldCmd('delete')" class="w-full px-4 py-2.5 text-left hover:bg-white/5 flex items-center justify-between text-rose-400 font-semibold">
-                        <span>Delete for Everyone</span> <span>🗑️</span>
-                    </button>
-                </div>
+        <div id="hold-modal" class="fixed inset-0 bg-slate-900/70 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeHoldModal()">
+            <div class="w-full max-w-xs bg-white rounded-3xl overflow-hidden toon-box divide-y-2 divide-slate-900 text-sm font-bold text-slate-900">
+                <div id="hold-snippet" class="px-4 py-2.5 text-xs text-slate-500 bg-slate-100 truncate">Message</div>
+                <button onclick="runHoldCmd('reply')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-amber-50">
+                    <span>Reply</span> <i class="ph-bold ph-arrow-bend-up-left text-base"></i>
+                </button>
+                <button onclick="runHoldCmd('copy')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-amber-50">
+                    <span>Copy Text</span> <i class="ph-bold ph-copy text-base"></i>
+                </button>
+                <button id="btn-hold-edit" onclick="runHoldCmd('edit')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-amber-50">
+                    <span>Edit Message</span> <i class="ph-bold ph-pencil-simple text-base"></i>
+                </button>
+                <button onclick="runHoldCmd('pin')" class="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-amber-50">
+                    <span>Pin Message</span> <i class="ph-bold ph-push-pin text-base"></i>
+                </button>
+                <button id="btn-hold-del" onclick="runHoldCmd('delete')" class="w-full px-4 py-3 text-left flex items-center justify-between text-rose-600 hover:bg-rose-50">
+                    <span>Delete for Everyone</span> <i class="ph-bold ph-trash text-base"></i>
+                </button>
             </div>
         </div>
 
         <!-- ======================================================= -->
-        <!-- 👑 KANISQ WHATSAPP ADMIN PANEL                          -->
+        <!-- 🛡️ KANISQ REAL LIVE ADMIN RADAR & CONTROL CENTER        -->
         <!-- ======================================================= -->
-        <div id="admin-modal" class="fixed inset-0 bg-black/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeAdminModal()">
-            <div class="bg-[#202c33] border border-[#00a884] text-[#e9edef] rounded-2xl w-full max-w-sm p-4 shadow-2xl">
-                <div class="flex justify-between items-center mb-3 pb-2 border-b border-[#2a3942]">
-                    <span class="text-sm font-extrabold text-[#00a884] flex items-center gap-1.5">👑 फर्जी WhatsApp • Kanisq Admin</span>
-                    <button onclick="closeAdminModal()" class="text-[#8696a0] hover:text-white px-2">✕</button>
-                </div>
-
-                <!-- 1. User Control -->
-                <div class="bg-[#111b21] rounded-xl p-2.5 mb-2.5 border border-[#2a3942]">
-                    <div class="flex justify-between items-center mb-1.5">
-                        <span class="text-[11px] font-bold text-[#00a884]">1. Mute / नाम बदलें:</span>
-                        <div class="flex gap-1 text-[10px]">
-                            <button onclick="document.getElementById('adm-target').value='Chiko 🥰'" class="bg-[#2a3942] px-2 py-0.5 rounded">Chiko</button>
-                            <button onclick="document.getElementById('adm-target').value='Vikalp 🔥'" class="bg-[#2a3942] px-2 py-0.5 rounded">Vikalp</button>
+        <div id="admin-modal" class="fixed inset-0 bg-slate-900/80 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeAdminModal()">
+            <div class="bg-white w-full max-w-sm rounded-3xl p-4 toon-box flex flex-col gap-3 max-h-[88dvh] overflow-y-auto">
+                <div class="flex justify-between items-center border-b-2 border-slate-900 pb-2.5">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 rounded-lg bg-amber-400 border-2 border-slate-900 flex items-center justify-center">
+                            <i class="ph-fill ph-shield-star text-lg"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-toon text-base text-slate-900 leading-none">Admin Command Center</h3>
+                            <span class="text-[10px] font-bold text-slate-500">Live Active Users & Controls</span>
                         </div>
                     </div>
-                    <div class="flex gap-1.5 mb-2">
-                        <input type="text" id="adm-target" class="w-1/2 bg-[#2a3942] text-white text-xs px-2.5 py-1.5 rounded-lg outline-none user-select-text" value="Chiko 🥰" placeholder="किसका नाम?">
-                        <input type="text" id="adm-newname" class="w-1/2 bg-[#2a3942] text-white text-xs px-2.5 py-1.5 rounded-lg outline-none user-select-text" placeholder="नया नाम...">
+                    <button onclick="closeAdminModal()" class="w-8 h-8 rounded-lg bg-slate-100 border-2 border-slate-900 flex items-center justify-center">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
+                </div>
+
+                <!-- 1. LIVE ONLINE USERS RADAR LIST -->
+                <div class="bg-slate-100 border-2 border-slate-900 rounded-2xl p-2.5">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-extrabold text-slate-800 flex items-center gap-1">
+                            <i class="ph-fill ph-users-three text-indigo-600"></i> Online Users Radar
+                        </span>
+                        <button onclick="requestPresencePing()" class="text-[10px] bg-indigo-600 text-white font-bold px-2 py-0.5 rounded-md">
+                            Refresh
+                        </button>
                     </div>
-                    <div class="flex gap-1.5 text-xs font-bold">
-                        <button onclick="adminMuteToggle()" class="flex-1 bg-rose-600 text-white py-1.5 rounded-lg">🔇 Mute/Unmute</button>
-                        <button onclick="adminForceRename()" class="flex-1 bg-[#00a884] text-[#111b21] py-1.5 rounded-lg">🏷️ नाम बदलें</button>
+                    <div id="admin-user-list" class="flex flex-col gap-1.5 max-h-40 overflow-y-auto pr-1">
+                        <!-- Dynamically populated with every live user + Mute / Rename / Kick buttons -->
                     </div>
                 </div>
 
-                <!-- 2. Fake WhatsApp Message (Puppet Mode) -->
-                <div class="bg-[#111b21] rounded-xl p-2.5 mb-2.5 border border-[#2a3942]">
-                    <label class="text-[11px] font-bold text-[#00a884] block mb-1">
-                        2. किसी भी दोस्त के नाम से नकली मैसेज भेजें:
-                    </label>
+                <!-- 2. SEND AS ANY USER (SPOOF MESSAGE) -->
+                <div class="bg-amber-50 border-2 border-slate-900 rounded-2xl p-2.5">
+                    <span class="text-[11px] font-extrabold text-slate-800 block mb-1.5">
+                        Send Message As Another User:
+                    </span>
                     <div class="flex gap-1.5">
-                        <input type="text" id="adm-puppet-who" class="w-1/3 bg-[#2a3942] text-white text-xs px-2 py-1.5 rounded-lg outline-none user-select-text" value="Chiko 🥰">
-                        <input type="text" id="adm-puppet-msg" class="flex-1 bg-[#2a3942] text-white text-xs px-2.5 py-1.5 rounded-lg outline-none user-select-text" placeholder="मैसेज लिखें...">
-                        <button onclick="adminPuppetSend()" class="bg-[#00a884] text-[#111b21] font-bold px-3 py-1.5 rounded-lg text-xs">Send</button>
+                        <input type="text" id="adm-puppet-who" class="w-1/3 bg-white border-2 border-slate-900 text-xs font-bold px-2 py-1.5 rounded-xl outline-none user-select-text" value="Chiko">
+                        <input type="text" id="adm-puppet-msg" class="flex-1 bg-white border-2 border-slate-900 text-xs font-bold px-2.5 py-1.5 rounded-xl outline-none user-select-text" placeholder="Message...">
+                        <button onclick="adminPuppetSend()" class="bg-amber-400 text-slate-900 font-extrabold px-3 py-1.5 rounded-xl toon-btn text-xs">
+                            Send
+                        </button>
                     </div>
                 </div>
 
-                <!-- 3. Broadcast Voice Lock -->
-                <div class="bg-[#111b21] rounded-xl p-2.5 mb-3 border border-[#2a3942]">
-                    <label class="text-[11px] font-bold text-[#fbbf24] block mb-1">
-                        3. सबकी स्क्रीन लॉक + स्पीकर से बोलें:
-                    </label>
+                <!-- 3. GLOBAL SCREEN LOCK ANNOUNCEMENT -->
+                <div class="bg-indigo-50 border-2 border-slate-900 rounded-2xl p-2.5">
+                    <span class="text-[11px] font-extrabold text-slate-800 block mb-1.5">
+                        Broadcast Lock Screen to All Users:
+                    </span>
                     <div class="flex gap-1.5">
-                        <input type="text" id="adm-lock-txt" class="flex-1 bg-[#2a3942] text-white text-xs px-2.5 py-1.5 rounded-lg outline-none user-select-text" placeholder="जैसे: Kanisq Admin लाइव हैं!">
-                        <button onclick="adminBroadcastLock()" class="bg-[#fbbf24] text-[#111b21] font-bold px-3 py-1.5 rounded-lg text-xs">Lock 🔊</button>
+                        <input type="text" id="adm-lock-txt" class="flex-1 bg-white border-2 border-slate-900 text-xs font-bold px-2.5 py-1.5 rounded-xl outline-none user-select-text" placeholder="Announcement text...">
+                        <button onclick="adminBroadcastLock()" class="bg-indigo-600 text-white font-extrabold px-3 py-1.5 rounded-xl toon-btn text-xs">
+                            Lock
+                        </button>
                     </div>
                 </div>
 
-                <!-- 4. Room Effects -->
-                <div class="grid grid-cols-4 gap-1.5 text-xs font-bold">
-                    <button onclick="adminGlobalFx('fart')" class="bg-[#2a3942] hover:bg-[#374248] text-white py-2 rounded-lg">💨 Fart</button>
-                    <button onclick="adminGlobalFx('quake')" class="bg-[#2a3942] hover:bg-[#374248] text-white py-2 rounded-lg">📳 भूकंप</button>
-                    <button onclick="adminGlobalFx('party')" class="bg-[#2a3942] hover:bg-[#374248] text-white py-2 rounded-lg">🎉 Party</button>
-                    <button onclick="adminGlobalFx('wipe')" class="bg-rose-600 text-white py-2 rounded-lg">🧹 Clear</button>
+                <!-- 4. GLOBAL ROOM CONTROLS -->
+                <div class="grid grid-cols-2 gap-2 text-xs font-extrabold">
+                    <button onclick="adminGlobalFx('party')" class="bg-lime-400 text-slate-900 py-2.5 rounded-xl toon-btn flex items-center justify-center gap-1.5">
+                        <i class="ph-bold ph-confetti text-base"></i> Confetti All
+                    </button>
+                    <button onclick="adminGlobalFx('wipe')" class="bg-rose-500 text-white py-2.5 rounded-xl toon-btn flex items-center justify-center gap-1.5">
+                        <i class="ph-bold ph-broom text-base"></i> Clear All Chat
+                    </button>
                 </div>
             </div>
         </div>
@@ -415,67 +349,62 @@
         <!-- ======================================================= -->
         <!-- 🎮 LIVE TIC-TAC-TOE (XO) MODAL                          -->
         <!-- ======================================================= -->
-        <div id="xo-modal" class="fixed inset-0 bg-black/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeXOModal()">
-            <div class="bg-[#202c33] border border-[#2a3942] rounded-2xl w-full max-w-xs p-4 text-center text-white shadow-2xl">
+        <div id="xo-modal" class="fixed inset-0 bg-slate-900/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeXOModal()">
+            <div class="bg-white rounded-3xl w-full max-w-xs p-4 text-center toon-box">
                 <div class="flex justify-between items-center mb-3">
-                    <span class="font-bold text-sm text-[#00a884]">🎮 WhatsApp Live XO</span>
-                    <button onclick="closeXOModal()" class="text-[#8696a0] px-2">✕</button>
+                    <span class="font-toon text-base text-slate-900 flex items-center gap-1.5">
+                        <i class="ph-fill ph-game-controller text-purple-600"></i> Live XO Arena
+                    </span>
+                    <button onclick="closeXOModal()" class="w-8 h-8 rounded-lg bg-slate-100 border-2 border-slate-900 flex items-center justify-center">
+                        <i class="ph-bold ph-x"></i>
+                    </button>
                 </div>
                 <div class="flex justify-between items-center mb-3">
-                    <span id="xo-turn-pill" class="text-xs font-bold bg-[#111b21] text-[#00a884] px-3 py-1 rounded-full">Turn: ❌</span>
-                    <button onclick="resetXO(true)" class="bg-[#00a884] text-[#111b21] font-bold px-3 py-1 rounded-full text-xs">🔄 New Game</button>
+                    <span id="xo-turn-pill" class="text-xs font-extrabold bg-amber-300 border-2 border-slate-900 px-3 py-1 rounded-xl">Turn: X</span>
+                    <button onclick="resetXO(true)" class="bg-indigo-600 text-white font-extrabold px-3 py-1 rounded-xl toon-btn text-xs">
+                        Reset
+                    </button>
                 </div>
                 <div class="grid grid-cols-3 gap-2 max-w-[210px] mx-auto">
-                    <button onclick="tapXOCell(0)" id="xoc-0" class="bg-[#111b21] hover:bg-[#2a3942] rounded-xl h-16 text-2xl font-bold"></button>
-                    <button onclick="tapXOCell(1)" id="xoc-1" class="bg-[#111b21] hover:bg-[#2a3942] rounded-xl h-16 text-2xl font-bold"></button>
-                    <button onclick="tapXOCell(2)" id="xoc-2" class="bg-[#111b21] hover:bg-[#2a3942] rounded-xl h-16 text-2xl font-bold"></button>
-                    <button onclick="tapXOCell(3)" id="xoc-3" class="bg-[#111b21] hover:bg-[#2a3942] rounded-xl h-16 text-2xl font-bold"></button>
-                    <button onclick="tapXOCell(4)" id="xoc-4" class="bg-[#111b21] hover:bg-[#2a3942] rounded-xl h-16 text-2xl font-bold"></button>
-                    <button onclick="tapXOCell(5)" id="xoc-5" class="bg-[#111b21] hover:bg-[#2a3942] rounded-xl h-16 text-2xl font-bold"></button>
-                    <button onclick="tapXOCell(6)" id="xoc-6" class="bg-[#111b21] hover:bg-[#2a3942] rounded-xl h-16 text-2xl font-bold"></button>
-                    <button onclick="tapXOCell(7)" id="xoc-7" class="bg-[#111b21] hover:bg-[#2a3942] rounded-xl h-16 text-2xl font-bold"></button>
-                    <button onclick="tapXOCell(8)" id="xoc-8" class="bg-[#111b21] hover:bg-[#2a3942] rounded-xl h-16 text-2xl font-bold"></button>
+                    <button onclick="tapXOCell(0)" id="xoc-0" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
+                    <button onclick="tapXOCell(1)" id="xoc-1" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
+                    <button onclick="tapXOCell(2)" id="xoc-2" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
+                    <button onclick="tapXOCell(3)" id="xoc-3" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
+                    <button onclick="tapXOCell(4)" id="xoc-4" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
+                    <button onclick="tapXOCell(5)" id="xoc-5" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
+                    <button onclick="tapXOCell(6)" id="xoc-6" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
+                    <button onclick="tapXOCell(7)" id="xoc-7" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
+                    <button onclick="tapXOCell(8)" id="xoc-8" class="bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl text-slate-900"></button>
                 </div>
             </div>
         </div>
 
-        <!-- WHATSAPP LIVE POLL MODAL -->
-        <div id="poll-modal" class="fixed inset-0 bg-black/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closePollModal()">
-            <div class="bg-[#202c33] border border-[#2a3942] rounded-2xl w-full max-w-xs p-5 text-white">
-                <h3 class="font-bold text-sm text-[#00a884] mb-3">📊 Create WhatsApp Poll</h3>
-                <input type="text" id="poll-q-input" onkeypress="if(event.key==='Enter') publishLivePoll()" class="w-full bg-[#2a3942] rounded-xl py-2.5 px-3 text-xs text-white placeholder-[#8696a0] mb-3 outline-none user-select-text" placeholder="Ask a question...">
-                <div class="flex gap-2 text-xs font-bold">
-                    <button onclick="closePollModal()" class="flex-1 bg-[#2a3942] text-white py-2 rounded-xl">Cancel</button>
-                    <button onclick="publishLivePoll()" class="flex-1 bg-[#00a884] text-[#111b21] py-2 rounded-xl">Send Poll</button>
+        <!-- 🔐 ROLL NO / CODE SWITCHER MODAL -->
+        <div id="switch-modal" class="fixed inset-0 bg-slate-900/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeSwitchModal()">
+            <div class="bg-white rounded-3xl w-full max-w-xs p-5 text-center toon-box">
+                <h3 class="font-toon text-lg text-slate-900 mb-1">Switch Roll No</h3>
+                <p class="text-xs font-bold text-slate-500 mb-3">Enter Roll No or Access Code</p>
+                <input type="text" id="switch-input" onkeypress="if(event.key==='Enter') applySwitchCode()" class="w-full bg-slate-100 border-2 border-slate-900 rounded-xl py-2.5 px-3 text-center font-extrabold text-slate-900 mb-4 outline-none user-select-text" placeholder="Roll No...">
+                <div class="flex gap-2">
+                    <button onclick="closeSwitchModal()" class="flex-1 bg-slate-200 text-slate-900 font-extrabold py-2 rounded-xl border-2 border-slate-900 text-xs">Cancel</button>
+                    <button onclick="applySwitchCode()" class="flex-1 bg-lime-400 text-slate-900 font-extrabold py-2 rounded-xl toon-btn text-xs">Apply</button>
                 </div>
             </div>
         </div>
 
-        <!-- PROFILE / ROLL SWITCHER MODAL -->
-        <div id="switch-modal" class="fixed inset-0 bg-black/75 z-40 hidden items-center justify-center p-4" onclick="if(event.target===this) closeSwitchModal()">
-            <div class="bg-[#202c33] border border-[#2a3942] rounded-2xl w-full max-w-xs p-5 text-center text-white">
-                <h3 class="font-bold text-sm text-[#00a884] mb-2">⚡ Roll No / Secret Code बदलें</h3>
-                <input type="text" id="switch-input" onkeypress="if(event.key==='Enter') applySwitchCode()" class="w-full bg-[#2a3942] rounded-xl py-2.5 px-3 text-center font-bold text-white mb-3 outline-none user-select-text" placeholder="Roll No या Code...">
-                <div class="flex gap-2 text-xs font-bold">
-                    <button onclick="closeSwitchModal()" class="flex-1 bg-[#2a3942] text-white py-2 rounded-xl">Cancel</button>
-                    <button onclick="applySwitchCode()" class="flex-1 bg-[#00a884] text-[#111b21] py-2 rounded-xl">Save</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- WHATSAPP FLOATING TOAST -->
-        <div id="toast-pill" class="fixed top-16 left-1/2 -translate-x-1/2 bg-[#202c33] text-[#e9edef] border border-[#00a884] px-4 py-1.5 rounded-full text-xs font-semibold z-50 hidden shadow-xl whitespace-nowrap">
-            ⚡ Ready!
+        <!-- TOAST PILL -->
+        <div id="toast-pill" class="fixed top-16 left-1/2 -translate-x-1/2 bg-slate-900 text-amber-300 border-2 border-white px-4 py-1.5 rounded-full text-xs font-extrabold z-50 hidden shadow-lg whitespace-nowrap">
+            Ready
         </div>
 
     </div>
 
     <script>
         // =========================================================================
-        // 💎 1. REAL-TIME PUBNUB ENGINE + AUTO CHAT HISTORY
+        // ⚡ 1. LIVE PUBNUB ENGINE + REAL-TIME ONLINE RADAR
         // =========================================================================
         const myUUID = "u_" + Math.floor(100000 + Math.random() * 900000);
-        const CHANNEL = "air-1-up-2026-pro";
+        const CHANNEL = "donkey-chats-v1-live";
 
         const pubnub = new PubNub({
             publishKey: "pub-c-7620e370-d34b-4bd7-894b-1a8d5fc07c17",
@@ -485,67 +414,34 @@
 
         pubnub.subscribe({ channels: [CHANNEL] });
 
-        let myName = "Star";
-        let myAvatar = "😎";
+        let myName = "Player";
+        let myRoll = "";
         let isKanisq = false;
         let isMuted = false;
-        let viewOnceMode = false;
-        let isLightWa = false;
 
         let replyTarget = null;
         let editTargetId = null;
         let holdTarget = null;
 
         const messageStore = {};
-        const pollVotesStore = {};
-        const adminMuteMap = {};
+        // Stores live online users: { uuid: { uuid, name, roll, muted, lastSeen } }
+        const liveUsers = {};
 
         // =========================================================================
-        // 🔊 2. WHATSAPP & FART SOUND ENGINE (Zero Lag Singleton)
+        // 🔊 2. CLEAN SOUND ENGINE
         // =========================================================================
         let basicSynth = null;
-        let fartSynth = null;
-
         function playSound(kind) {
             try {
                 if (Tone.context.state !== 'running') Tone.start();
                 const now = Tone.now();
-
-                if (kind === 'fart') {
-                    if (!fartSynth) {
-                        fartSynth = new Tone.FMSynth({
-                            harmonicity: 0.45,
-                            modulationIndex: 22,
-                            oscillator: { type: "sawtooth" },
-                            envelope: { attack: 0.01, decay: 0.45, sustain: 0.08, release: 0.2 },
-                            modulation: { type: "square" }
-                        }).toDestination();
-                    }
-                    fartSynth.triggerAttack("G2", now);
-                    fartSynth.frequency.exponentialRampToValueAtTime("B0", now + 0.42);
-                    fartSynth.triggerRelease(now + 0.45);
-                    return;
-                }
-
                 if (!basicSynth) basicSynth = new Tone.Synth().toDestination();
                 if (kind === 'pop') {
-                    basicSynth.triggerAttackRelease("A5", "32n", now);
-                } else if (kind === 'horn') {
-                    basicSynth.triggerAttackRelease("F4", "16n", now);
-                    basicSynth.triggerAttackRelease("A4", "16n", now + 0.08);
-                    basicSynth.triggerAttackRelease("C5", "8n", now + 0.16);
-                }
-            } catch (e) {}
-        }
-
-        function speakOut(text) {
-            try {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                    const u = new SpeechSynthesisUtterance(text);
-                    u.lang = 'hi-IN';
-                    u.rate = 1.05;
-                    window.speechSynthesis.speak(u);
+                    basicSynth.triggerAttackRelease("C6", "32n", now);
+                } else if (kind === 'win') {
+                    basicSynth.triggerAttackRelease("E5", "16n", now);
+                    basicSynth.triggerAttackRelease("G5", "16n", now + 0.08);
+                    basicSynth.triggerAttackRelease("C6", "8n", now + 0.16);
                 }
             } catch (e) {}
         }
@@ -556,38 +452,35 @@
         function applyIdentity(rawInput) {
             const raw = (rawInput || "").trim();
             const low = raw.toLowerCase();
+            myRoll = raw;
 
             if (raw === "99") {
-                myName = "Chiko 🥰";
-                myAvatar = "🐣";
-                toast("🥰 Chiko प्रोफाइल एक्टिव!");
+                myName = "Chiko";
+                toast("Switched to Chiko");
             } else if (raw === "104") {
-                myName = "Vikalp 🔥";
-                myAvatar = "⚡";
-                toast("🔥 Vikalp प्रोफाइल एक्टिव!");
+                myName = "Vikalp";
+                toast("Switched to Vikalp");
             } else if (low === "kanisq") {
-                myName = "Kanisq 👑";
-                myAvatar = "👑";
+                myName = "Kanisq";
                 isKanisq = true;
                 isMuted = false;
-                document.getElementById('kanisq-btn').classList.remove('hidden');
-                toast("👑 KANISQ WHATSAPP ADMIN UNLOCKED!");
-                confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                const kBtn = document.getElementById('kanisq-btn');
+                kBtn.classList.remove('hidden');
+                kBtn.classList.add('flex');
+                toast("Admin Controls Unlocked");
             } else if (raw !== "") {
                 myName = /^\d+$/.test(raw) ? `Roll #${raw}` : raw;
-                myAvatar = "😎";
             } else {
                 myName = "User #" + Math.floor(10 + Math.random() * 89);
-                myAvatar = "😎";
             }
 
             refreshHeaderIdentity();
-            try { localStorage.setItem('farzi_wa_id', raw || myName); } catch (e) {}
+            broadcastHeartbeat();
+            try { localStorage.setItem('donkey_chat_roll', raw || myName); } catch (e) {}
         }
 
         function refreshHeaderIdentity() {
-            document.getElementById('my-badge').innerText = `आप: ${myName}`;
-            document.getElementById('my-avatar').innerText = myAvatar;
+            document.getElementById('my-badge').innerText = myName + (isMuted ? " (Muted)" : "");
         }
 
         function completeLogin() {
@@ -599,33 +492,50 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             try {
-                const saved = localStorage.getItem('farzi_wa_id');
+                const saved = localStorage.getItem('donkey_chat_roll');
                 if (saved) {
                     applyIdentity(saved);
                     document.getElementById('entry-modal').classList.add('hidden');
                 }
             } catch (e) {}
             setupArtStudio();
-            fetchRecentMessages();
+            // Announce presence & start heartbeat
+            setTimeout(requestPresencePing, 600);
+            setInterval(broadcastHeartbeat, 12000);
         });
 
-        function fetchRecentMessages() {
-            try {
-                pubnub.fetchMessages({
-                    channels: [CHANNEL],
-                    count: 20
-                }, (status, response) => {
-                    if (!status.error && response && response.channels && response.channels[CHANNEL]) {
-                        const list = response.channels[CHANNEL];
-                        list.forEach(item => {
-                            const m = item.message;
-                            if (m && ['chat', 'art', 'audio_note', 'scratch', 'poll'].includes(m.type)) {
-                                if (!m.viewOnce) renderChatItem(m);
-                            }
-                        });
-                    }
-                });
-            } catch (e) {}
+        function broadcastHeartbeat() {
+            pubnub.publish({
+                channel: CHANNEL,
+                message: {
+                    type: 'heartbeat',
+                    uuid: myUUID,
+                    name: myName,
+                    roll: myRoll || '-',
+                    muted: isMuted
+                }
+            });
+        }
+
+        function requestPresencePing() {
+            pubnub.publish({
+                channel: CHANNEL,
+                message: { type: 'ping_all' }
+            });
+        }
+
+        function updateLiveUserEntry(u) {
+            if (!u || !u.uuid) return;
+            liveUsers[u.uuid] = {
+                uuid: u.uuid,
+                name: u.name || 'User',
+                roll: u.roll || '-',
+                muted: !!u.muted,
+                lastSeen: Date.now()
+            };
+            const total = Object.keys(liveUsers).length;
+            document.getElementById('online-count').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-lime-400 animate-pulse"></span> ${total}`;
+            renderAdminRadarList();
         }
 
         function openSwitchModal() {
@@ -646,67 +556,46 @@
             closeSwitchModal();
         }
 
-        function toggleWaTheme() {
-            const stream = document.getElementById('chat-stream');
-            isLightWa = !isLightWa;
-            stream.classList.toggle('wa-bg-dark', !isLightWa);
-            stream.classList.toggle('wa-bg-light', isLightWa);
-            playSound('pop');
-        }
-
         // =========================================================================
-        // 📡 4. REAL-TIME MESSAGE LISTENER
+        // 📡 4. REAL-TIME MESSAGE ROUTER (No Old History Loaded)
         // =========================================================================
         pubnub.addListener({
             message: function(event) {
                 const m = event.message;
                 if (!m) return;
 
-                if (['chat', 'art', 'audio_note', 'scratch', 'poll'].includes(m.type)) {
+                if (m.type === 'heartbeat') {
+                    updateLiveUserEntry(m);
+                } else if (m.type === 'ping_all') {
+                    broadcastHeartbeat();
+                } else if (['chat', 'art', 'ai'].includes(m.type)) {
+                    updateLiveUserEntry({ uuid: m.uuid, name: m.sender, roll: m.roll || '-', muted: false });
                     renderChatItem(m);
-                    if (m.sfx) playSound(m.sfx);
-                    else if (m.uuid !== myUUID) playSound('pop');
+                    if (m.uuid !== myUUID) playSound('pop');
                 } else if (m.type === 'edit') {
                     const txtNode = document.getElementById('txt-' + m.id);
-                    if (txtNode) {
-                        txtNode.innerText = m.newText;
-                        const edNode = document.getElementById('ed-' + m.id);
-                        if (edNode) edNode.classList.remove('hidden');
-                    }
+                    if (txtNode) txtNode.innerText = m.newText;
                     if (messageStore[m.id]) messageStore[m.id].text = m.newText;
                 } else if (m.type === 'delete') {
-                    const txtNode = document.getElementById('txt-' + m.id);
-                    if (txtNode) {
-                        txtNode.innerHTML = `<i class="opacity-60 text-xs">🚫 This message was deleted</i>`;
-                    } else {
-                        const row = document.getElementById('row-' + m.id);
-                        if (row) row.remove();
-                    }
-                    delete messageStore[m.id];
-                } else if (m.type === 'react') {
-                    const pill = document.getElementById('react-' + m.id);
-                    if (pill) {
-                        pill.classList.remove('hidden');
-                        pill.innerText = (pill.innerText + ' ' + m.emoji).trim();
-                        playSound('pop');
-                    }
+                    const row = document.getElementById('row-' + m.id);
+                    if (row) row.remove();
                 } else if (m.type === 'pin') {
-                    document.getElementById('pin-bar').classList.remove('hidden');
+                    const pb = document.getElementById('pin-bar');
+                    pb.classList.remove('hidden');
+                    pb.classList.add('flex');
                     document.getElementById('pin-content').innerText = `${m.sender}: ${m.text}`;
                     playSound('pop');
-                } else if (m.type === 'poll_vote') {
-                    updateLivePollUI(m.pollId, m.opt);
                 } else if (m.type === 'typing') {
                     if (m.uuid !== myUUID) {
                         const tp = document.getElementById('typing-pill');
                         tp.innerText = `${m.sender} typing...`;
                         clearTimeout(window._typTimer);
-                        window._typTimer = setTimeout(() => { tp.innerText = 'online'; }, 2000);
+                        window._typTimer = setTimeout(() => { tp.innerText = 'Live'; }, 1800);
                     }
                 } else if (m.type === 'xo') {
                     updateXOBoard(m);
-                } else if (m.type === 'admin_mod') {
-                    processAdminMod(m);
+                } else if (m.type === 'admin_cmd') {
+                    handleIncomingAdminCmd(m);
                 } else if (m.type === 'admin_lock') {
                     triggerLockScreen(m.text);
                 } else if (m.type === 'admin_fx') {
@@ -716,13 +605,139 @@
         });
 
         // =========================================================================
-        // 💬 5. WHATSAPP BUBBLE RENDERER (Blue Ticks ✓✓, View Once, Voice Note)
+        // 🤖 5. DOT (.) TRIGGERED GEMINI AI & IMAGE GENERATOR
+        // =========================================================================
+        const USER_PROVIDED_KEY = ""; // Runtime key or fallback handled automatically
+        const apiKey = "";
+
+        async function triggerDotAI(rawPrompt) {
+            const cleanQuery = rawPrompt.slice(0, -1).trim();
+            if (!cleanQuery) return;
+
+            const wantsImage = /\b(image|photo|draw|pic|picture|painting|sketch|generate|banao|chitra|फोटो|चित्र)\b/i.test(cleanQuery);
+
+            const tempId = 'ai_wait_' + Date.now();
+            showLocalAILoader(tempId, wantsImage ? "AI is creating image..." : "AI is thinking...");
+
+            try {
+                if (wantsImage) {
+                    const imgDataUrl = await generateAIImage(cleanQuery);
+                    removeLocalAILoader(tempId);
+                    if (imgDataUrl) {
+                        pubnub.publish({
+                            channel: CHANNEL,
+                            message: {
+                                type: 'ai',
+                                id: 'ai_' + Date.now(),
+                                uuid: 'gemini_ai',
+                                sender: 'Donkey AI',
+                                img: imgDataUrl,
+                                text: `Prompt: ${cleanQuery}`,
+                                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                            }
+                        });
+                        return;
+                    }
+                }
+
+                const replyText = await generateAIText(cleanQuery);
+                removeLocalAILoader(tempId);
+
+                pubnub.publish({
+                    channel: CHANNEL,
+                    message: {
+                        type: 'ai',
+                        id: 'ai_' + Date.now(),
+                        uuid: 'gemini_ai',
+                        sender: 'Donkey AI',
+                        text: replyText,
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    }
+                });
+            } catch (err) {
+                removeLocalAILoader(tempId);
+                toast("AI busy, try again");
+            }
+        }
+
+        async function generateAIText(query) {
+            const payload = {
+                contents: [{ parts: [{ text: query }] }],
+                systemInstruction: {
+                    parts: [{ text: "You are Donkey AI inside Donkey Chats. Reply concisely in 1-3 short, friendly sentences in Hinglish/Hindi or English matching the user's language." }]
+                }
+            };
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (text) return text.trim();
+            throw new Error("No AI text");
+        }
+
+        async function generateAIImage(promptText) {
+            const payload = {
+                contents: [{ parts: [{ text: promptText }] }],
+                generationConfig: { responseModalities: ['TEXT', 'IMAGE'] }
+            };
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-image:generateContent?key=${apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await res.json();
+            const base64Data = result?.candidates?.[0]?.content?.parts?.find(p => p.inlineData)?.inlineData?.data;
+            if (!base64Data) return null;
+            return await compressBase64Image(`data:image/png;base64,${base64Data}`);
+        }
+
+        // Compress AI image so it sends smoothly via PubNub (<22KB)
+        function compressBase64Image(srcDataUrl) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const c = document.createElement('canvas');
+                    c.width = 240;
+                    c.height = 240;
+                    const ctx = c.getContext('2d');
+                    ctx.drawImage(img, 0, 0, c.width, c.height);
+                    resolve(c.toDataURL('image/jpeg', 0.6));
+                };
+                img.onerror = () => resolve(null);
+                img.src = srcDataUrl;
+            });
+        }
+
+        function showLocalAILoader(id, label) {
+            const stream = document.getElementById('chat-stream');
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'self-start bubble-ai px-3.5 py-2 text-xs font-extrabold flex items-center gap-2';
+            div.innerHTML = `<i class="ph-bold ph-spinner animate-spin text-base"></i> <span>${label}</span>`;
+            stream.appendChild(div);
+            stream.scrollTop = stream.scrollHeight;
+        }
+
+        function removeLocalAILoader(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // =========================================================================
+        // 💬 6. SENDING & RENDERING MESSAGES
         // =========================================================================
         function handleSend() {
             const inp = document.getElementById('chat-input');
             const text = inp.value.trim();
             if (!text) return;
 
+            // Secret Kanisq Unlock
             if (text.toLowerCase() === 'kanisq') {
                 applyIdentity('Kanisq');
                 inp.value = '';
@@ -732,7 +747,7 @@
             }
 
             if (isMuted && !isKanisq) {
-                toast("🔇 Admin ने आपको Mute कर रखा है!");
+                toast("You are muted by Admin");
                 return;
             }
 
@@ -743,7 +758,6 @@
                 });
                 inp.value = '';
                 clearStatusBar();
-                toast("✏️ Message Edited");
                 return;
             }
 
@@ -752,24 +766,28 @@
                 id: 'm_' + Date.now() + '_' + Math.floor(Math.random() * 999),
                 uuid: myUUID,
                 sender: myName,
-                avatar: myAvatar,
+                roll: myRoll,
                 vip: isKanisq,
                 text: text,
                 reply: replyTarget,
-                viewOnce: viewOnceMode,
                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
 
             pubnub.publish({ channel: CHANNEL, message: msgObj });
             inp.value = '';
-            if (viewOnceMode) toggleViewOnceMode();
             clearStatusBar();
+
+            // If message ends with a single dot "." -> Trigger Gemini AI!
+            if (text.endsWith('.') && text.length > 1) {
+                triggerDotAI(text);
+            }
         }
 
         function renderChatItem(m) {
             if (document.getElementById('row-' + m.id)) return;
             const stream = document.getElementById('chat-stream');
             const isMe = (m.uuid === myUUID) && !m.puppet;
+            const isAI = m.type === 'ai';
             const id = m.id || ('m_' + Math.random().toString(36).slice(2));
 
             messageStore[id] = { id, text: m.text || '', sender: m.sender || 'User', isMe };
@@ -779,11 +797,13 @@
             row.className = `msg-anim flex flex-col max-w-[82%] ${isMe ? 'self-end items-end' : 'self-start items-start'}`;
 
             const bubble = document.createElement('div');
-            let bubbleClass = isMe ? 'wa-bubble-sent' : 'wa-bubble-recv';
-            if (m.vip) bubbleClass += ' wa-bubble-vip';
-            bubble.className = `${bubbleClass} px-3 pt-1.5 pb-1 text-[14.5px] leading-snug break-words cursor-pointer min-w-[95px]`;
+            let bClass = isMe ? 'bubble-me' : 'bubble-other';
+            if (isAI) bClass = 'bubble-ai';
+            else if (m.vip) bClass = 'bubble-vip';
 
-            // Hold / Right-Click Listener
+            bubble.className = `px-3.5 py-2 text-sm font-bold leading-snug break-words cursor-pointer min-w-[95px] ${bClass}`;
+
+            // Hold Context Menu
             let holdTimer = null;
             const beginHold = () => { holdTimer = setTimeout(() => showHoldModal(id), 380); };
             const cancelHold = () => { if (holdTimer) clearTimeout(holdTimer); };
@@ -792,126 +812,53 @@
             bubble.addEventListener('touchmove', cancelHold);
             bubble.addEventListener('contextmenu', (e) => { e.preventDefault(); showHoldModal(id); });
 
-            // Sender Name inside Received Bubble (Authentic WhatsApp Group Style)
+            // Sender Header
             if (!isMe) {
                 const sName = document.createElement('div');
-                sName.className = 'text-[11.5px] font-bold text-[#00a884] mb-0.5 flex items-center gap-1';
-                sName.innerText = `${m.avatar || '😎'} ${m.sender}`;
+                sName.className = `text-[11px] font-extrabold mb-0.5 flex items-center gap-1 ${isAI ? 'text-amber-300' : 'text-indigo-600'}`;
+                sName.innerHTML = isAI
+                    ? `<i class="ph-fill ph-robot"></i> <span>Donkey AI</span>`
+                    : `<i class="ph-fill ph-user-circle"></i> <span>${m.sender}</span>`;
                 bubble.appendChild(sName);
             }
 
-            // Quoted Reply Box
+            // Reply Quote
             if (m.reply) {
                 const q = document.createElement('div');
-                q.className = 'text-[11px] bg-black/20 border-l-4 border-[#00a884] px-2 py-1 rounded mb-1 truncate';
-                q.innerHTML = `<span class="text-[#00a884] font-bold block">${m.reply.sender}</span>${m.reply.text}`;
+                q.className = 'text-[11px] bg-black/10 border-l-4 border-slate-900 px-2 py-1 rounded mb-1 truncate';
+                q.innerHTML = `<div class="font-extrabold">${m.reply.sender}</div><div class="truncate opacity-80">${m.reply.text}</div>`;
                 bubble.appendChild(q);
             }
 
-            // Content Body
-            if (m.viewOnce) {
-                const vo = document.createElement('div');
-                vo.className = 'flex items-center gap-2 py-1 text-[#00a884] font-bold text-xs';
-                vo.innerHTML = `<span class="w-5 h-5 rounded-full border-2 border-[#00a884] flex items-center justify-center text-[10px]">1</span> <span>View Once Message (Tap to open)</span>`;
-                vo.onclick = (e) => {
-                    e.stopPropagation();
-                    vo.innerHTML = `<span class="text-white font-semibold">${m.text}</span> <span class="text-[10px] text-rose-400 ml-1">(5s)</span>`;
-                    playSound('pop');
-                    setTimeout(() => {
-                        vo.innerHTML = `<i class="opacity-60 text-xs">🚫 Opened</i>`;
-                        vo.onclick = null;
-                    }, 5000);
-                };
-                bubble.appendChild(vo);
-            } else if (m.type === 'art' && m.img) {
+            // Image (Sketch or AI Image)
+            if (m.img) {
                 const img = document.createElement('img');
                 img.src = m.img;
-                img.className = 'w-56 h-auto rounded-lg bg-white my-1 border border-white/10';
+                img.className = 'w-52 h-auto rounded-xl border-2 border-slate-900 bg-white mb-1 mt-0.5';
                 bubble.appendChild(img);
-                if (m.text) {
-                    const cap = document.createElement('div');
-                    cap.id = 'txt-' + id;
-                    cap.className = 'text-xs mt-1';
-                    cap.innerText = m.text;
-                    bubble.appendChild(cap);
-                }
-            } else if (m.type === 'audio_note') {
-                const aud = document.createElement('div');
-                aud.className = 'flex items-center gap-2.5 py-1 min-w-[185px]';
-                aud.innerHTML = `
-                    <button class="w-8 h-8 rounded-full bg-[#00a884] text-[#111b21] flex items-center justify-center text-xs font-bold shrink-0">▶</button>
-                    <div class="flex-1">
-                        <div class="h-1.5 bg-white/25 rounded-full overflow-hidden">
-                            <div class="w-2/3 h-full bg-[#00a884]"></div>
-                        </div>
-                        <div class="text-[10px] opacity-75 mt-1">${m.text || 'Voice Note (0:04)'}</div>
-                    </div>
-                    <span class="text-lg">🎤</span>
-                `;
-                aud.onclick = (e) => {
-                    e.stopPropagation();
-                    playSound(m.sfx || 'fart');
-                };
-                bubble.appendChild(aud);
-            } else if (m.type === 'scratch') {
-                const card = document.createElement('div');
-                card.className = 'bg-[#111b21] text-[#00a884] border border-[#00a884]/40 rounded-lg p-2.5 text-center my-1 min-w-[180px]';
-                card.innerHTML = `<div class="text-[10px] uppercase font-bold opacity-75">🎫 WhatsApp Scratch Gift</div>
-                                  <div class="text-xs font-extrabold mt-0.5">👆 Tap to Scratch!</div>`;
-                card.onclick = (e) => {
-                    e.stopPropagation();
-                    card.className = 'bg-[#00a884] text-[#111b21] rounded-lg p-2.5 text-center my-1 min-w-[180px] font-extrabold';
-                    card.innerHTML = `<div class="text-[10px] uppercase">🎉 You Won:</div><div class="text-sm mt-0.5">${m.prize}</div>`;
-                    if (m.prize.includes('💨')) playSound('fart');
-                    else { playSound('horn'); confetti({ particleCount: 35, spread: 50 }); }
-                };
-                bubble.appendChild(card);
-            } else if (m.type === 'poll') {
-                pollVotesStore[id] = pollVotesStore[id] || { yes: 0, no: 0 };
-                const pBox = document.createElement('div');
-                pBox.className = 'min-w-[195px] py-1';
-                pBox.innerHTML = `
-                    <div class="text-xs font-bold mb-2">📊 ${m.question}</div>
-                    <div class="flex flex-col gap-1.5 text-xs">
-                        <button onclick="event.stopPropagation(); castPollVote('${id}', 'yes')" class="w-full bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-lg flex justify-between items-center">
-                            <span>👍 हाँ (Yes)</span> <span id="pyes-${id}" class="font-bold text-[#00a884]">0</span>
-                        </button>
-                        <button onclick="event.stopPropagation(); castPollVote('${id}', 'no')" class="w-full bg-black/20 hover:bg-black/30 px-3 py-1.5 rounded-lg flex justify-between items-center">
-                            <span>👎 नहीं (No)</span> <span id="pno-${id}" class="font-bold text-rose-400">0</span>
-                        </button>
-                    </div>
-                `;
-                bubble.appendChild(pBox);
-            } else {
-                const span = document.createElement('span');
+            }
+
+            // Message Text
+            if (m.text) {
+                const span = document.createElement('div');
                 span.id = 'txt-' + id;
                 span.innerText = m.text;
                 bubble.appendChild(span);
             }
 
-            // WhatsApp Bottom-Right Timestamp + Edited + Blue Double Ticks (✓✓)
+            // Timestamp Footer
             const meta = document.createElement('div');
-            meta.className = 'flex items-center justify-end gap-1 text-[10px] opacity-70 mt-0.5 select-none';
-            meta.innerHTML = `
-                <span id="ed-${id}" class="hidden italic">edited</span>
-                <span>${m.time || ''}</span>
-                ${isMe ? '<span class="text-[#53bdeb] font-extrabold text-[11px] tracking-tighter">✓✓</span>' : ''}
-            `;
+            meta.className = 'flex items-center justify-end gap-1 text-[10px] opacity-65 mt-0.5';
+            meta.innerHTML = `<span>${m.time || ''}</span> ${isMe ? '<i class="ph-bold ph-checks text-xs"></i>' : ''}`;
             bubble.appendChild(meta);
 
-            // Reaction Pill
-            const reactBadge = document.createElement('div');
-            reactBadge.id = 'react-' + id;
-            reactBadge.className = 'hidden bg-[#202c33] border border-[#2a3942] text-white px-2 py-0.5 rounded-full text-[11px] -mt-1.5 z-10 shadow-md';
-
             row.appendChild(bubble);
-            row.appendChild(reactBadge);
             stream.appendChild(row);
             stream.scrollTop = stream.scrollHeight;
         }
 
         // =========================================================================
-        // 👆 6. MESSAGE HOLD MENU (Edit, Delete for Everyone, Copy, Pin, Speak)
+        // 👆 7. MESSAGE CONTEXT MENU (Reply, Copy, Edit, Pin, Delete)
         // =========================================================================
         function showHoldModal(id) {
             const item = messageStore[id];
@@ -919,7 +866,7 @@
             holdTarget = item;
             playSound('pop');
 
-            document.getElementById('hold-snippet').innerText = item.text || 'Media / Card';
+            document.getElementById('hold-snippet').innerText = item.text || 'Sketch';
             const canModify = item.isMe || isKanisq;
             document.getElementById('btn-hold-edit').style.display = canModify ? 'flex' : 'none';
             document.getElementById('btn-hold-del').style.display = canModify ? 'flex' : 'none';
@@ -935,13 +882,6 @@
             modal.classList.remove('flex');
         }
 
-        function sendReaction(emoji) {
-            if (!holdTarget) return;
-            pubnub.publish({ channel: CHANNEL, message: { type: 'react', id: holdTarget.id, emoji } });
-            if (emoji === '💨') playSound('fart');
-            closeHoldModal();
-        }
-
         function runHoldCmd(cmd) {
             if (!holdTarget) return;
             const { id, text, sender, isMe } = holdTarget;
@@ -949,8 +889,10 @@
 
             if (cmd === 'reply') {
                 editTargetId = null;
-                replyTarget = { sender, text: (text || 'Media').slice(0, 40) };
-                document.getElementById('status-bar').classList.remove('hidden');
+                replyTarget = { sender, text: (text || 'Sketch').slice(0, 40) };
+                const sb = document.getElementById('status-bar');
+                sb.classList.remove('hidden');
+                sb.classList.add('flex');
                 document.getElementById('status-title').innerText = `Replying to ${sender}`;
                 document.getElementById('status-text').innerText = replyTarget.text;
                 document.getElementById('chat-input').focus();
@@ -962,14 +904,16 @@
                     ta.select();
                     document.execCommand('copy');
                     ta.remove();
-                    toast("📋 Message copied");
+                    toast("Copied");
                 } catch (e) {}
             } else if (cmd === 'edit') {
                 if (!isMe && !isKanisq) return;
                 editTargetId = id;
                 replyTarget = null;
-                document.getElementById('status-bar').classList.remove('hidden');
-                document.getElementById('status-title').innerText = `Editing message`;
+                const sb = document.getElementById('status-bar');
+                sb.classList.remove('hidden');
+                sb.classList.add('flex');
+                document.getElementById('status-title').innerText = "Editing Message";
                 document.getElementById('status-text').innerText = text || '';
                 const inp = document.getElementById('chat-input');
                 inp.value = text || '';
@@ -977,157 +921,17 @@
             } else if (cmd === 'delete') {
                 if (!isMe && !isKanisq) return;
                 pubnub.publish({ channel: CHANNEL, message: { type: 'delete', id } });
-                toast("🗑️ Deleted for everyone");
             } else if (cmd === 'pin') {
-                pubnub.publish({ channel: CHANNEL, message: { type: 'pin', sender, text: (text || 'Media').slice(0, 55) } });
-            } else if (cmd === 'speak') {
-                speakOut(`${sender} ने लिखा: ${text || 'मीडिया मैसेज'}`);
+                pubnub.publish({ channel: CHANNEL, message: { type: 'pin', sender, text: (text || 'Sketch').slice(0, 55) } });
             }
         }
 
         function clearStatusBar() {
             replyTarget = null;
             editTargetId = null;
-            document.getElementById('status-bar').classList.add('hidden');
-        }
-
-        // =========================================================================
-        // 📎 7. WHATSAPP ATTACHMENT TOOLS (Fart Audio, View Once, Poll, Scratch)
-        // =========================================================================
-        function toggleAttachSheet() {
-            document.getElementById('attach-sheet').classList.toggle('hidden');
-        }
-
-        function fireAudioCard(label, sfx) {
-            document.getElementById('attach-sheet').classList.add('hidden');
-            pubnub.publish({
-                channel: CHANNEL,
-                message: {
-                    type: 'audio_note',
-                    id: 'aud_' + Date.now(),
-                    uuid: myUUID,
-                    sender: myName,
-                    avatar: myAvatar,
-                    vip: isKanisq,
-                    text: label,
-                    sfx: sfx,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                }
-            });
-        }
-
-        function toggleViewOnceMode() {
-            viewOnceMode = !viewOnceMode;
-            document.getElementById('attach-sheet').classList.add('hidden');
-            const pill = document.getElementById('vo-pill');
-            pill.className = `w-7 h-7 rounded-full flex items-center justify-center text-xs font-extrabold border mr-1 shrink-0 ${viewOnceMode ? 'bg-[#00a884] text-[#111b21] border-[#00a884]' : 'text-[#8696a0] border-current'}`;
-            toast(viewOnceMode ? "① View Once ON (एक बार दिखकर गायब होगा)" : "① View Once OFF");
-        }
-
-        function sendScratchCard() {
-            document.getElementById('attach-sheet').classList.add('hidden');
-            const prizes = [
-                "💎 ₹1,00,000 नकली जैकपॉट!",
-                "💨 महा-पाद बम! हाहाहा!",
-                "👑 WhatsApp ग्रुप King ताज!",
-                "🍕 फ्री समोसा पार्टी!",
-                "🔥 1000% VIP Swag!"
-            ];
-            const prize = prizes[Math.floor(Math.random() * prizes.length)];
-            pubnub.publish({
-                channel: CHANNEL,
-                message: {
-                    type: 'scratch',
-                    id: 'sc_' + Date.now(),
-                    uuid: myUUID,
-                    sender: myName,
-                    avatar: myAvatar,
-                    prize,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                }
-            });
-        }
-
-        function promptLivePoll() {
-            document.getElementById('attach-sheet').classList.add('hidden');
-            const m = document.getElementById('poll-modal');
-            m.classList.remove('hidden');
-            m.classList.add('flex');
-            document.getElementById('poll-q-input').focus();
-        }
-        function closePollModal() {
-            const m = document.getElementById('poll-modal');
-            m.classList.add('hidden');
-            m.classList.remove('flex');
-        }
-        function publishLivePoll() {
-            const q = document.getElementById('poll-q-input').value.trim();
-            if (!q) return;
-            document.getElementById('poll-q-input').value = '';
-            closePollModal();
-            pubnub.publish({
-                channel: CHANNEL,
-                message: {
-                    type: 'poll',
-                    id: 'pl_' + Date.now(),
-                    uuid: myUUID,
-                    sender: myName,
-                    avatar: myAvatar,
-                    question: q,
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                }
-            });
-        }
-        function castPollVote(pollId, opt) {
-            pubnub.publish({ channel: CHANNEL, message: { type: 'poll_vote', pollId, opt } });
-        }
-        function updateLivePollUI(pollId, opt) {
-            pollVotesStore[pollId] = pollVotesStore[pollId] || { yes: 0, no: 0 };
-            pollVotesStore[pollId][opt]++;
-            const yEl = document.getElementById('pyes-' + pollId);
-            const nEl = document.getElementById('pno-' + pollId);
-            if (yEl) yEl.innerText = pollVotesStore[pollId].yes;
-            if (nEl) nEl.innerText = pollVotesStore[pollId].no;
-            playSound('pop');
-        }
-
-        function fireDiceRoll() {
-            document.getElementById('attach-sheet').classList.add('hidden');
-            const roll = Math.floor(1 + Math.random() * 6);
-            pubnub.publish({
-                channel: CHANNEL,
-                message: {
-                    type: 'chat',
-                    id: 'd_' + Date.now(),
-                    uuid: myUUID,
-                    sender: myName,
-                    avatar: myAvatar,
-                    text: `🎲 लूडो पासा फेंका: [ ${roll} ] आया!`,
-                    sfx: 'pop',
-                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                }
-            });
-        }
-
-        function startVoiceTyping() {
-            document.getElementById('attach-sheet').classList.add('hidden');
-            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SR) {
-                toast("🎙️ इस ब्राउज़र में Voice सपोर्ट नहीं है!");
-                return;
-            }
-            try {
-                const rec = new SR();
-                rec.lang = 'hi-IN';
-                toast("🎙️ बोलिए...");
-                rec.onresult = (e) => {
-                    const spoken = e.results[0][0].transcript;
-                    const inp = document.getElementById('chat-input');
-                    inp.value = (inp.value + ' ' + spoken).trim();
-                    inp.focus();
-                };
-                rec.start();
-            } catch (e) {}
+            const sb = document.getElementById('status-bar');
+            sb.classList.add('hidden');
+            sb.classList.remove('flex');
         }
 
         let lastTypStamp = 0;
@@ -1139,21 +943,17 @@
         }
 
         // =========================================================================
-        // 🎨 8. PRO ART STUDIO (Mirror, Neon, Rainbow, JPEG Fast Sync)
+        // 🎨 8. CLEAN & SIMPLE SKETCH PAD
         // =========================================================================
         let padCanvas, padCtx, isPainting = false;
         let lastPt = { x: 0, y: 0 };
-        let artMode = 'pen';
-        let artColor = '#000000';
-        let artHue = 0;
-        let isDarkPad = false;
-        let artHistory = [];
+        let strokeColor = '#0F172A';
+        let strokeSize = 4;
 
         function setupArtStudio() {
             padCanvas = document.getElementById('art-pad');
             padCtx = padCanvas.getContext('2d');
-            paintBackground('#FFFFFF');
-            pushArtUndo();
+            artClear();
 
             const getPt = (e) => {
                 const r = padCanvas.getBoundingClientRect();
@@ -1165,62 +965,22 @@
                 };
             };
 
-            const onDown = (e) => {
-                isPainting = true;
-                lastPt = getPt(e);
-            };
-
+            const onDown = (e) => { isPainting = true; lastPt = getPt(e); };
             const onMove = (e) => {
                 if (!isPainting) return;
                 e.preventDefault();
                 const pt = getPt(e);
-                const size = parseInt(document.getElementById('art-size').value, 10) || 4;
-
                 padCtx.lineCap = 'round';
                 padCtx.lineJoin = 'round';
-                padCtx.lineWidth = size;
-
-                if (artMode === 'eraser') {
-                    padCtx.shadowBlur = 0;
-                    padCtx.strokeStyle = isDarkPad ? '#111b21' : '#FFFFFF';
-                    padCtx.lineWidth = size * 2.4;
-                } else if (artMode === 'neon') {
-                    padCtx.strokeStyle = artColor;
-                    padCtx.shadowColor = artColor;
-                    padCtx.shadowBlur = 12;
-                } else if (artMode === 'rainbow') {
-                    artHue = (artHue + 14) % 360;
-                    const c = `hsl(${artHue}, 95%, 55%)`;
-                    padCtx.strokeStyle = c;
-                    padCtx.shadowColor = c;
-                    padCtx.shadowBlur = 6;
-                } else {
-                    padCtx.shadowBlur = 0;
-                    padCtx.strokeStyle = artColor;
-                }
-
+                padCtx.lineWidth = strokeSize;
+                padCtx.strokeStyle = strokeColor;
                 padCtx.beginPath();
                 padCtx.moveTo(lastPt.x, lastPt.y);
                 padCtx.lineTo(pt.x, pt.y);
                 padCtx.stroke();
-
-                if (artMode === 'mirror') {
-                    const w = padCanvas.width;
-                    padCtx.beginPath();
-                    padCtx.moveTo(w - lastPt.x, lastPt.y);
-                    padCtx.lineTo(w - pt.x, pt.y);
-                    padCtx.stroke();
-                }
-
                 lastPt = pt;
             };
-
-            const onUp = () => {
-                if (!isPainting) return;
-                isPainting = false;
-                padCtx.shadowBlur = 0;
-                pushArtUndo();
-            };
+            const onUp = () => { isPainting = false; };
 
             padCanvas.addEventListener('mousedown', onDown);
             padCanvas.addEventListener('mousemove', onMove);
@@ -1230,72 +990,16 @@
             padCanvas.addEventListener('touchend', onUp);
         }
 
-        function paintBackground(hex) {
-            padCtx.shadowBlur = 0;
-            padCtx.fillStyle = hex;
-            padCtx.fillRect(0, 0, padCanvas.width, padCanvas.height);
-        }
-
-        function pushArtUndo() {
-            if (artHistory.length > 10) artHistory.shift();
-            artHistory.push(padCanvas.toDataURL('image/jpeg', 0.85));
-        }
-
-        function artUndo() {
-            if (artHistory.length <= 1) return;
-            artHistory.pop();
-            const img = new Image();
-            img.onload = () => {
-                padCtx.shadowBlur = 0;
-                padCtx.clearRect(0, 0, padCanvas.width, padCanvas.height);
-                padCtx.drawImage(img, 0, 0);
-            };
-            img.src = artHistory[artHistory.length - 1];
-            playSound('pop');
-        }
-
-        function selectArtMode(m) {
-            artMode = m;
-            const names = { pen: 'Pen', neon: 'Neon', rainbow: 'Magic', mirror: 'Mirror 🦋', eraser: 'Eraser' };
-            document.getElementById('art-tool-badge').innerText = names[m] || 'Pen';
-            ['pen', 'neon', 'rainbow', 'mirror', 'eraser'].forEach(k => {
-                const btn = document.getElementById('am-' + k);
-                if (btn) btn.className = `${k === m ? 'bg-[#00a884] text-[#111b21]' : 'bg-[#2a3942] text-[#d1d7db]'} py-1.5 rounded-lg`;
-            });
-            playSound('pop');
-        }
-
-        function setArtColor(c) {
-            artColor = c;
-            if (artMode === 'eraser' || artMode === 'rainbow') selectArtMode('pen');
-            playSound('pop');
-        }
-
-        function flipArtBoard() {
-            isDarkPad = !isDarkPad;
-            paintBackground(isDarkPad ? '#111b21' : '#FFFFFF');
-            if (isDarkPad && artColor === '#000000') artColor = '#00a884';
-            if (!isDarkPad && artColor === '#00a884') artColor = '#000000';
-            pushArtUndo();
-            playSound('pop');
-        }
-
-        function stampArt(emoji) {
-            padCtx.shadowBlur = 0;
-            padCtx.font = "34px serif";
-            padCtx.textAlign = "center";
-            padCtx.textBaseline = "middle";
-            const x = 45 + Math.random() * (padCanvas.width - 90);
-            const y = 40 + Math.random() * (padCanvas.height - 80);
-            padCtx.fillText(emoji, x, y);
-            pushArtUndo();
+        function setArtColor(c, sz) {
+            strokeColor = c;
+            strokeSize = sz;
             playSound('pop');
         }
 
         function artClear() {
-            paintBackground(isDarkPad ? '#111b21' : '#FFFFFF');
-            pushArtUndo();
-            playSound('pop');
+            if (!padCtx) return;
+            padCtx.fillStyle = '#FFFFFF';
+            padCtx.fillRect(0, 0, padCanvas.width, padCanvas.height);
         }
 
         function openArtModal() {
@@ -1310,9 +1014,7 @@
         }
 
         function publishArt() {
-            const cap = document.getElementById('art-caption').value.trim();
             const compressedDataUrl = padCanvas.toDataURL('image/jpeg', 0.65);
-
             pubnub.publish({
                 channel: CHANNEL,
                 message: {
@@ -1320,24 +1022,22 @@
                     id: 'art_' + Date.now(),
                     uuid: myUUID,
                     sender: myName,
-                    avatar: myAvatar,
+                    roll: myRoll,
                     vip: isKanisq,
                     img: compressedDataUrl,
-                    text: cap,
-                    sfx: 'pop',
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
             });
-
-            document.getElementById('art-caption').value = '';
             artClear();
             closeArtModal();
         }
 
         // =========================================================================
-        // 👑 9. KANISQ WHATSAPP ADMIN POWERS
+        // 🛡️ 9. KANISQ REAL LIVE ADMIN RADAR & CONTROLS
         // =========================================================================
         function openAdminModal() {
+            requestPresencePing();
+            renderAdminRadarList();
             const m = document.getElementById('admin-modal');
             m.classList.remove('hidden');
             m.classList.add('flex');
@@ -1348,50 +1048,90 @@
             m.classList.remove('flex');
         }
 
-        function adminMuteToggle() {
-            const target = document.getElementById('adm-target').value.trim();
-            if (!target) return;
-            const nextState = !adminMuteMap[target];
-            adminMuteMap[target] = nextState;
-            pubnub.publish({
-                channel: CHANNEL,
-                message: { type: 'admin_mod', sub: 'mute', target, muted: nextState }
+        function renderAdminRadarList() {
+            const box = document.getElementById('admin-user-list');
+            if (!box) return;
+            box.innerHTML = '';
+
+            const users = Object.values(liveUsers);
+            if (users.length === 0) {
+                box.innerHTML = `<div class="text-xs text-slate-500 py-2 text-center">Scanning online users...</div>`;
+                return;
+            }
+
+            users.forEach(u => {
+                const row = document.createElement('div');
+                row.className = 'bg-white border-2 border-slate-900 rounded-xl px-2.5 py-1.5 flex items-center justify-between gap-2';
+                row.innerHTML = `
+                    <div class="truncate">
+                        <div class="text-xs font-extrabold text-slate-900 truncate">
+                            ${u.name} ${u.uuid === myUUID ? '(You)' : ''}
+                        </div>
+                        <div class="text-[10px] font-bold text-slate-500">
+                            Roll: ${u.roll || '-'} • ${u.muted ? '<span class="text-rose-600">Muted</span>' : '<span class="text-emerald-600">Active</span>'}
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button onclick="adminDirectAction('${u.uuid}', 'mute', ${!u.muted})" class="px-2 py-1 rounded-lg border border-slate-900 text-[10px] font-extrabold ${u.muted ? 'bg-emerald-300' : 'bg-amber-300'}" title="Mute/Unmute">
+                            ${u.muted ? 'Unmute' : 'Mute'}
+                        </button>
+                        <button onclick="adminPromptRename('${u.uuid}', '${u.name}')" class="px-2 py-1 rounded-lg bg-cyan-300 border border-slate-900 text-[10px] font-extrabold" title="Rename">
+                            Name
+                        </button>
+                        ${u.uuid !== myUUID ? `
+                        <button onclick="adminDirectAction('${u.uuid}', 'kick')" class="px-2 py-1 rounded-lg bg-rose-500 text-white border border-slate-900 text-[10px] font-extrabold" title="Kick User">
+                            Kick
+                        </button>` : ''}
+                    </div>
+                `;
+                box.appendChild(row);
             });
-            closeAdminModal();
         }
 
-        function adminForceRename() {
-            const target = document.getElementById('adm-target').value.trim();
-            const newName = document.getElementById('adm-newname').value.trim();
-            if (!target || !newName) {
-                toast("🏷️ दोनों नाम लिखें!");
+        function adminDirectAction(targetUuid, sub, val) {
+            pubnub.publish({
+                channel: CHANNEL,
+                message: { type: 'admin_cmd', targetUuid, sub, val }
+            });
+            toast(`Command sent: ${sub}`);
+        }
+
+        function adminPromptRename(targetUuid, currentName) {
+            const inp = document.getElementById('adm-puppet-who');
+            const newName = inp.value.trim();
+            if (!newName) {
+                toast("Type new name in the box below first");
                 return;
             }
             pubnub.publish({
                 channel: CHANNEL,
-                message: { type: 'admin_mod', sub: 'rename', target, newName }
+                message: { type: 'admin_cmd', targetUuid, sub: 'rename', val: newName }
             });
-            document.getElementById('adm-newname').value = '';
-            closeAdminModal();
+            toast(`Renamed ${currentName} to ${newName}`);
         }
 
-        function processAdminMod(m) {
-            if (m.sub === 'mute') {
-                if (myName.toLowerCase().includes(m.target.toLowerCase())) {
-                    isMuted = m.muted;
-                }
-                toast(m.muted ? `🔇 Admin ने ${m.target} को Mute किया` : `🔊 Admin ने ${m.target} को Unmute किया`);
-            } else if (m.sub === 'rename') {
-                if (myName.toLowerCase().includes(m.target.toLowerCase())) {
-                    myName = m.newName;
+        function handleIncomingAdminCmd(m) {
+            if (m.targetUuid === myUUID) {
+                if (m.sub === 'mute') {
+                    isMuted = !!m.val;
                     refreshHeaderIdentity();
+                    broadcastHeartbeat();
+                    toast(isMuted ? "Admin muted your chat" : "Admin unmuted your chat");
+                } else if (m.sub === 'rename' && m.val) {
+                    myName = m.val;
+                    refreshHeaderIdentity();
+                    broadcastHeartbeat();
+                    toast(`Admin changed your name to ${myName}`);
+                } else if (m.sub === 'kick') {
+                    const ks = document.getElementById('kick-screen');
+                    ks.classList.remove('hidden');
+                    ks.classList.add('flex');
                 }
-                toast(`🏷️ Admin ने ${m.target} का नाम "${m.newName}" किया`);
             }
         }
 
         function adminPuppetSend() {
-            const who = document.getElementById('adm-puppet-who').value.trim() || "Chiko 🥰";
+            const who = document.getElementById('adm-puppet-who').value.trim() || "Chiko";
             const msgInp = document.getElementById('adm-puppet-msg');
             const text = msgInp.value.trim();
             if (!text) return;
@@ -1406,7 +1146,6 @@
                     uuid: 'pup_' + Math.random(),
                     puppet: true,
                     sender: who,
-                    avatar: who.includes('Chiko') ? '🐣' : (who.includes('Vikalp') ? '⚡' : '😎'),
                     text,
                     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                 }
@@ -1415,7 +1154,7 @@
 
         function adminBroadcastLock() {
             const inp = document.getElementById('adm-lock-txt');
-            const text = inp.value.trim() || "KANISQ ADMIN IS LIVE 👑";
+            const text = inp.value.trim() || "ADMIN ANNOUNCEMENT";
             inp.value = '';
             closeAdminModal();
             pubnub.publish({ channel: CHANNEL, message: { type: 'admin_lock', text } });
@@ -1426,20 +1165,19 @@
             document.getElementById('lock-title').innerText = text;
             scr.classList.remove('hidden');
             scr.classList.add('flex');
-            playSound('horn');
-            speakOut(text);
-            confetti({ particleCount: 95, spread: 80, origin: { y: 0.5 } });
+            playSound('win');
+            confetti({ particleCount: 80, spread: 70, origin: { y: 0.5 } });
 
             let sec = 5;
             const cd = document.getElementById('lock-countdown');
             const iv = setInterval(() => {
                 sec--;
-                cd.innerText = `${sec}s...`;
+                cd.innerText = `${sec}s`;
                 if (sec <= 0) {
                     clearInterval(iv);
                     scr.classList.add('hidden');
                     scr.classList.remove('flex');
-                    cd.innerText = '5s...';
+                    cd.innerText = '5s';
                 }
             }, 1000);
         }
@@ -1450,30 +1188,20 @@
         }
 
         function runGlobalFx(fx) {
-            if (fx === 'fart') {
-                playSound('fart');
-                toast("💨 Admin ने सबके फोन में Fart बजाया!");
-            } else if (fx === 'quake') {
-                const root = document.getElementById('app-root');
-                root.classList.remove('shake-fx');
-                void root.offsetWidth;
-                root.classList.add('shake-fx');
-                playSound('horn');
-                toast("📳 Admin ने भूकंप ला दिया!");
-            } else if (fx === 'party') {
-                confetti({ particleCount: 130, spread: 95, origin: { y: 0.6 } });
-                playSound('horn');
+            if (fx === 'party') {
+                confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+                playSound('win');
             } else if (fx === 'wipe') {
                 document.getElementById('chat-stream').innerHTML = '';
-                toast("🧹 Admin ने चैट Clear कर दी!");
+                toast("Chat cleared by Admin");
             }
         }
 
         // =========================================================================
-        // 🎮 10. LIVE TIC-TAC-TOE (XO)
+        // 🎮 10. CLEAN LIVE TIC-TAC-TOE (XO)
         // =========================================================================
         let xoCells = ['', '', '', '', '', '', '', '', ''];
-        let xoNext = '❌';
+        let xoNext = 'X';
         let xoRunning = true;
 
         function openXOModal() {
@@ -1492,35 +1220,39 @@
             xoCells[i] = xoNext;
             pubnub.publish({
                 channel: CHANNEL,
-                message: { type: 'xo', board: xoCells, turn: xoNext === '❌' ? '⭕' : '❌', by: myName }
+                message: { type: 'xo', board: xoCells, turn: xoNext === 'X' ? 'O' : 'X', by: myName }
             });
         }
 
         function resetXO(sync) {
             xoCells = ['', '', '', '', '', '', '', '', ''];
-            xoNext = '❌';
+            xoNext = 'X';
             xoRunning = true;
-            if (sync) pubnub.publish({ channel: CHANNEL, message: { type: 'xo', board: xoCells, turn: '❌' } });
+            if (sync) pubnub.publish({ channel: CHANNEL, message: { type: 'xo', board: xoCells, turn: 'X' } });
         }
 
         function updateXOBoard(m) {
             xoCells = m.board;
             xoNext = m.turn;
             xoRunning = true;
-            for (let i = 0; i < 9; i++) document.getElementById('xoc-' + i).innerText = xoCells[i];
+            for (let i = 0; i < 9; i++) {
+                const cell = document.getElementById('xoc-' + i);
+                cell.innerText = xoCells[i];
+                cell.className = `bg-slate-100 border-2 border-slate-900 rounded-2xl h-16 font-toon text-2xl ${xoCells[i] === 'X' ? 'text-indigo-600' : 'text-rose-500'}`;
+            }
 
             const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
             for (let [a,b,c] of lines) {
-                if (xoCells[a] && xoCells[a] === xoCells[b] && xoCells[c] === xoCells[a]) {
-                    document.getElementById('xo-turn-pill').innerText = `🏆 ${xoCells[a]} Won! (${m.by || ''})`;
+                if (xoCells[a] && xoCells[a] === xoCells[b] && xoCells[a] === xoCells[c]) {
+                    document.getElementById('xo-turn-pill').innerText = `${xoCells[a]} Won (${m.by || ''})`;
                     xoRunning = false;
-                    confetti({ particleCount: 65, spread: 65 });
-                    playSound('horn');
+                    confetti({ particleCount: 60, spread: 60 });
+                    playSound('win');
                     return;
                 }
             }
             if (!xoCells.includes('')) {
-                document.getElementById('xo-turn-pill').innerText = "🤝 Match Draw!";
+                document.getElementById('xo-turn-pill').innerText = "Draw!";
                 xoRunning = false;
                 return;
             }
@@ -1532,7 +1264,7 @@
             t.innerText = msg;
             t.classList.remove('hidden');
             clearTimeout(window._tstTimer);
-            window._tstTimer = setTimeout(() => t.classList.add('hidden'), 2300);
+            window._tstTimer = setTimeout(() => t.classList.add('hidden'), 2200);
         }
     </script>
 </body>
